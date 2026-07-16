@@ -27,7 +27,6 @@
     {
       "key": "agent:main:subagent:worker",
       "agentId": "main",
-      "spawnedBy": "agent:main:main",
       "messages": [
         {
           "id": "m-sub",

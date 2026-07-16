@@ -64,7 +64,13 @@ export function buildReviewWindowFromSessions({ sessions, sourceId, reviewDay, t
 
   for (const session of sessions) {
     const key = session.key ?? session.sessionKey;
-    if (!key || session.spawnedBy || key.startsWith("cron:") || session.kind === "cron") continue;
+    if (
+      !key ||
+      session.spawnedBy ||
+      key.includes(":subagent:") ||
+      key.startsWith("cron:") ||
+      session.kind === "cron"
+    ) continue;
 
     const dayMessages = (session.messages ?? []).filter(
       (message) => timestampOf(message) && dateInTimeZone(timestampOf(message), timeZone) === reviewDay,
@@ -140,7 +146,13 @@ export async function collectGatewayWindow({
 
   for (const session of sessions) {
     const key = session.key ?? session.sessionKey;
-    if (!key || session.spawnedBy || key.startsWith("cron:") || session.kind === "cron") continue;
+    if (
+      !key ||
+      session.spawnedBy ||
+      key.includes(":subagent:") ||
+      key.startsWith("cron:") ||
+      session.kind === "cron"
+    ) continue;
     const history = await gatewayCall(binary, "chat.history", {
       sessionKey: key,
       agentId: session.agentId,
