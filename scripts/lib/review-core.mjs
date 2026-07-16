@@ -93,6 +93,7 @@ export function createReviewSubmission({ config, reviewDay, draft }) {
     `Selected work highlights from ${reviewDay}.`,
     privateTerms,
   );
+  const sourceLabel = safeMetadata(config.sourceLabel, "OpenClaw", privateTerms);
   const platforms = Array.isArray(draft.platforms)
     ? draft.platforms.filter((value) => typeof value === "string" && value.trim() && !containsSensitiveContent(value, privateTerms))
     : [];
@@ -118,7 +119,7 @@ export function createReviewSubmission({ config, reviewDay, draft }) {
     `title: ${yamlString(title)}`,
     `summary: ${yamlString(summary)}`,
     `date: ${reviewDay}`,
-    `source: ${yamlString(config.sourceLabel)}`,
+    `source: ${yamlString(sourceLabel)}`,
     `platforms: ${JSON.stringify(platforms.length ? platforms : ["OpenClaw"])}`,
     `highlights: ${safeHighlights.length}`,
     "---",

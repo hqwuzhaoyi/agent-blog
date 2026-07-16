@@ -10,7 +10,7 @@ const baseConfig = {
 describe("Review Generation seam", () => {
   test("produces publication-safe Markdown and omits an unsafe highlight as a whole", () => {
     const result = createReviewSubmission({
-      config: baseConfig,
+      config: { ...baseConfig, sourceLabel: "owner@example.com" },
       reviewDay: "2026-07-16",
       draft: {
         title: "A release cleared review",
@@ -44,6 +44,7 @@ describe("Review Generation seam", () => {
     expect(result.markdown).not.toContain("Acme Private");
     expect(result.markdown).not.toContain("owner@example.com");
     expect(result.markdown).not.toContain("/Users/alice");
+    expect(result.markdown).toContain('source: "OpenClaw"');
   });
 
   test("returns no-update when every proposed highlight is unsafe", () => {
