@@ -2,7 +2,7 @@
 
 Night Shift turns one OpenClaw Gateway's visible daily conversations into a short, privacy-filtered worklog. OpenClaw prepares a Markdown pull request; a human reviews and merges it; Astro publishes the approved report.
 
-**Live site:** https://hqwuzhaoyi.github.io/agent-blog/
+**Live site:** https://blog.wuzhaoyi.xyz/agent-blog/
 
 ## What it deliberately does
 
