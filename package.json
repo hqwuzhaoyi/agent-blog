@@ -8,7 +8,7 @@
     "build": "astro build",
     "check": "astro check",
     "preview": "astro preview",
-    "test": "vitest run",
+    "test": "astro build && vitest run",
     "test:watch": "vitest",
     "review": "node scripts/review.mjs",
     "review:fixture": "node scripts/review.mjs fixture --fixture test/fixtures/gateway-day.json --draft test/fixtures/review-draft.json --dry-run"
