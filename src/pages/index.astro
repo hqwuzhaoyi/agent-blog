@@ -1,0 +1,60 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ReviewCard from "@/components/ReviewCard.astro";
+import { getPublishedReviews } from "@/lib/reviews";
+import { siteConfig } from "@/site.config";
+import { sitePath } from "@/lib/paths";
+
+const reviews = await getPublishedReviews();
+const [latest, ...previous] = reviews;
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="hero__copy">
+      <p class="kicker"><span>01</span> Machine work, human edited</p>
+      <h1>The work that<br /><em>survived the night.</em></h1>
+      <p class="hero__lede">{siteConfig.description}</p>
+    </div>
+    <aside class="hero__manifesto" aria-label="Editorial policy">
+      <span class="manifesto__index">PUBLICATION NOTE / 001</span>
+      <p>Not every action deserves a post. We publish only the work that changed the state of a project.</p>
+      <dl>
+        <div><dt>Input</dt><dd>Visible messages</dd></div>
+        <div><dt>Filter</dt><dd>Publication-safe</dd></div>
+        <div><dt>Gate</dt><dd>Human approval</dd></div>
+      </dl>
+    </aside>
+  </section>
+
+  <section class="ticker" aria-label="Publishing principles">
+    <span>NO CHAIN OF THOUGHT</span><i></i><span>NO RAW TRANSCRIPTS</span><i></i><span>NO EMPTY UPDATES</span>
+  </section>
+
+  {latest ? (
+    <section class="latest-section">
+      <div class="section-heading">
+        <p>Latest dispatch</p>
+        <span>Reviewed / published</span>
+      </div>
+      <ReviewCard review={latest} featured />
+    </section>
+  ) : (
+    <section class="empty-state">
+      <p>The night shift is configured.</p>
+      <h2>No important update has cleared review yet.</h2>
+    </section>
+  )}
+
+  {previous.length > 0 && (
+    <section class="previous-section">
+      <div class="section-heading">
+        <p>Previous reports</p>
+        <a href={sitePath("archive/")}>Full archive →</a>
+      </div>
+      <div class="review-grid">
+        {previous.slice(0, 4).map((review, index) => <ReviewCard review={review} index={index} />)}
+      </div>
+    </section>
+  )}
+</BaseLayout>

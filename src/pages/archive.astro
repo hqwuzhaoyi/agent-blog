@@ -1,0 +1,26 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { formatReviewDate, getPublishedReviews } from "@/lib/reviews";
+import { reviewPath } from "@/lib/paths";
+
+const reviews = await getPublishedReviews();
+---
+
+<BaseLayout title="Archive" description="Every human-approved Daily Review, in chronological order.">
+  <section class="archive-hero">
+    <p class="kicker"><span>02</span> The record</p>
+    <h1>Archive</h1>
+    <p>{reviews.length} reviewed dispatch{reviews.length === 1 ? "" : "es"}. No raw logs. No filler.</p>
+  </section>
+
+  <section class="archive-list" aria-label="Published reviews">
+    {reviews.map((review, index) => (
+      <a class="archive-row" href={reviewPath(review.id)} style={`--delay: ${index * 45}ms`}>
+        <span class="archive-row__number">{String(index + 1).padStart(2, "0")}</span>
+        <time datetime={review.data.date.toISOString()}>{formatReviewDate(review.data.date)}</time>
+        <strong>{review.data.title}</strong>
+        <span>{review.data.highlights} signals ↗</span>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

@@ -1,0 +1,41 @@
+{
+  "sessions": [
+    {
+      "key": "agent:main:main",
+      "agentId": "main",
+      "messages": [
+        {
+          "id": "m-1",
+          "role": "user",
+          "timestamp": 1784163600000,
+          "content": "Finish the publication workflow and verify the static site."
+        },
+        {
+          "id": "m-2",
+          "role": "assistant",
+          "timestamp": 1784167200000,
+          "content": [{ "type": "text", "text": "The site builds successfully and the review gate is documented." }]
+        },
+        {
+          "id": "m-tool",
+          "role": "tool",
+          "timestamp": 1784167000000,
+          "content": "npm run build"
+        }
+      ]
+    },
+    {
+      "key": "agent:main:subagent:worker",
+      "agentId": "main",
+      "spawnedBy": "agent:main:main",
+      "messages": [
+        {
+          "id": "m-sub",
+          "role": "assistant",
+          "timestamp": 1784167100000,
+          "content": "Intermediate implementation chatter."
+        }
+      ]
+    }
+  ]
+}

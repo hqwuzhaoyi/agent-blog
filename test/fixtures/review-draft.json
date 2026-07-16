@@ -1,0 +1,15 @@
+{
+  "title": "The publication workflow is ready",
+  "summary": "The site and its human approval gate reached a working state.",
+  "platforms": [
+    "OpenClaw"
+  ],
+  "highlights": [
+    {
+      "title": "Static publishing verified",
+      "outcome": "The Astro site builds with its latest report, archive, article, and RSS routes.",
+      "whyItMatters": "A reviewed change can now become a public update.",
+      "project": "Agent Blog"
+    }
+  ]
+}
