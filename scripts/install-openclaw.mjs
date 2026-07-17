@@ -85,6 +85,7 @@ await command("openclaw", [
   "--global",
   "--as",
   "openclaw-review",
+  "--force",
 ]);
 
 const cronPayload = parseJson(await command("openclaw", ["cron", "list", "--json"]));
