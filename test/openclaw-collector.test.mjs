@@ -1,12 +1,16 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, test } from "vitest";
-import { buildReviewWindowFromSessions, sessionsListParams } from "../scripts/lib/openclaw-gateway.mjs";
+import { buildReviewWindowFromSessions, currentReviewDay, sessionsListParams } from "../scripts/lib/openclaw-gateway.mjs";
 
 const fixture = JSON.parse(
   await readFile(new URL("./fixtures/gateway-day.json", import.meta.url), "utf8"),
 );
 
 describe("OpenClaw Gateway collection", () => {
+  test("resolves the local current Review Day across the UTC boundary", () => {
+    expect(currentReviewDay(Date.UTC(2026, 6, 17, 16, 30), "Asia/Shanghai")).toBe("2026-07-18");
+  });
+
   test("uses only currently supported sessions.list parameters", () => {
     expect(sessionsListParams(100, 200)).toEqual({
       limit: 100,

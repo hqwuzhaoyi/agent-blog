@@ -2,7 +2,12 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { createReviewSubmission } from "./lib/review-core.mjs";
-import { buildReviewWindowFromSessions, collectGatewayWindow, previousReviewDay } from "./lib/openclaw-gateway.mjs";
+import {
+  buildReviewWindowFromSessions,
+  collectGatewayWindow,
+  currentReviewDay,
+  previousReviewDay,
+} from "./lib/openclaw-gateway.mjs";
 import { createGitPublisher } from "./lib/git-publisher.mjs";
 import { runPublicationWorkflow } from "./lib/publication-workflow.mjs";
 
@@ -52,7 +57,9 @@ function validateConfig(config) {
 
 async function collect({ options, paths, config }) {
   const state = await readJson(paths.state, { version: 1, sessions: {}, reviews: {} });
-  const reviewDay = options.day || previousReviewDay(Date.now(), config.timeZone);
+  const reviewDay = options.day || (options.manual
+    ? currentReviewDay(Date.now(), config.timeZone)
+    : previousReviewDay(Date.now(), config.timeZone));
   let window;
 
   if (options.fixture) {
@@ -75,7 +82,13 @@ async function collect({ options, paths, config }) {
   }
 
   await writePrivateJson(paths.window, window);
-  console.log(JSON.stringify({ status: "collected", reviewDay, visibleMessages: window.messages.length, output: paths.window }));
+  console.log(JSON.stringify({
+    status: "collected",
+    mode: options.manual ? "manual" : "scheduled",
+    reviewDay,
+    visibleMessages: window.messages.length,
+    output: paths.window,
+  }));
   return window;
 }
 
@@ -126,18 +139,23 @@ async function fixture({ root, options, paths, config }) {
   return submit({ root, options: { ...options, "dry-run": true }, paths, config });
 }
 
+async function manual({ options, paths, config }) {
+  return collect({ options: { ...options, manual: true }, paths, config });
+}
+
 function help() {
   console.log(`Agent Blog review workflow
 
 Commands:
   collect   Read the Review Window from the OpenClaw Gateway
+  manual    Read the current local Review Day without submitting a pull request
   submit    Validate the local draft, create/update a branch and pull request
   no-update Advance cursors without publishing
   fixture   Exercise collection and rendering with contract fixtures
 
 Options:
   --config <path>  Config file (default .agent-blog/config.json)
-  --day <date>     Review Day override in YYYY-MM-DD
+  --day <date>     Review Day override in YYYY-MM-DD (manual defaults to today)
   --dry-run        Render without Git or state changes
 `);
 }
@@ -158,6 +176,7 @@ const config = validateConfig(
 );
 
 if (command === "collect") await collect({ options, paths, config });
+else if (command === "manual") await manual({ options, paths, config });
 else if (command === "submit") await submit({ root, options, paths, config });
 else if (command === "no-update") await noUpdate({ paths });
 else if (command === "fixture") await fixture({ root, options, paths, config });

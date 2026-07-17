@@ -12,7 +12,7 @@ The operator or cron prompt must provide the absolute path to the Publication Re
 
 ## Workflow
 
-1. Run `npm run review -- collect`.
+1. Run `npm run review -- collect` for the scheduled preceding Review Day. When the operator explicitly requests a manual trigger, run `npm run review:manual` instead; it collects the current local Review Day without submitting a pull request. To review a particular date, append `-- --day YYYY-MM-DD`.
 2. Read `.agent-blog/review-window.json` and the `language` value in `.agent-blog/config.json`. These are private local inputs and must never be committed, quoted in the final response, or sent anywhere except the configured model turn.
 3. Consider only the `messages` array already normalized by the collector. Do not inspect transcript files, hidden reasoning, tool calls, or other OpenClaw state.
 4. Select three to seven Work Highlights only when the work materially changed a project or the Agent Source's overall state. Completion of a meaningful deliverable, resolution of a key problem, removal of a blocker, an important decision, or discovery of a material risk can qualify. Time spent, token use, message count, routine edits, and intermediate attempts do not qualify.

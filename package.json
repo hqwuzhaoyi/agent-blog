@@ -13,6 +13,7 @@
     "test:themes": "node scripts/verify-themes.mjs",
     "test:watch": "vitest",
     "review": "node scripts/review.mjs",
+    "review:manual": "node scripts/review.mjs manual",
     "review:fixture": "node scripts/review.mjs fixture --fixture test/fixtures/gateway-day.json --draft test/fixtures/review-draft.json --dry-run"
   },
   "dependencies": {

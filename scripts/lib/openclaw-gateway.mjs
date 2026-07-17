@@ -21,6 +21,10 @@ export function previousReviewDay(now, timeZone) {
   return previous.toISOString().slice(0, 10);
 }
 
+export function currentReviewDay(now, timeZone) {
+  return dateInTimeZone(now, timeZone);
+}
+
 function timestampOf(message) {
   const raw = message.timestamp ?? message.createdAt ?? message.created_at ?? message.ts;
   if (typeof raw === "number") return raw < 10_000_000_000 ? raw * 1000 : raw;

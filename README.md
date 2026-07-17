@@ -55,6 +55,8 @@ npm run dev
 
 `npm run review:fixture` exercises the complete local collection-to-Markdown seam without requiring OpenClaw or GitHub writes.
 
+To manually prepare a private Review Window for the current local day, run `npm run review:manual`. This does not create a pull request; the Review Skill still applies its privacy checks before a draft can be submitted.
+
 ## Content lifecycle
 
 ```text

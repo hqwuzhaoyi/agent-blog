@@ -68,6 +68,16 @@ The isolated cron turn follows the installed Review Skill. It collects the prece
 
 The same Agent Source and Review Day always resolve to the same content path and branch. A retry updates the existing proposal. Session cursors advance only after a successful push, or after a successful no-update run.
 
+## Manual trigger
+
+The scheduled job always collects the preceding Review Day. To prepare a current-day Review Window without creating a pull request, run:
+
+```bash
+npm run review:manual
+```
+
+To prepare a specific local date instead, run `npm run review:manual -- --day YYYY-MM-DD`. The command writes only the private `.agent-blog/review-window.json`; follow the installed `openclaw-review` skill to select highlights and then either submit a draft pull request or record a no-update.
+
 ## Manual verification
 
 Preview deterministic behavior without OpenClaw:
