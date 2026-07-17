@@ -1,27 +1,24 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { formatReviewDate, getPublishedReviews } from "@/lib/reviews";
-import { reviewPath } from "@/lib/paths";
-import { siteConfig } from "@/site.config";
+import { getPublishedReviews } from "@/lib/reviews";
+import { presentReview } from "@/lib/presentation";
+import { activeTheme, siteConfig } from "@/site.config";
+import type { ArchiveListProps } from "@/themes/shared/contracts";
 
-const reviews = await getPublishedReviews();
+const reviews = (await getPublishedReviews()).map((review) => presentReview(review, siteConfig.locale));
+const ArchiveList = activeTheme.slots.ArchiveList;
+const archiveListProps: ArchiveListProps = {
+  reviews,
+  labels: {
+    kicker: siteConfig.archive.kicker,
+    title: siteConfig.archive.title,
+    summary: siteConfig.archive.summary(reviews.length),
+    publishedReviews: siteConfig.archive.publishedReviews,
+    signals: siteConfig.review.signals,
+  },
+};
 ---
 
 <BaseLayout title={siteConfig.archive.title} description={siteConfig.archive.description}>
-  <section class="archive-hero">
-    <p class="kicker"><span>02</span> {siteConfig.archive.kicker}</p>
-    <h1>{siteConfig.archive.title}</h1>
-    <p>{siteConfig.archive.summary(reviews.length)}</p>
-  </section>
-
-  <section class="archive-list" aria-label="Published reviews">
-    {reviews.map((review, index) => (
-      <a class="archive-row" href={reviewPath(review.id)} style={`--delay: ${index * 45}ms`}>
-        <span class="archive-row__number">{String(index + 1).padStart(2, "0")}</span>
-        <time datetime={review.data.date.toISOString()}>{formatReviewDate(review.data.date)}</time>
-        <strong>{review.data.title}</strong>
-        <span>{review.data.highlights} {siteConfig.review.signals} ↗</span>
-      </a>
-    ))}
-  </section>
+  <ArchiveList {...archiveListProps} />
 </BaseLayout>

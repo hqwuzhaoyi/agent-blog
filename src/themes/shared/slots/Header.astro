@@ -1,0 +1,20 @@
+---
+import type { HeaderProps } from "../contracts";
+
+interface Props extends HeaderProps {}
+
+const { title, eyebrow, homeUrl, navigationLabel, navigation } = Astro.props;
+---
+
+<header class="site-header">
+  <a class="wordmark" href={homeUrl} aria-label={title}>
+    <span class="wordmark__signal" aria-hidden="true"></span>
+    <span>
+      <strong>{title}</strong>
+      <small>{eyebrow}</small>
+    </span>
+  </a>
+  <nav aria-label={navigationLabel}>
+    {navigation.map((item) => <a href={item.url}>{item.label}</a>)}
+  </nav>
+</header>

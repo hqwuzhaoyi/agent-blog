@@ -1,0 +1,24 @@
+---
+import type { ArchiveListProps } from "../contracts";
+
+interface Props extends ArchiveListProps {}
+
+const { reviews, labels } = Astro.props;
+---
+
+<section class="archive-hero">
+  <p class="kicker"><span>02</span> {labels.kicker}</p>
+  <h1>{labels.title}</h1>
+  <p>{labels.summary}</p>
+</section>
+
+<section class="archive-list" aria-label={labels.publishedReviews}>
+  {reviews.map((review, index) => (
+    <a class="archive-row" href={review.url} style={`--delay: ${index * 45}ms`}>
+      <span class="archive-row__number">{String(index + 1).padStart(2, "0")}</span>
+      <time datetime={review.dateTime}>{review.displayDate}</time>
+      <strong>{review.title}</strong>
+      <span>{review.highlights} {labels.signals} ↗</span>
+    </a>
+  ))}
+</section>

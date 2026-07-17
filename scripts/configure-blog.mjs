@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { themeCatalog, themeIds } from "../src/themes/catalog.mjs";
 
-const THEMES = ["night-shift", "signal-console"];
 const LANGUAGES = ["en", "zh-CN"];
 
 function optionsFrom(argv) {
@@ -18,11 +18,17 @@ function optionsFrom(argv) {
 }
 
 const options = optionsFrom(process.argv.slice(2));
+
+if (options["list-themes"]) {
+  console.log(JSON.stringify({ themes: themeCatalog }, null, 2));
+  process.exit(0);
+}
+
 const theme = options.theme || "night-shift";
 const language = options.language || "en";
 
-if (!THEMES.includes(theme)) {
-  console.error(`Unsupported theme: ${theme}. Choose ${THEMES.join(" or ")}.`);
+if (!themeIds.includes(theme)) {
+  console.error(`Unsupported theme: ${theme}. Choose ${themeIds.join(" or ")}.`);
   process.exit(1);
 }
 

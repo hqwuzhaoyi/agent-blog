@@ -1,60 +1,39 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import ReviewCard from "@/components/ReviewCard.astro";
 import { getPublishedReviews } from "@/lib/reviews";
-import { siteConfig } from "@/site.config";
+import { presentReview } from "@/lib/presentation";
+import { activeTheme, siteConfig } from "@/site.config";
 import { sitePath } from "@/lib/paths";
+import type { HomeHeroProps, ReviewListProps } from "@/themes/shared/contracts";
 
-const reviews = await getPublishedReviews();
+const reviews = (await getPublishedReviews()).map((review) => presentReview(review, siteConfig.locale));
 const [latest, ...previous] = reviews;
+const HomeHero = activeTheme.slots.HomeHero;
+const ReviewList = activeTheme.slots.ReviewList;
+const heroProps: HomeHeroProps = {
+  description: siteConfig.description,
+  kicker: siteConfig.home.kicker,
+  heading: siteConfig.home.heading,
+  headingEmphasis: siteConfig.home.headingEmphasis,
+  policyLabel: siteConfig.home.policyLabel,
+  note: siteConfig.home.note,
+  policy: siteConfig.home.policy,
+  facts: [
+    { label: siteConfig.home.input, value: siteConfig.home.inputValue },
+    { label: siteConfig.home.filter, value: siteConfig.home.filterValue },
+    { label: siteConfig.home.gate, value: siteConfig.home.gateValue },
+  ],
+  ticker: siteConfig.home.ticker,
+};
+const reviewListProps: ReviewListProps = {
+  latest,
+  previous: previous.slice(0, 4),
+  labels: { ...siteConfig.home, ...siteConfig.review },
+  archiveUrl: sitePath("archive/"),
+};
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <div class="hero__copy">
-      <p class="kicker"><span>01</span> {siteConfig.home.kicker}</p>
-      <h1>{siteConfig.home.heading}<br /><em>{siteConfig.home.headingEmphasis}</em></h1>
-      <p class="hero__lede">{siteConfig.description}</p>
-    </div>
-    <aside class="hero__manifesto" aria-label={siteConfig.home.policyLabel}>
-      <span class="manifesto__index">{siteConfig.home.note}</span>
-      <p>{siteConfig.home.policy}</p>
-      <dl>
-        <div><dt>{siteConfig.home.input}</dt><dd>{siteConfig.home.inputValue}</dd></div>
-        <div><dt>{siteConfig.home.filter}</dt><dd>{siteConfig.home.filterValue}</dd></div>
-        <div><dt>{siteConfig.home.gate}</dt><dd>{siteConfig.home.gateValue}</dd></div>
-      </dl>
-    </aside>
-  </section>
-
-  <section class="ticker" aria-label={siteConfig.home.policyLabel}>
-    {siteConfig.home.ticker.map((item, index) => <><span>{item}</span>{index < 2 && <i></i>}</>)}
-  </section>
-
-  {latest ? (
-    <section class="latest-section">
-      <div class="section-heading">
-        <p>{siteConfig.home.latest}</p>
-        <span>{siteConfig.home.reviewed}</span>
-      </div>
-      <ReviewCard review={latest} featured />
-    </section>
-  ) : (
-    <section class="empty-state">
-      <p>{siteConfig.home.configured}</p>
-      <h2>{siteConfig.home.empty}</h2>
-    </section>
-  )}
-
-  {previous.length > 0 && (
-    <section class="previous-section">
-      <div class="section-heading">
-        <p>{siteConfig.home.previous}</p>
-        <a href={sitePath("archive/")}>{siteConfig.home.fullArchive}</a>
-      </div>
-      <div class="review-grid">
-        {previous.slice(0, 4).map((review, index) => <ReviewCard review={review} index={index} />)}
-      </div>
-    </section>
-  )}
+  <HomeHero {...heroProps} />
+  <ReviewList {...reviewListProps} />
 </BaseLayout>

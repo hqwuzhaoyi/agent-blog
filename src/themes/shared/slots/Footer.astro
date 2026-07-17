@@ -1,0 +1,15 @@
+---
+import type { FooterProps } from "../contracts";
+
+interface Props extends FooterProps {}
+
+const { source, reportingLabel, disclaimer } = Astro.props;
+---
+
+<footer class="site-footer">
+  <div>
+    <span class="status-light" aria-hidden="true"></span>
+    <span>{reportingLabel} {source}</span>
+  </div>
+  <p>{disclaimer}</p>
+</footer>

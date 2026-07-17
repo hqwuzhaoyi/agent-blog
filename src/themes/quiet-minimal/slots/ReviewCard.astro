@@ -1,0 +1,21 @@
+---
+import type { ReviewPresentation } from "../../shared/contracts";
+
+interface Props {
+  review: ReviewPresentation;
+  index?: number;
+  labels: { read: string; open: string; signals: string };
+}
+
+const { review, index = 0, labels } = Astro.props;
+---
+
+<article class="minimal-card" style={`--delay: ${index * 70}ms`}>
+  <h2><a href={review.url} aria-label={`${labels.read} ${review.title}`}>{review.title}</a></h2>
+  <div class="minimal-card__meta">
+    <time datetime={review.dateTime}>{review.displayDate}</time>
+    <span> · {review.highlights} {labels.signals}</span>
+  </div>
+  <p>{review.summary}</p>
+  <a class="minimal-card__open" href={review.url}>{labels.open} →</a>
+</article>

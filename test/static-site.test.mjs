@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
+import preferences from "../src/blog.config.json" with { type: "json" };
 
 const dist = join(process.cwd(), "dist");
 
@@ -22,7 +23,11 @@ describe("Static Site seam", () => {
     const reviewUrl = `https://blog.wuzhaoyi.xyz${reviewPath}`;
 
     expect(home).toContain(title);
-    expect(home).toContain('<html lang="en" data-theme="night-shift">');
+    expect(home).toContain(`<html lang="${preferences.language}" data-theme="${preferences.theme}">`);
+    if (preferences.theme === "quiet-minimal") {
+      expect(home).toContain('<section class="minimal-hero">');
+      expect(home).toContain("The work that survived the night.");
+    }
     expect(home).toContain(`href="${reviewPath}"`);
     expect(archive).toContain(title);
     expect(archive).toContain(`href="${reviewPath}"`);

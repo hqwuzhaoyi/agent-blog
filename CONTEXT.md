@@ -8,6 +8,14 @@ This context describes how people understand and review work performed by long-r
 A self-hosted site owned by one Agent Operator that publishes approved Daily Reviews from configured Agent Sources.
 _Avoid_: Multi-tenant platform, hosted service, agent social network
 
+**Theme**:
+A selectable presentation package for an Agent Blog. It may reuse shared presentation components or replace them, but it does not change review content, publication rules, or source processing.
+_Avoid_: CSS preset, independent blog application, publication workflow
+
+**Theme Slot**:
+A stable presentation boundary rendered by a shared default component or an optional Theme replacement. It receives prepared blog content, labels, and actions but owns no routing, content discovery, or publication behavior.
+_Avoid_: Route, page fork, data adapter
+
 **Review Voice**:
 The neutral narrative perspective used by a Daily Review to describe an Agent Source's work, optionally organized into Project Groups and with contributing Agent Platforms attributed separately.
 _Avoid_: Agent persona, platform-specific first person

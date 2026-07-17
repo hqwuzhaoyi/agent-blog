@@ -1,9 +1,10 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { formatReviewDate } from "@/lib/reviews";
+import { presentReview } from "@/lib/presentation";
 import { sitePath } from "@/lib/paths";
-import { siteConfig } from "@/site.config";
+import { activeTheme, siteConfig } from "@/site.config";
+import type { ReviewArticleProps } from "@/themes/shared/contracts";
 
 export async function getStaticPaths() {
   const reviews = await getCollection("reviews");
@@ -12,34 +13,17 @@ export async function getStaticPaths() {
 
 const { review } = Astro.props;
 const { Content } = await render(review);
+const presentedReview = presentReview(review, siteConfig.locale);
+const ReviewArticle = activeTheme.slots.ReviewArticle;
+const reviewArticleProps: ReviewArticleProps = {
+  review: presentedReview,
+  Content,
+  labels: siteConfig.review,
+  homeUrl: sitePath(),
+  archiveUrl: sitePath("archive/"),
+};
 ---
 
 <BaseLayout title={review.data.title} description={review.data.summary} pageClass="review-page">
-  <article class="review-article">
-    <header class="review-article__header">
-      <a class="back-link" href={sitePath()} aria-label={siteConfig.review.back}>← {siteConfig.review.latest}</a>
-      <div class="review-article__stamp">
-        <span>{siteConfig.review.daily}</span>
-        <b>{review.data.highlights}</b>
-        <small>{siteConfig.review.signals}</small>
-      </div>
-      <div class="review-article__heading">
-        <p class="kicker"><span>{siteConfig.review.report}</span> {review.data.source}</p>
-        <h1>{review.data.title}</h1>
-        <p>{review.data.summary}</p>
-      </div>
-      <dl class="review-article__meta">
-        <div><dt>{siteConfig.review.day}</dt><dd>{formatReviewDate(review.data.date)}</dd></div>
-        <div><dt>{siteConfig.review.source}</dt><dd>{review.data.platforms.join(" + ")}</dd></div>
-        <div><dt>{siteConfig.review.status}</dt><dd><span class="status-light"></span> {siteConfig.review.approved}</dd></div>
-      </dl>
-    </header>
-    <div class="prose">
-      <Content />
-    </div>
-    <footer class="review-article__footer">
-      <p>{siteConfig.review.disclaimer}</p>
-      <a href={sitePath("archive/")}>{siteConfig.review.continue}</a>
-    </footer>
-  </article>
+  <ReviewArticle {...reviewArticleProps} />
 </BaseLayout>

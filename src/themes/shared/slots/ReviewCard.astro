@@ -1,0 +1,33 @@
+---
+import type { ReviewPresentation } from "../contracts";
+
+interface Props {
+  review: ReviewPresentation;
+  index?: number;
+  featured?: boolean;
+  labels: { read: string; open: string; signals: string };
+}
+
+const { review, index = 0, featured = false, labels } = Astro.props;
+---
+
+<article class:list={["review-card", { "review-card--featured": featured }]} style={`--delay: ${index * 70}ms`}>
+  <a href={review.url} aria-label={`${labels.read} ${review.title}`}>
+    <div class="review-card__date" aria-hidden="true">
+      <span>{review.compactDate}</span>
+      <b>{review.shortYear}</b>
+    </div>
+    <div class="review-card__body">
+      <div class="review-card__meta">
+        <time datetime={review.dateTime}>{review.displayDate}</time>
+        <span>{review.highlights} {labels.signals}</span>
+      </div>
+      <h2>{review.title}</h2>
+      <p>{review.summary}</p>
+      <div class="review-card__footer">
+        <span>{review.source}</span>
+        <span class="review-card__read">{labels.open} <span aria-hidden="true">↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>

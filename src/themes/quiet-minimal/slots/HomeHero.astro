@@ -1,0 +1,28 @@
+---
+import type { HomeHeroProps } from "../../shared/contracts";
+
+interface Props extends HomeHeroProps {}
+
+const {
+  description,
+  kicker,
+  heading,
+  headingEmphasis,
+  policyLabel,
+  note,
+  policy,
+  facts,
+  ticker,
+} = Astro.props;
+---
+
+<section class="minimal-hero">
+  <p class="minimal-hero__kicker">{kicker}</p>
+  <h1>{heading} {headingEmphasis}</h1>
+  <p>{description}</p>
+  <aside class="minimal-policy" aria-label={policyLabel}>
+    <p><span>{note}</span> {policy}</p>
+    <dl>{facts.map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
+    <ul>{ticker.map((item) => <li>{item}</li>)}</ul>
+  </aside>
+</section>

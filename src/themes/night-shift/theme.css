@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap");
-
+@import "../shared/base.css";
 :root {
   --ink: #171714;
   --paper: #f1ecdf;
@@ -11,18 +11,6 @@
   --display: "Archivo Black", sans-serif;
   --reading: "Newsreader", Georgia, serif;
   --mono: "IBM Plex Mono", monospace;
-}
-
-html[data-theme="signal-console"] {
-  --ink: #e8ffe7;
-  --paper: #07110d;
-  --paper-deep: #0c1c14;
-  --signal: #94ff65;
-  --signal-dark: #51d8ff;
-  --muted: #7fa890;
-  --line: rgba(232, 255, 231, 0.2);
-  --display: "IBM Plex Mono", monospace;
-  --reading: "IBM Plex Mono", monospace;
 }
 
 * { box-sizing: border-box; }
@@ -43,20 +31,6 @@ body {
   font-size: 18px;
   line-height: 1.55;
   text-rendering: optimizeLegibility;
-}
-
-html[data-theme="signal-console"] body {
-  background:
-    linear-gradient(rgba(148, 255, 101, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(81, 216, 255, 0.04) 1px, transparent 1px),
-    radial-gradient(circle at 78% 12%, rgba(81, 216, 255, 0.13), transparent 28%),
-    var(--paper);
-  background-size: 100% 24px, 24px 100%, auto, auto;
-}
-
-html[data-theme="signal-console"] body::before {
-  opacity: 0.08;
-  mix-blend-mode: screen;
 }
 
 body::before {
@@ -100,14 +74,6 @@ a { color: inherit; }
   background: var(--signal);
   box-shadow: 7px 7px 0 var(--ink);
   transform: skew(-8deg);
-}
-
-html[data-theme="signal-console"] .wordmark__signal {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 6px rgba(148, 255, 101, 0.12), 0 0 22px var(--signal);
-  transform: none;
 }
 
 .wordmark strong {
@@ -205,18 +171,6 @@ nav a:hover::after,
 .hero h1 { max-width: 950px; font-size: clamp(4.2rem, 9.6vw, 9.6rem); }
 .hero h1 em { color: var(--signal); font-family: var(--reading); font-weight: 500; text-transform: none; }
 
-html[data-theme="signal-console"] .hero h1,
-html[data-theme="signal-console"] .archive-hero h1,
-html[data-theme="signal-console"] .review-article h1 {
-  letter-spacing: -0.055em;
-  text-shadow: 0 0 32px rgba(148, 255, 101, 0.13);
-}
-
-html[data-theme="signal-console"] .hero h1 em {
-  color: var(--signal-dark);
-  font-style: normal;
-}
-
 .hero__lede {
   max-width: 680px;
   margin: 52px 0 0;
@@ -232,19 +186,6 @@ html[data-theme="signal-console"] .hero h1 em {
   color: var(--paper);
   background: var(--ink);
 }
-
-html[data-theme="signal-console"] .hero__manifesto {
-  color: var(--ink);
-  background: rgba(12, 28, 20, 0.88);
-  border-left: 1px solid var(--signal);
-}
-
-html[data-theme="signal-console"] .hero__manifesto dl,
-html[data-theme="signal-console"] .hero__manifesto dl div {
-  border-color: rgba(232, 255, 231, 0.2);
-}
-
-html[data-theme="signal-console"] .hero__manifesto dt { color: var(--muted); }
 
 .manifesto__index { color: var(--signal); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.13em; }
 .hero__manifesto > p { margin: auto 0; font-size: clamp(1.7rem, 3vw, 2.6rem); line-height: 1.07; }
@@ -270,11 +211,6 @@ html[data-theme="signal-console"] .hero__manifesto dt { color: var(--muted); }
 }
 
 .ticker i { width: 6px; height: 6px; background: var(--ink); transform: rotate(45deg); }
-
-html[data-theme="signal-console"] .ticker {
-  color: var(--paper);
-  box-shadow: 0 0 28px rgba(148, 255, 101, 0.18);
-}
 
 .latest-section,
 .previous-section { padding: 0 32px 80px; }
@@ -337,13 +273,6 @@ html[data-theme="signal-console"] .ticker {
 .review-article__stamp { position: absolute; top: 78px; left: 32px; display: flex; width: 100px; height: 130px; flex-direction: column; align-items: center; justify-content: center; color: var(--paper); background: var(--signal); transform: rotate(-3deg); }
 .review-article__stamp span, .review-article__stamp small { font-family: var(--mono); font-size: 0.54rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .review-article__stamp b { font-family: var(--display); font-size: 3.4rem; line-height: 1; }
-
-html[data-theme="signal-console"] .review-article__stamp {
-  color: var(--paper);
-  border: 1px solid var(--ink);
-  box-shadow: 8px 8px 0 var(--signal-dark);
-  transform: none;
-}
 .review-article__heading { padding: 80px 4vw 74px; border-left: 1px solid var(--line); }
 .review-article__heading h1 { max-width: 1100px; font-size: clamp(3.8rem, 8vw, 8.6rem); }
 .review-article__heading > p:last-child { max-width: 770px; margin: 44px 0 0; font-size: clamp(1.25rem, 2.2vw, 1.75rem); line-height: 1.35; }

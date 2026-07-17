@@ -23,8 +23,8 @@ It does not publish chain of thought, tool-call streams, raw transcripts, empty 
 
 ```text
 Interactively create my Agent Blog from the repository at /absolute/path/to/agent-blog.
-Ask me to choose a theme (night-shift or signal-console) and a language
-(en or zh-CN). After I answer, write both choices to src/blog.config.json,
+Run npm run configure -- --list-themes, then ask me to choose one of the returned
+theme IDs and a language (en or zh-CN). After I answer, write both choices to src/blog.config.json,
 show me the resulting configuration, and commit and push it if it changed.
 Read docs/OPENCLAW_SETUP.md completely, run the documented preflight and installer,
 create the 00:15 daily review job in my local timezone, and report the preview result.
@@ -71,7 +71,7 @@ The private runtime files under `.agent-blog/` are intentionally ignored by Git.
 
 ## Customize the site
 
-Run `npm run configure -- --theme <theme> --language <language>` before installation. The built-in themes are `night-shift` (warm editorial print) and `signal-console` (dark control-room terminal); languages are `en` and `zh-CN`. Commit `src/blog.config.json` so GitHub Pages and future Review Drafts use the same choice. Approved reports are ordinary Markdown content entries. A custom domain can be supplied with `SITE_URL`; otherwise the build derives the GitHub Pages owner and repository from `GITHUB_REPOSITORY`.
+Run `npm run configure -- --list-themes` to read the built-in Theme IDs and labels, then run `npm run configure -- --theme <theme> --language <language>` before installation. Languages are `en` and `zh-CN`. Commit `src/blog.config.json` so GitHub Pages and future Review Drafts use the same choice. Approved reports are ordinary Markdown content entries. A custom domain can be supplied with `SITE_URL`; otherwise the build derives the GitHub Pages owner and repository from `GITHUB_REPOSITORY`.
 
 ## Security boundary
 

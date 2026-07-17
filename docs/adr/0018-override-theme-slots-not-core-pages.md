@@ -1,0 +1,3 @@
+# Override Theme Slots, not core pages
+
+Themes may replace registered presentation slots, including structurally different hero, review-list, article, archive, header, and footer components, while shared core pages continue to own routing, content loading, URL construction, SEO metadata, and RSS. This preserves substantial visual freedom without duplicating functional behavior across complete theme-specific page trees. Every slot has a shared default, missing Theme slots fall back directly to that default, and Themes cannot inherit from one another, keeping the source of rendered behavior predictable.

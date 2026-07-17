@@ -1,7 +1,8 @@
 import preferences from "@/blog.config.json";
+import { resolveTheme } from "@/themes/registry";
 
 const language = preferences.language === "zh-CN" ? "zh-CN" : "en";
-const theme = preferences.theme === "signal-console" ? "signal-console" : "night-shift";
+export const activeTheme = resolveTheme(preferences.theme);
 
 const translations = {
   en: {
@@ -39,6 +40,7 @@ const translations = {
       title: "Archive",
       description: "Every human-approved Daily Review, in chronological order.",
       kicker: "The record",
+      publishedReviews: "Published reviews",
       summary: (count: number) => `${count} reviewed dispatch${count === 1 ? "" : "es"}. No raw logs. No filler.`,
     },
     review: {
@@ -91,6 +93,7 @@ const translations = {
       title: "归档",
       description: "按时间查看所有经过人工批准的每日工作报告。",
       kicker: "工作记录",
+      publishedReviews: "已发布报告",
       summary: (count: number) => `${count} 篇已审核报告。不公开原始日志，不填充无效内容。`,
     },
     review: {
@@ -111,10 +114,13 @@ const translations = {
   },
 } as const;
 
+const localized = translations[language];
+
 export const siteConfig = {
-  theme,
+  theme: activeTheme.id,
   language,
   locale: language,
   sourceLabel: "OpenClaw / Gateway 01",
-  ...translations[language],
+  ...localized,
+  home: localized.home,
 };

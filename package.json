@@ -9,7 +9,8 @@
     "check": "astro check",
     "preview": "astro preview",
     "configure": "node scripts/configure-blog.mjs",
-    "test": "astro build && vitest run",
+    "test": "npm run test:themes && astro build && vitest run",
+    "test:themes": "node scripts/verify-themes.mjs",
     "test:watch": "vitest",
     "review": "node scripts/review.mjs",
     "review:fixture": "node scripts/review.mjs fixture --fixture test/fixtures/gateway-day.json --draft test/fixtures/review-draft.json --dry-run"

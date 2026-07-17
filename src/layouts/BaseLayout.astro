@@ -1,7 +1,7 @@
 ---
-import { siteConfig } from "@/site.config";
+import { activeTheme, siteConfig } from "@/site.config";
 import { sitePath } from "@/lib/paths";
-import "@/styles/global.css";
+import type { FooterProps, HeaderProps } from "@/themes/shared/contracts";
 
 interface Props {
   title?: string;
@@ -16,7 +16,24 @@ const {
 } = Astro.props;
 const pageTitle = title === siteConfig.title ? title : `${title} — ${siteConfig.title}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const themeColor = siteConfig.theme === "signal-console" ? "#94ff65" : "#f05a28";
+const ThemeHeader = activeTheme.slots.Header;
+const ThemeFooter = activeTheme.slots.Footer;
+const headerProps: HeaderProps = {
+  title: siteConfig.title,
+  eyebrow: siteConfig.eyebrow,
+  homeUrl: sitePath(),
+  navigationLabel: siteConfig.nav.label,
+  navigation: [
+    { label: siteConfig.nav.latest, url: sitePath() },
+    { label: siteConfig.nav.archive, url: sitePath("archive/") },
+    { label: siteConfig.nav.rss, url: sitePath("rss.xml") },
+  ],
+};
+const footerProps: FooterProps = {
+  source: siteConfig.sourceLabel,
+  reportingLabel: siteConfig.footer.reporting,
+  disclaimer: siteConfig.footer.disclaimer,
+};
 ---
 
 <!doctype html>
@@ -26,7 +43,8 @@ const themeColor = siteConfig.theme === "signal-console" ? "#94ff65" : "#f05a28"
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content={themeColor} />
+    <meta name="theme-color" content={activeTheme.themeColor} />
+    <link rel="stylesheet" href={activeTheme.stylesheet} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={sitePath("favicon.svg")} />
     <link rel="alternate" type="application/rss+xml" title={`${siteConfig.title} RSS`} href={sitePath("rss.xml")} />
@@ -38,30 +56,11 @@ const themeColor = siteConfig.theme === "signal-console" ? "#94ff65" : "#f05a28"
   </head>
   <body class={pageClass}>
     <div class="page-shell">
-      <header class="site-header">
-        <a class="wordmark" href={sitePath()} aria-label={siteConfig.title}>
-          <span class="wordmark__signal" aria-hidden="true"></span>
-          <span>
-            <strong>{siteConfig.title}</strong>
-            <small>{siteConfig.eyebrow}</small>
-          </span>
-        </a>
-        <nav aria-label={siteConfig.nav.label}>
-          <a href={sitePath()}>{siteConfig.nav.latest}</a>
-          <a href={sitePath("archive/")}>{siteConfig.nav.archive}</a>
-          <a href={sitePath("rss.xml")}>{siteConfig.nav.rss}</a>
-        </nav>
-      </header>
+      <ThemeHeader {...headerProps} />
       <main>
         <slot />
       </main>
-      <footer class="site-footer">
-        <div>
-          <span class="status-light" aria-hidden="true"></span>
-          <span>{siteConfig.footer.reporting} {siteConfig.sourceLabel}</span>
-        </div>
-        <p>{siteConfig.footer.disclaimer}</p>
-      </footer>
+      <ThemeFooter {...footerProps} />
     </div>
   </body>
 </html>

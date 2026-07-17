@@ -1,0 +1,34 @@
+---
+import type { ReviewListProps } from "../../shared/contracts";
+import ReviewCard from "./ReviewCard.astro";
+
+interface Props extends ReviewListProps {}
+
+const { latest, previous, labels, archiveUrl } = Astro.props;
+const cardLabels = { read: labels.read, open: labels.open, signals: labels.signals };
+---
+
+{latest ? (
+  <section class="minimal-reviews">
+    <div class="section-heading">
+      <p>{labels.latest}</p>
+      <span>{labels.reviewed}</span>
+    </div>
+    <ReviewCard review={latest} labels={cardLabels} />
+  </section>
+) : (
+  <section class="empty-state">
+    <p>{labels.configured}</p>
+    <h2>{labels.empty}</h2>
+  </section>
+)}
+
+{previous.length > 0 && (
+  <section class="minimal-previous">
+    <div class="section-heading">
+      <p>{labels.previous}</p>
+      <a href={archiveUrl}>{labels.fullArchive}</a>
+    </div>
+    {previous.map((review, index) => <ReviewCard review={review} index={index} labels={cardLabels} />)}
+  </section>
+)}
