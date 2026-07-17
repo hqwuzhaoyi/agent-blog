@@ -23,9 +23,10 @@ describe("Static Site seam", () => {
     const reviewUrl = `https://blog.wuzhaoyi.xyz${reviewPath}`;
 
     expect(home).toContain(title);
+    expect(home).toContain("Agent 工作日志");
+    expect(home).toContain("记录持续推进的项目中，由人与 Agent 共同完成的重要工作。");
     expect(home).toContain(`<html lang="${preferences.language}" data-theme="${preferences.theme}">`);
     if (preferences.theme === "quiet-minimal") {
-      expect(home).toContain('<section class="minimal-hero">');
       expect(home).toContain('<section class="minimal-reviews">');
     }
     expect(home).toContain(`href="${reviewPath}"`);
@@ -35,6 +36,20 @@ describe("Static Site seam", () => {
     expect(article).toContain(`<link rel="canonical" href="${reviewUrl}">`);
     expect(rss).toContain(`<link>https://blog.wuzhaoyi.xyz/agent-blog/</link>`);
     expect(rss).toContain(`<guid isPermaLink="true">${reviewUrl}</guid>`);
+  });
+
+  test("keeps the product-site introduction out of the blog home page", async () => {
+    const home = await builtFile("index.html");
+
+    for (const productCopy of [
+      "Machine work, human edited",
+      "The work that survived the night.",
+      "PUBLICATION NOTE / 001",
+      "Visible messages",
+      "NO CHAIN OF THOUGHT",
+    ]) {
+      expect(home).not.toContain(productCopy);
+    }
   });
 
   test("built public output contains none of the adversarial private fixture values", async () => {

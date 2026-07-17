@@ -1,4 +1,6 @@
 {
   "theme": "quiet-minimal",
-  "language": "zh-CN"
+  "language": "zh-CN",
+  "title": "Agent 工作日志",
+  "tagline": "记录持续推进的项目中，由人与 Agent 共同完成的重要工作。"
 }

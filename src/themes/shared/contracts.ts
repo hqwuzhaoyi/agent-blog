@@ -44,16 +44,16 @@ export interface FooterProps {
   disclaimer: string;
 }
 
-export interface HomeHeroProps {
-  description: string;
-  kicker: string;
-  heading: string;
-  headingEmphasis: string;
-  policyLabel: string;
-  note: string;
-  policy: string;
-  facts: Array<{ label: string; value: string }>;
-  ticker: readonly string[];
+export interface BlogIntroProps {
+  eyebrow: string;
+  title: string;
+  tagline: string;
+  publishedCount: number;
+  latestDate?: string;
+  labels: {
+    published: string;
+    updated: string;
+  };
 }
 
 export interface ReviewListProps {
@@ -104,7 +104,7 @@ export interface ReviewArticleProps {
 
 export interface ThemeSlots {
   Header: ThemeComponent<HeaderProps>;
-  HomeHero: ThemeComponent<HomeHeroProps>;
+  BlogIntro: ThemeComponent<BlogIntroProps>;
   ReviewList: ThemeComponent<ReviewListProps>;
   ReviewArticle: ThemeComponent<ReviewArticleProps>;
   ArchiveList: ThemeComponent<ArchiveListProps>;

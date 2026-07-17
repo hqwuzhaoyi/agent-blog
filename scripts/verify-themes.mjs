@@ -25,6 +25,12 @@ function requireText(output, expected, context) {
   }
 }
 
+function rejectText(output, rejected, context) {
+  if (output.includes(rejected)) {
+    throw new Error(`${context} unexpectedly contained ${JSON.stringify(rejected)}`);
+  }
+}
+
 try {
   for (const { id } of themeCatalog) {
     await writeFile(configPath, `${JSON.stringify({ ...testPreferences, theme: id }, null, 2)}\n`);
@@ -40,12 +46,23 @@ try {
 
     requireText(home, `data-theme="${id}"`, `${id} home page`);
     requireText(home, `<html lang="${testPreferences.language}"`, `${id} home page`);
+    requireText(home, testPreferences.title, `${id} home page`);
+    requireText(home, testPreferences.tagline, `${id} home page`);
     requireText(home, `href="${expectedReviewPath}"`, `${id} home page`);
     requireText(home, `href="${expectedArchivePath}"`, `${id} home page`);
     requireText(home, "human before publication", `${id} home page`);
     requireText(home, "<nav aria-label=", `${id} home page`);
     requireText(home, "<main>", `${id} home page`);
     requireText(home, "<footer", `${id} home page`);
+    for (const productCopy of [
+      "Machine work, human edited",
+      "The work that survived the night.",
+      "PUBLICATION NOTE / 001",
+      "Visible messages",
+      "NO CHAIN OF THOUGHT",
+    ]) {
+      rejectText(home, productCopy, `${id} home page`);
+    }
     if ((home.match(/rel="stylesheet"/g) ?? []).length !== 1) {
       throw new Error(`${id} home page did not load exactly one Theme stylesheet`);
     }

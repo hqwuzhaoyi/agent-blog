@@ -5,7 +5,7 @@ import { resolveThemeDefinition } from "../src/themes/resolution";
 const component = (name: string) => Symbol(name) as unknown as AstroComponentFactory;
 const sharedSlots = {
   Header: component("Header"),
-  HomeHero: component("HomeHero"),
+  BlogIntro: component("BlogIntro"),
   ReviewList: component("ReviewList"),
   ReviewArticle: component("ReviewArticle"),
   ArchiveList: component("ArchiveList"),
@@ -18,7 +18,7 @@ const themes = [
     label: "Quiet Minimal",
     stylesheet: "quiet.css",
     themeColor: "#006cac",
-    slots: { HomeHero: component("MinimalHomeHero") },
+    slots: { ReviewList: component("MinimalReviewList") },
   },
 ];
 
@@ -29,15 +29,14 @@ describe("Theme registry seam", () => {
     expect(theme.id).toBe("quiet-minimal");
     expect(Object.keys(theme.slots).sort()).toEqual([
       "ArchiveList",
+      "BlogIntro",
       "Footer",
       "Header",
-      "HomeHero",
       "ReviewArticle",
       "ReviewList",
     ]);
-    expect(theme.slots.ReviewList).toBe(sharedSlots.ReviewList);
     expect(theme.slots.ArchiveList).toBe(sharedSlots.ArchiveList);
-    expect(theme.slots.HomeHero).not.toBe(sharedSlots.HomeHero);
+    expect(theme.slots.ReviewList).not.toBe(sharedSlots.ReviewList);
   });
 
   test("rejects an unknown configured Theme", () => {
