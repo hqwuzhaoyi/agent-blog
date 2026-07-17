@@ -9,6 +9,7 @@ const reviews = defineCollection({
     summary: z.string(),
     date: z.coerce.date(),
     source: z.string(),
+    language: z.enum(["en", "zh-CN"]).optional(),
     platforms: z.array(z.string()).min(1),
     highlights: z.number().int().positive(),
   }),

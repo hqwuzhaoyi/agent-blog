@@ -22,6 +22,7 @@ describe("Static Site seam", () => {
     const reviewUrl = `https://blog.wuzhaoyi.xyz${reviewPath}`;
 
     expect(home).toContain(title);
+    expect(home).toContain('<html lang="en" data-theme="night-shift">');
     expect(home).toContain(`href="${reviewPath}"`);
     expect(archive).toContain(title);
     expect(archive).toContain(`href="${reviewPath}"`);

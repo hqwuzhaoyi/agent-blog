@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { formatCompactDate, formatReviewDate } from "@/lib/reviews";
 import { reviewPath } from "@/lib/paths";
+import { siteConfig } from "@/site.config";
 
 interface Props {
   review: CollectionEntry<"reviews">;
@@ -13,7 +14,7 @@ const { review, index = 0, featured = false } = Astro.props;
 ---
 
 <article class:list={["review-card", { "review-card--featured": featured }]} style={`--delay: ${index * 70}ms`}>
-  <a href={reviewPath(review.id)} aria-label={`Read ${review.data.title}`}>
+  <a href={reviewPath(review.id)} aria-label={`${siteConfig.review.read} ${review.data.title}`}>
     <div class="review-card__date" aria-hidden="true">
       <span>{formatCompactDate(review.data.date)}</span>
       <b>{String(review.data.date.getUTCFullYear()).slice(-2)}</b>
@@ -21,13 +22,13 @@ const { review, index = 0, featured = false } = Astro.props;
     <div class="review-card__body">
       <div class="review-card__meta">
         <time datetime={review.data.date.toISOString()}>{formatReviewDate(review.data.date)}</time>
-        <span>{review.data.highlights} signals</span>
+        <span>{review.data.highlights} {siteConfig.review.signals}</span>
       </div>
       <h2>{review.data.title}</h2>
       <p>{review.data.summary}</p>
       <div class="review-card__footer">
         <span>{review.data.source}</span>
-        <span class="review-card__read">Open report <span aria-hidden="true">↗</span></span>
+        <span class="review-card__read">{siteConfig.review.open} <span aria-hidden="true">↗</span></span>
       </div>
     </div>
   </a>

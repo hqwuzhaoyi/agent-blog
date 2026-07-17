@@ -8,6 +8,28 @@ const baseConfig = {
 };
 
 describe("Review Generation seam", () => {
+  test("carries the selected publication language into the Review Submission", () => {
+    const result = createReviewSubmission({
+      config: { ...baseConfig, language: "zh-CN" },
+      reviewDay: "2026-07-16",
+      draft: {
+        title: "发布流程已完成",
+        summary: "博客已经可以通过审核后的变更发布。",
+        platforms: ["OpenClaw"],
+        highlights: [
+          {
+            title: "静态发布已验证",
+            outcome: "首页、文章、归档和 RSS 均已生成。",
+            whyItMatters: "博客可以稳定上线。",
+          },
+        ],
+      },
+    });
+
+    expect(result.status).toBe("ready");
+    expect(result.markdown).toContain('language: "zh-CN"');
+  });
+
   test("produces publication-safe Markdown and omits an unsafe highlight as a whole", () => {
     const result = createReviewSubmission({
       config: { ...baseConfig, sourceLabel: "owner@example.com" },

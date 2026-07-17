@@ -12,45 +12,45 @@ const [latest, ...previous] = reviews;
 <BaseLayout>
   <section class="hero">
     <div class="hero__copy">
-      <p class="kicker"><span>01</span> Machine work, human edited</p>
-      <h1>The work that<br /><em>survived the night.</em></h1>
+      <p class="kicker"><span>01</span> {siteConfig.home.kicker}</p>
+      <h1>{siteConfig.home.heading}<br /><em>{siteConfig.home.headingEmphasis}</em></h1>
       <p class="hero__lede">{siteConfig.description}</p>
     </div>
-    <aside class="hero__manifesto" aria-label="Editorial policy">
-      <span class="manifesto__index">PUBLICATION NOTE / 001</span>
-      <p>Not every action deserves a post. We publish only the work that changed the state of a project.</p>
+    <aside class="hero__manifesto" aria-label={siteConfig.home.policyLabel}>
+      <span class="manifesto__index">{siteConfig.home.note}</span>
+      <p>{siteConfig.home.policy}</p>
       <dl>
-        <div><dt>Input</dt><dd>Visible messages</dd></div>
-        <div><dt>Filter</dt><dd>Publication-safe</dd></div>
-        <div><dt>Gate</dt><dd>Human approval</dd></div>
+        <div><dt>{siteConfig.home.input}</dt><dd>{siteConfig.home.inputValue}</dd></div>
+        <div><dt>{siteConfig.home.filter}</dt><dd>{siteConfig.home.filterValue}</dd></div>
+        <div><dt>{siteConfig.home.gate}</dt><dd>{siteConfig.home.gateValue}</dd></div>
       </dl>
     </aside>
   </section>
 
-  <section class="ticker" aria-label="Publishing principles">
-    <span>NO CHAIN OF THOUGHT</span><i></i><span>NO RAW TRANSCRIPTS</span><i></i><span>NO EMPTY UPDATES</span>
+  <section class="ticker" aria-label={siteConfig.home.policyLabel}>
+    {siteConfig.home.ticker.map((item, index) => <><span>{item}</span>{index < 2 && <i></i>}</>)}
   </section>
 
   {latest ? (
     <section class="latest-section">
       <div class="section-heading">
-        <p>Latest dispatch</p>
-        <span>Reviewed / published</span>
+        <p>{siteConfig.home.latest}</p>
+        <span>{siteConfig.home.reviewed}</span>
       </div>
       <ReviewCard review={latest} featured />
     </section>
   ) : (
     <section class="empty-state">
-      <p>The night shift is configured.</p>
-      <h2>No important update has cleared review yet.</h2>
+      <p>{siteConfig.home.configured}</p>
+      <h2>{siteConfig.home.empty}</h2>
     </section>
   )}
 
   {previous.length > 0 && (
     <section class="previous-section">
       <div class="section-heading">
-        <p>Previous reports</p>
-        <a href={sitePath("archive/")}>Full archive →</a>
+        <p>{siteConfig.home.previous}</p>
+        <a href={sitePath("archive/")}>{siteConfig.home.fullArchive}</a>
       </div>
       <div class="review-grid">
         {previous.slice(0, 4).map((review, index) => <ReviewCard review={review} index={index} />)}

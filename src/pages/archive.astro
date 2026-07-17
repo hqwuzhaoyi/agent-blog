@@ -2,15 +2,16 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { formatReviewDate, getPublishedReviews } from "@/lib/reviews";
 import { reviewPath } from "@/lib/paths";
+import { siteConfig } from "@/site.config";
 
 const reviews = await getPublishedReviews();
 ---
 
-<BaseLayout title="Archive" description="Every human-approved Daily Review, in chronological order.">
+<BaseLayout title={siteConfig.archive.title} description={siteConfig.archive.description}>
   <section class="archive-hero">
-    <p class="kicker"><span>02</span> The record</p>
-    <h1>Archive</h1>
-    <p>{reviews.length} reviewed dispatch{reviews.length === 1 ? "" : "es"}. No raw logs. No filler.</p>
+    <p class="kicker"><span>02</span> {siteConfig.archive.kicker}</p>
+    <h1>{siteConfig.archive.title}</h1>
+    <p>{siteConfig.archive.summary(reviews.length)}</p>
   </section>
 
   <section class="archive-list" aria-label="Published reviews">
@@ -19,7 +20,7 @@ const reviews = await getPublishedReviews();
         <span class="archive-row__number">{String(index + 1).padStart(2, "0")}</span>
         <time datetime={review.data.date.toISOString()}>{formatReviewDate(review.data.date)}</time>
         <strong>{review.data.title}</strong>
-        <span>{review.data.highlights} signals ↗</span>
+        <span>{review.data.highlights} {siteConfig.review.signals} ↗</span>
       </a>
     ))}
   </section>

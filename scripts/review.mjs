@@ -152,6 +152,8 @@ const config = validateConfig(
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     privateTerms: [],
     baseBranch: "main",
+    theme: "night-shift",
+    language: "en",
   }),
 );
 

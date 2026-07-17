@@ -94,6 +94,7 @@ export function createReviewSubmission({ config, reviewDay, draft }) {
     privateTerms,
   );
   const sourceLabel = safeMetadata(config.sourceLabel, "OpenClaw", privateTerms);
+  const language = config.language === "zh-CN" ? "zh-CN" : "en";
   const platforms = Array.isArray(draft.platforms)
     ? draft.platforms.filter((value) => typeof value === "string" && value.trim() && !containsSensitiveContent(value, privateTerms))
     : [];
@@ -120,6 +121,7 @@ export function createReviewSubmission({ config, reviewDay, draft }) {
     `summary: ${yamlString(summary)}`,
     `date: ${reviewDay}`,
     `source: ${yamlString(sourceLabel)}`,
+    `language: ${yamlString(language)}`,
     `platforms: ${JSON.stringify(platforms.length ? platforms : ["OpenClaw"])}`,
     `highlights: ${safeHighlights.length}`,
     "---",

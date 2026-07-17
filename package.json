@@ -8,6 +8,7 @@
     "build": "astro build",
     "check": "astro check",
     "preview": "astro preview",
+    "configure": "node scripts/configure-blog.mjs",
     "test": "astro build && vitest run",
     "test:watch": "vitest",
     "review": "node scripts/review.mjs",

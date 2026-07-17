@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFile } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { promisify } from "node:util";
 
@@ -32,6 +32,9 @@ function parseJson(text) {
 const options = parseArguments(process.argv.slice(2));
 const repositoryDir = resolve(options.repo || process.cwd());
 const timeZone = options.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+const blogPreferences = JSON.parse(
+  await readFile(resolve(repositoryDir, "src/blog.config.json"), "utf8"),
+);
 const config = {
   sourceId: options["source-id"] || "openclaw-main",
   sourceLabel: options["source-label"] || "OpenClaw / Gateway 01",
@@ -40,6 +43,8 @@ const config = {
     ? String(options["private-terms"]).split(",").map((value) => value.trim()).filter(Boolean)
     : [],
   baseBranch: options["base-branch"] || "main",
+  theme: blogPreferences.theme,
+  language: blogPreferences.language,
 };
 
 const schedulePrompt = `Use the openclaw-review skill to run the complete daily review for the Publication Repository at ${repositoryDir}. Never merge the pull request.`;
@@ -63,6 +68,8 @@ if (options["dry-run"]) {
 await command("openclaw", ["--version"]);
 await command("openclaw", ["gateway", "call", "status", "--params", "{}", "--json"]);
 await command("gh", ["auth", "status"]);
+const dirty = await command("git", ["status", "--porcelain"], { cwd: repositoryDir });
+if (dirty) throw new Error("Commit the selected blog configuration before installing OpenClaw");
 const remote = await command("git", ["remote", "get-url", "origin"], { cwd: repositoryDir });
 if (!/github\.com[:/]/.test(remote)) throw new Error("Publication Repository origin must be on GitHub");
 await command("gh", ["repo", "view", "--json", "nameWithOwner"], { cwd: repositoryDir });

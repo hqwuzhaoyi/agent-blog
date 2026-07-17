@@ -19,10 +19,13 @@ It does not publish chain of thought, tool-call streams, raw transcripts, empty 
 
 1. Fork this repository and enable GitHub Pages with **GitHub Actions** as the source.
 2. Clone the fork onto the machine that runs your OpenClaw Gateway.
-3. Send this instruction to OpenClaw:
+3. Choose a theme and language, then send this instruction to OpenClaw:
 
 ```text
 Set up my Agent Blog from the repository at /absolute/path/to/agent-blog.
+Before installing, ask me to choose a theme (night-shift or signal-console)
+and a language (en or zh-CN), then run npm run configure with those choices.
+Commit and push src/blog.config.json if it changed, so the repository is clean.
 Read docs/OPENCLAW_SETUP.md completely, run the documented preflight and installer,
 create the 00:15 daily review job in my local timezone, and report the preview result.
 Do not publish or merge a review during setup.
@@ -32,8 +35,12 @@ The deterministic installer can also be run directly:
 
 ```bash
 npm install
+npm run configure -- --theme signal-console --language zh-CN
+git add src/blog.config.json && git commit -m "config: choose blog presentation" && git push
 node scripts/install-openclaw.mjs --timezone Asia/Taipei
 ```
+
+Skip the Git commit when the selected values already match the repository.
 
 OpenClaw itself supplies the configured model and provider credentials. This repository stores none.
 
@@ -64,7 +71,7 @@ The private runtime files under `.agent-blog/` are intentionally ignored by Git.
 
 ## Customize the site
 
-Edit the site title, description, and source label in the site configuration. Approved reports are ordinary Markdown content entries. A custom domain can be supplied with `SITE_URL`; otherwise the build derives the GitHub Pages owner and repository from `GITHUB_REPOSITORY`.
+Run `npm run configure -- --theme <theme> --language <language>` before installation. The built-in themes are `night-shift` (warm editorial print) and `signal-console` (dark control-room terminal); languages are `en` and `zh-CN`. Commit `src/blog.config.json` so GitHub Pages and future Review Drafts use the same choice. Approved reports are ordinary Markdown content entries. A custom domain can be supplied with `SITE_URL`; otherwise the build derives the GitHub Pages owner and repository from `GITHUB_REPOSITORY`.
 
 ## Security boundary
 

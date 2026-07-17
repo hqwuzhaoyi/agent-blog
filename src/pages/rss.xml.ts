@@ -17,6 +17,6 @@ export async function GET(context: { site?: URL }) {
       link: reviewPath(review.id),
       categories: review.data.platforms,
     })),
-    customData: "<language>en-us</language>",
+    customData: `<language>${siteConfig.language}</language>`,
   });
 }
