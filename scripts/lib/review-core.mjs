@@ -59,12 +59,13 @@ function yamlString(value) {
   return JSON.stringify(value);
 }
 
-function renderHighlight(highlight, privateTerms) {
+function renderHighlight(highlight, privateTerms, language) {
   const evidence = sanitizeEvidence(highlight.evidence, privateTerms);
   const lines = [`### ${highlight.title.trim()}`, "", highlight.outcome.trim()];
 
   if (highlight.whyItMatters?.trim()) {
-    lines.push("", `**Why it matters.** ${highlight.whyItMatters.trim()}`);
+    const label = language === "zh-CN" ? "重要性。" : "Why it matters.";
+    lines.push("", `**${label}** ${highlight.whyItMatters.trim()}`);
   }
 
   if (evidence.length) {
@@ -111,7 +112,7 @@ export function createReviewSubmission({ config, reviewDay, draft }) {
     .flatMap(([project, highlights]) => [
       `## ${project}`,
       "",
-      highlights.map((highlight) => renderHighlight(highlight, privateTerms)).join("\n\n"),
+      highlights.map((highlight) => renderHighlight(highlight, privateTerms, language)).join("\n\n"),
     ])
     .join("\n\n");
 

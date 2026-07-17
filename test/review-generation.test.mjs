@@ -28,6 +28,8 @@ describe("Review Generation seam", () => {
 
     expect(result.status).toBe("ready");
     expect(result.markdown).toContain('language: "zh-CN"');
+    expect(result.markdown).toContain("**重要性。** 博客可以稳定上线。");
+    expect(result.markdown).not.toContain("**Why it matters.**");
   });
 
   test("produces publication-safe Markdown and omits an unsafe highlight as a whole", () => {
