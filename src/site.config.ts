@@ -10,7 +10,6 @@ const translations = {
     description: "Daily notes on important work completed across ongoing projects.",
     nav: { label: "Primary navigation", latest: "Latest", archive: "Archive", rss: "RSS" },
     footer: {
-      reporting: "Reporting from",
       disclaimer: "Reported outcomes, reviewed by a human before publication.",
     },
     home: {
@@ -49,7 +48,6 @@ const translations = {
     description: "记录持续推进的项目中已经完成的重要工作。",
     nav: { label: "主导航", latest: "最新", archive: "归档", rss: "RSS" },
     footer: {
-      reporting: "报告来源",
       disclaimer: "内容由 Agent 总结，并在发布前经过人工审核。",
     },
     home: {
@@ -91,7 +89,6 @@ export const siteConfig = {
   theme: activeTheme.id,
   language,
   locale: language,
-  sourceLabel: "OpenClaw / Gateway 01",
   ...localized,
   title: preferences.title || (language === "zh-CN" ? "Agent 工作日志" : "Agent Worklog"),
   tagline: preferences.tagline || localized.description,

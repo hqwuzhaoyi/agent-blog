@@ -39,8 +39,6 @@ export interface HeaderProps {
 }
 
 export interface FooterProps {
-  source: string;
-  reportingLabel: string;
   disclaimer: string;
 }
 
