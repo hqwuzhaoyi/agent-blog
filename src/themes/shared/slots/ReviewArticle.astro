@@ -22,7 +22,6 @@ const { review, Content, labels, homeUrl, archiveUrl } = Astro.props;
     <dl class="review-article__meta">
       <div><dt>{labels.day}</dt><dd>{review.displayDate}</dd></div>
       <div><dt>{labels.source}</dt><dd>{review.platforms}</dd></div>
-      <div><dt>{labels.status}</dt><dd><span class="status-light"></span> {labels.approved}</dd></div>
     </dl>
   </header>
   <div class="prose"><Content /></div>

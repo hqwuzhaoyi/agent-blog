@@ -95,8 +95,6 @@ export interface ReviewArticleProps {
     report: string;
     day: string;
     source: string;
-    status: string;
-    approved: string;
     disclaimer: string;
     continue: string;
   };
