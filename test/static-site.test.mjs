@@ -52,6 +52,16 @@ describe("Static Site seam", () => {
     }
   });
 
+  test("keeps Agent Source attribution on each review instead of the site footer", async () => {
+    const [home, codexArticle] = await Promise.all([
+      builtFile("index.html"),
+      builtFile("reviews/2026-07-18/index.html"),
+    ]);
+
+    expect(home).not.toContain("报告来源 OpenClaw / Gateway 01");
+    expect(codexArticle).toContain("Codex / Local");
+  });
+
   test("built public output contains none of the adversarial private fixture values", async () => {
     const output = (
       await Promise.all([
