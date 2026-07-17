@@ -20,6 +20,10 @@ describe("Blog creation configuration", () => {
       "signal-console",
       "--language",
       "zh-CN",
+      "--title",
+      "示例工作日志",
+      "--tagline",
+      "记录真正完成的工作。",
       "--dry-run",
     ]);
 
@@ -27,6 +31,8 @@ describe("Blog creation configuration", () => {
       status: "dry-run",
       theme: "signal-console",
       language: "zh-CN",
+      title: "示例工作日志",
+      tagline: "记录真正完成的工作。",
     });
   });
 
@@ -50,6 +56,10 @@ describe("Blog creation configuration", () => {
         id,
         "--language",
         "zh-CN",
+        "--title",
+        "示例工作日志",
+        "--tagline",
+        "记录真正完成的工作。",
         "--dry-run",
       ]);
 
@@ -57,6 +67,8 @@ describe("Blog creation configuration", () => {
         status: "dry-run",
         theme: id,
         language: "zh-CN",
+        title: "示例工作日志",
+        tagline: "记录真正完成的工作。",
       });
     }
   });

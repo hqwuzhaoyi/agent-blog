@@ -128,15 +128,6 @@ nav a:hover::after,
 .section-heading a:hover::after,
 .review-article__footer a:hover::after { transform: scaleX(1); transform-origin: left; }
 
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.7fr);
-  min-height: 610px;
-  border-bottom: 1px solid var(--ink);
-}
-
-.hero__copy { padding: clamp(56px, 8vw, 116px) clamp(32px, 7vw, 104px) 72px 32px; }
-
 .kicker {
   display: flex;
   gap: 12px;
@@ -157,7 +148,6 @@ nav a:hover::after,
   background: var(--ink);
 }
 
-.hero h1,
 .archive-hero h1,
 .review-article h1 {
   margin: 0;
@@ -168,49 +158,77 @@ nav a:hover::after,
   text-transform: uppercase;
 }
 
-.hero h1 { max-width: 950px; font-size: clamp(4.2rem, 9.6vw, 9.6rem); }
-.hero h1 em { color: var(--signal); font-family: var(--reading); font-weight: 500; text-transform: none; }
-
-.hero__lede {
-  max-width: 680px;
-  margin: 52px 0 0;
-  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
-  line-height: 1.25;
+.blog-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(230px, 0.5fr);
+  gap: clamp(40px, 7vw, 110px);
+  min-height: 340px;
+  padding: clamp(52px, 7vw, 88px) 32px 48px;
+  border-bottom: 1px solid var(--ink);
 }
 
-.hero__manifesto {
+.blog-intro__identity { align-self: end; }
+
+.blog-intro__eyebrow {
+  margin: 0 0 24px;
+  color: var(--signal-dark);
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.blog-intro h1 {
+  max-width: 980px;
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(3.7rem, 8vw, 8rem);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.07em;
+  text-transform: uppercase;
+}
+
+.blog-intro__tagline {
+  max-width: 720px;
+  margin: 32px 0 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+  line-height: 1.35;
+}
+
+.blog-intro__facts {
+  display: grid;
+  align-self: stretch;
+  margin: 0;
+  border-left: 1px solid var(--line);
+}
+
+.blog-intro__facts div {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 36px 30px 30px;
-  color: var(--paper);
-  background: var(--ink);
+  justify-content: flex-end;
+  padding: 22px 0 22px 28px;
+  border-bottom: 1px solid var(--line);
 }
 
-.manifesto__index { color: var(--signal); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.13em; }
-.hero__manifesto > p { margin: auto 0; font-size: clamp(1.7rem, 3vw, 2.6rem); line-height: 1.07; }
-.hero__manifesto dl { margin: 0; border-top: 1px solid rgba(241, 236, 223, 0.35); }
-.hero__manifesto dl div { display: grid; grid-template-columns: 80px 1fr; padding: 13px 0; border-bottom: 1px solid rgba(241, 236, 223, 0.2); }
-.hero__manifesto dt { color: #aaa497; font-family: var(--mono); font-size: 0.63rem; text-transform: uppercase; }
-.hero__manifesto dd { margin: 0; font-size: 0.95rem; }
+.blog-intro__facts div:first-child { justify-content: flex-start; }
+.blog-intro__facts div:last-child { border-bottom: 0; }
 
-.ticker {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  justify-content: center;
-  min-height: 58px;
-  overflow: hidden;
-  color: var(--paper);
-  background: var(--signal);
-  border-bottom: 1px solid var(--ink);
+.blog-intro__facts dt {
+  color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  white-space: nowrap;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.ticker i { width: 6px; height: 6px; background: var(--ink); transform: rotate(45deg); }
+.blog-intro__facts dd {
+  margin: 8px 0 0;
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2.6vw, 2.4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
 
 .latest-section,
 .previous-section { padding: 0 32px 80px; }
@@ -305,15 +323,22 @@ nav a:hover::after,
 }
 
 @media (max-width: 860px) {
+  .blog-intro {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    min-height: 0;
+    padding: 54px 20px 38px;
+  }
+  .blog-intro__facts {
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+  .blog-intro__facts div { padding: 18px 18px 0 0; border-bottom: 0; }
   .page-shell { width: 100%; border: 0; }
   .site-header { min-height: 90px; padding: 18px 20px; }
   nav { gap: 16px; }
   nav a { font-size: 0.58rem; }
-  .hero { grid-template-columns: 1fr; }
-  .hero__copy { padding: 70px 20px 60px; }
-  .hero h1 { font-size: clamp(3.7rem, 17vw, 7rem); }
-  .hero__manifesto { min-height: 430px; padding: 28px 20px; }
-  .ticker { justify-content: flex-start; padding-inline: 20px; }
   .latest-section, .previous-section, .archive-list { padding-right: 20px; padding-left: 20px; }
   .review-grid { grid-template-columns: 1fr; }
   .archive-hero { grid-template-columns: 1fr; padding: 62px 20px 40px; }
@@ -371,6 +396,27 @@ html[data-theme="signal-console"] body::before {
   mix-blend-mode: screen;
 }
 
+html[data-theme="signal-console"] .blog-intro {
+  background: linear-gradient(135deg, rgba(148, 255, 101, 0.04), rgba(81, 216, 255, 0.025));
+  border-color: var(--signal);
+}
+
+html[data-theme="signal-console"] .blog-intro h1 {
+  color: var(--signal);
+  letter-spacing: -0.055em;
+  text-shadow: 0 0 34px rgba(148, 255, 101, 0.14);
+}
+
+html[data-theme="signal-console"] .blog-intro__facts {
+  border-color: rgba(148, 255, 101, 0.35);
+}
+
+html[data-theme="signal-console"] .blog-intro__facts div {
+  border-color: rgba(148, 255, 101, 0.22);
+}
+
+html[data-theme="signal-console"] .blog-intro__facts dd { color: var(--signal-dark); }
+
 html[data-theme="signal-console"] .wordmark__signal {
   width: 15px;
   height: 15px;
@@ -379,34 +425,10 @@ html[data-theme="signal-console"] .wordmark__signal {
   transform: none;
 }
 
-html[data-theme="signal-console"] .hero h1,
 html[data-theme="signal-console"] .archive-hero h1,
 html[data-theme="signal-console"] .review-article h1 {
   letter-spacing: -0.055em;
   text-shadow: 0 0 32px rgba(148, 255, 101, 0.13);
-}
-
-html[data-theme="signal-console"] .hero h1 em {
-  color: var(--signal-dark);
-  font-style: normal;
-}
-
-html[data-theme="signal-console"] .hero__manifesto {
-  color: var(--ink);
-  background: rgba(12, 28, 20, 0.88);
-  border-left: 1px solid var(--signal);
-}
-
-html[data-theme="signal-console"] .hero__manifesto dl,
-html[data-theme="signal-console"] .hero__manifesto dl div {
-  border-color: rgba(232, 255, 231, 0.2);
-}
-
-html[data-theme="signal-console"] .hero__manifesto dt { color: var(--muted); }
-
-html[data-theme="signal-console"] .ticker {
-  color: var(--paper);
-  box-shadow: 0 0 28px rgba(148, 255, 101, 0.18);
 }
 
 html[data-theme="signal-console"] .review-article__stamp {

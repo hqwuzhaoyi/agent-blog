@@ -14,7 +14,7 @@ The shared core owns:
 - routes and page entry points;
 - content collection queries, sorting, and filtering;
 - URL construction and navigation targets;
-- language selection and translated product copy;
+- language selection and translated blog interface copy;
 - SEO metadata, canonical URLs, feeds, and structured data;
 - configuration validation and publication behavior;
 - conversion of content into typed, Publication-Safe presentation props.
@@ -37,7 +37,7 @@ src/themes/
   shared/
     slots/
       Header.astro
-      HomeHero.astro
+      BlogIntro.astro
       ReviewList.astro
       ReviewArticle.astro
       ArchiveList.astro
@@ -100,7 +100,7 @@ Core pages prepare typed props and render the resolved slot. Representative
 contracts include:
 
 - `HeaderProps`: site identity, primary navigation labels, and stable URLs;
-- `HomeHeroProps`: title, description, and optional summary facts;
+- `BlogIntroProps`: configured blog identity and prepared publication facts;
 - `ReviewListProps`: ordered review summaries and their stable article URLs;
 - `ReviewArticleProps`: title, date, prepared article content, metadata labels,
   and navigation actions;
@@ -112,15 +112,16 @@ fields may be omitted visually. A replacement may reorder required information
 and change its markup substantially, but it must not remove required navigation,
 article content, privacy disclosure, or actions defined by the slot contract.
 
-Translated product copy is prepared by the core and passed as labels. Themes do
+Translated blog interface copy is prepared by the core and passed as labels. Themes do
 not introduce their own wording or language branches.
 
 ## Configuration
 
-The selected Theme remains part of the blog configuration written during
-AI-assisted setup. Setup presents the Theme IDs and labels from the same catalog
-used by the runtime, then writes the chosen stable ID. A Theme change does not
-rewrite content or page files.
+The selected Theme, blog title, and optional tagline are part of the blog
+configuration written during AI-assisted setup. Setup presents the Theme IDs and
+labels from the same catalog used by the runtime, then writes the chosen stable
+ID and operator-authored blog identity. A Theme change does not rewrite the blog
+identity, content, or page files.
 
 For the first version, Themes are bundled at build time. Dynamic installation
 and a public third-party Theme API are out of scope. If external Themes are
@@ -150,6 +151,6 @@ but they do not replace the shared behavior contract.
    folders; let them use shared slots initially.
 4. Move the AstroPaper-derived `quiet-minimal` styles, assets, attribution, and
    structural replacements into its Theme folder.
-5. Remove Theme conditionals from shared components and product copy.
+5. Remove Theme conditionals from shared components and blog interface copy.
 6. Run the shared behavior checks against every Theme, followed by the existing
    Astro and unit test suites.

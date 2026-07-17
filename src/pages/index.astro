@@ -4,26 +4,22 @@ import { getPublishedReviews } from "@/lib/reviews";
 import { presentReview } from "@/lib/presentation";
 import { activeTheme, siteConfig } from "@/site.config";
 import { sitePath } from "@/lib/paths";
-import type { HomeHeroProps, ReviewListProps } from "@/themes/shared/contracts";
+import type { BlogIntroProps, ReviewListProps } from "@/themes/shared/contracts";
 
 const reviews = (await getPublishedReviews()).map((review) => presentReview(review, siteConfig.locale));
 const [latest, ...previous] = reviews;
-const HomeHero = activeTheme.slots.HomeHero;
+const BlogIntro = activeTheme.slots.BlogIntro;
 const ReviewList = activeTheme.slots.ReviewList;
-const heroProps: HomeHeroProps = {
-  description: siteConfig.description,
-  kicker: siteConfig.home.kicker,
-  heading: siteConfig.home.heading,
-  headingEmphasis: siteConfig.home.headingEmphasis,
-  policyLabel: siteConfig.home.policyLabel,
-  note: siteConfig.home.note,
-  policy: siteConfig.home.policy,
-  facts: [
-    { label: siteConfig.home.input, value: siteConfig.home.inputValue },
-    { label: siteConfig.home.filter, value: siteConfig.home.filterValue },
-    { label: siteConfig.home.gate, value: siteConfig.home.gateValue },
-  ],
-  ticker: siteConfig.home.ticker,
+const blogIntroProps: BlogIntroProps = {
+  eyebrow: siteConfig.eyebrow,
+  title: siteConfig.title,
+  tagline: siteConfig.tagline,
+  publishedCount: reviews.length,
+  latestDate: latest?.displayDate,
+  labels: {
+    published: siteConfig.home.published,
+    updated: siteConfig.home.updated,
+  },
 };
 const reviewListProps: ReviewListProps = {
   latest,
@@ -34,6 +30,6 @@ const reviewListProps: ReviewListProps = {
 ---
 
 <BaseLayout>
-  <HomeHero {...heroProps} />
+  <BlogIntro {...blogIntroProps} />
   <ReviewList {...reviewListProps} />
 </BaseLayout>

@@ -1,5 +1,5 @@
 import Header from "./shared/slots/Header.astro";
-import HomeHero from "./shared/slots/HomeHero.astro";
+import BlogIntro from "./shared/slots/BlogIntro.astro";
 import ReviewList from "./shared/slots/ReviewList.astro";
 import ReviewArticle from "./shared/slots/ReviewArticle.astro";
 import ArchiveList from "./shared/slots/ArchiveList.astro";
@@ -13,7 +13,7 @@ import { themeCatalog } from "./catalog.mjs";
 
 const sharedSlots = {
   Header,
-  HomeHero,
+  BlogIntro,
   ReviewList,
   ReviewArticle,
   ArchiveList,

@@ -15,7 +15,7 @@ Use a fine-grained GitHub credential that can write only to the Agent Blog repos
 
 The normal setup is conversational. The AI must:
 
-1. run `npm run configure -- --list-themes`, present the returned Theme IDs and labels, and ask the operator to choose a theme and language;
+1. run `npm run configure -- --list-themes`, present the returned Theme IDs and labels, and ask the operator to choose a theme, language, blog title, and optional one-line tagline;
 2. write the answers to `src/blog.config.json` using `npm run configure`;
 3. show the resulting configuration for confirmation;
 4. commit and push the configuration when it changed; and
@@ -25,6 +25,7 @@ Available choices:
 
 - Theme: one of the IDs returned by the Theme catalog command.
 - Language: `en` or `zh-CN`. This controls the site interface, dates, RSS metadata, and the language requested from the Review Skill.
+- Blog title and tagline: operator-authored identity displayed above the latest reviews; they do not change with the Theme.
 
 The operator does not need to run the configuration command manually.
 

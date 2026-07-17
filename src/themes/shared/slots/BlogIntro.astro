@@ -1,0 +1,27 @@
+---
+import type { BlogIntroProps } from "../contracts";
+
+interface Props extends BlogIntroProps {}
+
+const { eyebrow, title, tagline, publishedCount, latestDate, labels } = Astro.props;
+---
+
+<section class="blog-intro" aria-labelledby="blog-title">
+  <div class="blog-intro__identity">
+    <p class="blog-intro__eyebrow">{eyebrow}</p>
+    <h1 id="blog-title">{title}</h1>
+    {tagline && <p class="blog-intro__tagline">{tagline}</p>}
+  </div>
+  <dl class="blog-intro__facts">
+    <div>
+      <dt>{labels.published}</dt>
+      <dd>{publishedCount}</dd>
+    </div>
+    {latestDate && (
+      <div>
+        <dt>{labels.updated}</dt>
+        <dd>{latestDate}</dd>
+      </div>
+    )}
+  </dl>
+</section>
