@@ -26,7 +26,7 @@ describe("Static Site seam", () => {
     expect(home).toContain(`<html lang="${preferences.language}" data-theme="${preferences.theme}">`);
     if (preferences.theme === "quiet-minimal") {
       expect(home).toContain('<section class="minimal-hero">');
-      expect(home).toContain("The work that survived the night.");
+      expect(home).toContain('<section class="minimal-reviews">');
     }
     expect(home).toContain(`href="${reviewPath}"`);
     expect(archive).toContain(title);

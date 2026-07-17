@@ -12,6 +12,7 @@ const astro = join(root, "node_modules", ".bin", "astro");
 const configPath = join(root, "src", "blog.config.json");
 const original = await readFile(configPath, "utf8");
 const preferences = JSON.parse(original);
+const testPreferences = { ...preferences, language: "en" };
 const expectedTitle = "The operating model is locked";
 const expectedReviewPath = "/agent-blog/reviews/2026-07-16/";
 const expectedArchivePath = "/agent-blog/archive/";
@@ -26,7 +27,7 @@ function requireText(output, expected, context) {
 
 try {
   for (const { id } of themeCatalog) {
-    await writeFile(configPath, `${JSON.stringify({ ...preferences, theme: id }, null, 2)}\n`);
+    await writeFile(configPath, `${JSON.stringify({ ...testPreferences, theme: id }, null, 2)}\n`);
     const outDir = join(buildsPath, id);
     await execFileAsync(astro, ["build", "--outDir", outDir], { cwd: root });
 
@@ -38,7 +39,7 @@ try {
     ]);
 
     requireText(home, `data-theme="${id}"`, `${id} home page`);
-    requireText(home, `<html lang="${preferences.language}"`, `${id} home page`);
+    requireText(home, `<html lang="${testPreferences.language}"`, `${id} home page`);
     requireText(home, `href="${expectedReviewPath}"`, `${id} home page`);
     requireText(home, `href="${expectedArchivePath}"`, `${id} home page`);
     requireText(home, "human before publication", `${id} home page`);

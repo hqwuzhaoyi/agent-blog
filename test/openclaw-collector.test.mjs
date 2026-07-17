@@ -1,12 +1,20 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, test } from "vitest";
-import { buildReviewWindowFromSessions } from "../scripts/lib/openclaw-gateway.mjs";
+import { buildReviewWindowFromSessions, sessionsListParams } from "../scripts/lib/openclaw-gateway.mjs";
 
 const fixture = JSON.parse(
   await readFile(new URL("./fixtures/gateway-day.json", import.meta.url), "utf8"),
 );
 
 describe("OpenClaw Gateway collection", () => {
+  test("uses only currently supported sessions.list parameters", () => {
+    expect(sessionsListParams(100, 200)).toEqual({
+      limit: 100,
+      offset: 200,
+      configuredAgentsOnly: true,
+    });
+  });
+
   test("keeps visible primary-session messages and excludes tools and spawned agents", () => {
     const window = buildReviewWindowFromSessions({
       sessions: fixture.sessions,

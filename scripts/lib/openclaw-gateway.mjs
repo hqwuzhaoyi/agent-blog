@@ -114,18 +114,16 @@ async function gatewayCall(binary, method, params) {
   return unwrapGatewayPayload(JSON.parse(stdout));
 }
 
+export function sessionsListParams(limit, offset) {
+  return { limit, offset, configuredAgentsOnly: true };
+}
+
 async function listSessions(binary) {
   const sessions = [];
   const limit = 100;
 
   for (let offset = 0; ; offset += limit) {
-    const payload = await gatewayCall(binary, "sessions.list", {
-      limit,
-      offset,
-      requireLastInteraction: true,
-      sortBy: "lastInteractionAt",
-      configuredAgentsOnly: true,
-    });
+    const payload = await gatewayCall(binary, "sessions.list", sessionsListParams(limit, offset));
     const rows = payload.sessions ?? [];
     sessions.push(...rows);
     if (rows.length < limit || sessions.length >= (payload.totalCount ?? Infinity)) break;
