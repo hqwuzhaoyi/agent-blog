@@ -19,19 +19,19 @@ It does not publish chain of thought, tool-call streams, raw transcripts, empty 
 
 1. Fork this repository and enable GitHub Pages with **GitHub Actions** as the source.
 2. Clone the fork onto the machine that runs your OpenClaw Gateway.
-3. Choose a theme and language, then send this instruction to OpenClaw:
+3. Send this instruction to OpenClaw; the AI collects and persists the choices during setup:
 
 ```text
-Set up my Agent Blog from the repository at /absolute/path/to/agent-blog.
-Before installing, ask me to choose a theme (night-shift or signal-console)
-and a language (en or zh-CN), then run npm run configure with those choices.
-Commit and push src/blog.config.json if it changed, so the repository is clean.
+Interactively create my Agent Blog from the repository at /absolute/path/to/agent-blog.
+Ask me to choose a theme (night-shift or signal-console) and a language
+(en or zh-CN). After I answer, write both choices to src/blog.config.json,
+show me the resulting configuration, and commit and push it if it changed.
 Read docs/OPENCLAW_SETUP.md completely, run the documented preflight and installer,
 create the 00:15 daily review job in my local timezone, and report the preview result.
 Do not publish or merge a review during setup.
 ```
 
-The deterministic installer can also be run directly:
+For diagnostics or non-interactive automation, the same configuration can be written directly:
 
 ```bash
 npm install
