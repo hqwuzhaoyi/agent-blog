@@ -1,0 +1,3 @@
+{"type":"session","version":3,"id":"pi-session-malformed","timestamp":"2026-07-21T06:00:00.000Z","cwd":"/synthetic/malformed-project"}
+{"type":"message","id":"00000001","parentId":null,"timestamp":"2026-07-21T06:00:01.000Z","message":{"role":"user","content":"Valid text must not produce a partial window."}}
+{"type":"message","parentId":"00000001","timestamp":"2026-07-21T06:00:02.000Z","message":{"role":"assistant","content":[{"type":"text","text":"This entry has no stable ID."}]}}

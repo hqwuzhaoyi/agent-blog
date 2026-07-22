@@ -3,12 +3,11 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { createReviewSubmission } from "./lib/review-core.mjs";
 import {
-  buildReviewWindowFromSessions,
-  collectGatewayWindow,
   currentReviewDay,
   previousReviewDay,
 } from "./lib/openclaw-gateway.mjs";
 import { createGitPublisher } from "./lib/git-publisher.mjs";
+import { resolveAgentPlatform, selectPlatformCollection } from "./lib/platform-registry.mjs";
 import { runPublicationWorkflow } from "./lib/publication-workflow.mjs";
 
 function parseArguments(argv) {
@@ -49,36 +48,34 @@ function pathsFor(root, options) {
 }
 
 function validateConfig(config) {
-  for (const key of ["sourceId", "sourceLabel", "timeZone"]) {
+  resolveAgentPlatform(config);
+  for (const key of ["sourceId", "timeZone"]) {
     if (!config[key]) throw new Error(`Missing required config field: ${key}`);
   }
   return config;
 }
 
 async function collect({ options, paths, config }) {
+  const fixture = options.fixture ? await readJson(resolve(options.fixture)) : undefined;
+  const selected = selectPlatformCollection({ config, fixture });
   const state = await readJson(paths.state, { version: 1, sessions: {}, reviews: {} });
   const reviewDay = options.day || (options.manual
     ? currentReviewDay(Date.now(), config.timeZone)
     : previousReviewDay(Date.now(), config.timeZone));
-  let window;
-
-  if (options.fixture) {
-    const fixture = await readJson(resolve(options.fixture));
-    window = buildReviewWindowFromSessions({
-      sessions: fixture.sessions ?? [],
-      sourceId: config.sourceId,
-      reviewDay,
-      timeZone: config.timeZone,
-      state,
-    });
-  } else {
-    window = await collectGatewayWindow({
-      sourceId: config.sourceId,
-      reviewDay,
-      timeZone: config.timeZone,
-      state,
-      binary: config.openclawBinary || "openclaw",
-    });
+  const window = await selected.collect({
+    config,
+    fixture,
+    sourceId: config.sourceId,
+    reviewDay,
+    timeZone: config.timeZone,
+    state,
+    excludeThreadId: options["exclude-thread-id"],
+  });
+  if (window?.status === "incomplete") {
+    const reason = typeof window.reason === "string" && /^[a-z0-9-]+$/.test(window.reason)
+      ? window.reason
+      : "unspecified";
+    throw new Error(`Agent Platform collection is incomplete: ${reason}`);
   }
 
   await writePrivateJson(paths.window, window);
@@ -147,7 +144,7 @@ function help() {
   console.log(`Agent Blog review workflow
 
 Commands:
-  collect   Read the Review Window from the OpenClaw Gateway
+  collect   Read the Review Window from the configured Agent Platform
   manual    Read the current local Review Day without submitting a pull request
   submit    Validate the local draft, create/update a branch and pull request
   no-update Advance cursors without publishing
@@ -156,6 +153,7 @@ Commands:
 Options:
   --config <path>  Config file (default .agent-blog/config.json)
   --day <date>     Review Day override in YYYY-MM-DD (manual defaults to today)
+  --exclude-thread-id <id>  Current review thread to exclude (required for Codex)
   --dry-run        Render without Git or state changes
 `);
 }
@@ -167,6 +165,7 @@ const config = validateConfig(
   await readJson(paths.config, {
     sourceId: "openclaw-main",
     sourceLabel: "OpenClaw / Gateway 01",
+    platform: "openclaw",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     privateTerms: [],
     baseBranch: "main",

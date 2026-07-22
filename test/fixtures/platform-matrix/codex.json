@@ -1,0 +1,27 @@
+{
+  "threads": [
+    {
+      "id": "matrix-codex-thread",
+      "source": "cli",
+      "parentThreadId": null,
+      "turns": [
+        {
+          "startedAt": 1784599200,
+          "completedAt": 1784599260,
+          "items": [
+            {
+              "id": "codex-message-1",
+              "type": "userMessage",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Summarize the synthetic Codex work."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

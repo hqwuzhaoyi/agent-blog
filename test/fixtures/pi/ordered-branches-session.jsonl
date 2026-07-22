@@ -1,0 +1,4 @@
+{"type":"session","version":3,"id":"pi-session-order","timestamp":"2026-07-21T03:00:00.000Z","cwd":"/synthetic/branch-project"}
+{"type":"message","id":"0000000b","parentId":null,"timestamp":"2026-07-21T03:00:01.000Z","message":{"role":"assistant","content":[{"type":"text","text":"Second branch by stable ID."}]}}
+{"type":"message","id":"0000000a","parentId":null,"timestamp":"2026-07-21T03:00:01.000Z","message":{"role":"user","content":"First branch by stable ID."}}
+{"type":"message","id":"0000000c","parentId":"0000000b","timestamp":"2026-07-21T03:00:02.000Z","message":{"role":"assistant","content":[{"type":"text","text":"Later branch entry."}]}}

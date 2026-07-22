@@ -1,0 +1,16 @@
+{
+  "sessions": [
+    {
+      "id": "matrix-hermes-session",
+      "source": "cli",
+      "messages": [
+        {
+          "id": 1,
+          "role": "user",
+          "content": "Summarize the synthetic Hermes work.",
+          "timestamp": 1784599200
+        }
+      ]
+    }
+  ]
+}

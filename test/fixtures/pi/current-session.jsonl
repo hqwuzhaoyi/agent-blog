@@ -1,0 +1,3 @@
+{"type":"session","version":3,"id":"pi-session-current","timestamp":"2026-07-21T01:00:00.000Z","cwd":"/synthetic/project"}
+{"type":"message","id":"entry-user","parentId":null,"timestamp":"2026-07-21T01:00:01.000Z","message":{"role":"user","content":"Describe the synthetic project.","timestamp":1784595601000}}
+{"type":"message","id":"entry-assistant","parentId":"entry-user","timestamp":"2026-07-21T01:00:02.000Z","message":{"role":"assistant","content":[{"type":"text","text":"The synthetic project is ready for review."}],"timestamp":1784595602000}}

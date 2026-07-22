@@ -99,7 +99,7 @@ export function createGitPublisher({ repositoryDir, baseBranch = "main" }) {
           "--title",
           `Daily review — ${proposal.reviewDay}`,
           "--body",
-          "Generated locally from visible OpenClaw messages. Review privacy and accuracy before merging.",
+          "Generated locally from visible agent messages. Review privacy and accuracy before merging.",
         ]);
       }
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Daily Review"
+  short_description: "Publish safe daily reviews from local Codex threads"
+  default_prompt: "Use $codex-review to prepare today's local Codex Daily Review."

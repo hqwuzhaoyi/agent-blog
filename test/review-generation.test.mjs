@@ -2,12 +2,52 @@ import { describe, expect, test } from "vitest";
 import { createReviewSubmission } from "../scripts/lib/review-core.mjs";
 
 const baseConfig = {
+  platform: "openclaw",
   sourceId: "openclaw-main",
   sourceLabel: "OpenClaw / Gateway 01",
   privateTerms: ["Acme Private"],
 };
 
 describe("Review Generation seam", () => {
+  test("uses Codex attribution when a Codex draft omits platform metadata", () => {
+    const result = createReviewSubmission({
+      config: { ...baseConfig, platform: "codex", sourceLabel: "Codex / Local" },
+      reviewDay: "2026-07-16",
+      draft: {
+        title: "Codex support",
+        summary: "Codex became an Agent Source.",
+        highlights: [{
+          title: "Added Codex collection",
+          outcome: "Visible Codex messages can now enter a Review Window.",
+          project: "Agent Blog",
+        }],
+      },
+    });
+
+    expect(result.markdown).toContain('source: "Codex / Local"');
+    expect(result.markdown).toContain('platforms: ["Codex"]');
+  });
+
+  test("ignores model-provided platform attribution", () => {
+    const result = createReviewSubmission({
+      config: { ...baseConfig, platform: "codex", sourceLabel: "Codex / Local" },
+      reviewDay: "2026-07-16",
+      draft: {
+        title: "Untrusted attribution",
+        summary: "The model attempted to choose its platform metadata.",
+        platforms: ["OpenClaw", "Forged Agent"],
+        highlights: [{
+          title: "Kept registry attribution",
+          outcome: "The selected registry remains the attribution authority.",
+        }],
+      },
+    });
+
+    expect(result.markdown).toContain('platforms: ["Codex"]');
+    expect(result.markdown).not.toContain("OpenClaw");
+    expect(result.markdown).not.toContain("Forged Agent");
+  });
+
   test("carries the selected publication language into the Review Submission", () => {
     const result = createReviewSubmission({
       config: { ...baseConfig, language: "zh-CN" },
@@ -68,7 +108,7 @@ describe("Review Generation seam", () => {
     expect(result.markdown).not.toContain("Acme Private");
     expect(result.markdown).not.toContain("owner@example.com");
     expect(result.markdown).not.toContain("/Users/alice");
-    expect(result.markdown).toContain('source: "OpenClaw"');
+    expect(result.markdown).toContain('source: "OpenClaw / Gateway 01"');
   });
 
   test("returns no-update when every proposed highlight is unsafe", () => {
