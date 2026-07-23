@@ -1,0 +1,3 @@
+{"type":"session","version":3,"id":"pi-session-unknown","timestamp":"2026-07-21T04:00:00.000Z","cwd":"/synthetic/unknown-project"}
+{"type":"message","id":"00000001","parentId":null,"timestamp":"2026-07-21T04:00:01.000Z","message":{"role":"user","content":"This valid text must not produce a partial window."}}
+{"type":"future_agent_state","id":"00000002","parentId":"00000001","timestamp":"2026-07-21T04:00:02.000Z","payload":{"text":"Unknown synthetic schema."}}

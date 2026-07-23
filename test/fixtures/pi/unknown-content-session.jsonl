@@ -1,0 +1,2 @@
+{"type":"session","version":3,"id":"pi-session-unknown-content","timestamp":"2026-07-21T05:00:00.000Z","cwd":"/synthetic/unknown-content-project"}
+{"type":"message","id":"00000001","parentId":null,"timestamp":"2026-07-21T05:00:01.000Z","message":{"role":"user","content":[{"type":"text","text":"Known text must not hide an unknown block."},{"type":"future_content","payload":"Synthetic future content."}]}}

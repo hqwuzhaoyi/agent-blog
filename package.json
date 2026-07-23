@@ -9,6 +9,10 @@
     "check": "astro check",
     "preview": "astro preview",
     "configure": "node scripts/configure-blog.mjs",
+    "install:claude-code": "node scripts/install-claude-code.mjs",
+    "install:codex": "node scripts/install-codex.mjs",
+    "install:hermes": "node scripts/install-hermes.mjs",
+    "install:pi": "node scripts/install-pi.mjs",
     "test": "npm run test:themes && astro build && vitest run",
     "test:themes": "node scripts/verify-themes.mjs",
     "test:watch": "vitest",
@@ -17,7 +21,9 @@
     "review:fixture": "node scripts/review.mjs fixture --fixture test/fixtures/gateway-day.json --draft test/fixtures/review-draft.json --dry-run"
   },
   "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.217",
     "@astrojs/rss": "^4.0.19",
+    "@earendil-works/pi-coding-agent": "0.81.1",
     "astro": "^7.0.7"
   },
   "devDependencies": {

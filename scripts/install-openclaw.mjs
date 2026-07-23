@@ -38,6 +38,7 @@ const blogPreferences = JSON.parse(
 const config = {
   sourceId: options["source-id"] || "openclaw-main",
   sourceLabel: options["source-label"] || "OpenClaw / Gateway 01",
+  platform: "openclaw",
   timeZone,
   privateTerms: options["private-terms"]
     ? String(options["private-terms"]).split(",").map((value) => value.trim()).filter(Boolean)

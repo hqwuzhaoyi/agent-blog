@@ -1,0 +1,2 @@
+{"type":"session","version":3,"id":"pi-session-deferred","timestamp":"2026-07-21T07:00:00.000Z","cwd":"/synthetic/deferred-project"}
+{"type":"message","id":"00000001","parentId":null,"timestamp":"2026-07-21T07:00:01.000Z","message":{"role":"user","content":"This changing session must be deferred."}}

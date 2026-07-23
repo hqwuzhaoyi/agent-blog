@@ -1,3 +1,5 @@
+import { resolveAgentPlatform } from "./platform-registry.mjs";
+
 const EMAIL = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 const POSIX_HOME = /(?:^|[\s("'])\/(?:Users|home|root)\/[^\s)"']+/i;
 const WINDOWS_HOME = /\b[A-Z]:\\Users\\[^\s"']+/i;
@@ -76,6 +78,7 @@ function renderHighlight(highlight, privateTerms, language) {
 }
 
 export function createReviewSubmission({ config, reviewDay, draft }) {
+  const platform = resolveAgentPlatform(config);
   const privateTerms = config.privateTerms ?? [];
   const proposed = Array.isArray(draft?.highlights) ? draft.highlights : [];
   const safeHighlights = proposed.filter((highlight) => {
@@ -94,11 +97,8 @@ export function createReviewSubmission({ config, reviewDay, draft }) {
     `Selected work highlights from ${reviewDay}.`,
     privateTerms,
   );
-  const sourceLabel = safeMetadata(config.sourceLabel, "OpenClaw", privateTerms);
+  const sourceLabel = safeMetadata(config.sourceLabel, platform.defaultSourceLabel, privateTerms);
   const language = config.language === "zh-CN" ? "zh-CN" : "en";
-  const platforms = Array.isArray(draft.platforms)
-    ? draft.platforms.filter((value) => typeof value === "string" && value.trim() && !containsSensitiveContent(value, privateTerms))
-    : [];
   const groups = new Map();
 
   for (const highlight of safeHighlights) {
@@ -123,7 +123,7 @@ export function createReviewSubmission({ config, reviewDay, draft }) {
     `date: ${reviewDay}`,
     `source: ${yamlString(sourceLabel)}`,
     `language: ${yamlString(language)}`,
-    `platforms: ${JSON.stringify(platforms.length ? platforms : ["OpenClaw"])}`,
+    `platforms: ${JSON.stringify([platform.label])}`,
     `highlights: ${safeHighlights.length}`,
     "---",
     "",

@@ -1,0 +1,14 @@
+{"type":"session","version":3,"id":"pi-session-review","timestamp":"2026-07-20T15:00:00.000Z","cwd":"/synthetic/private-project"}
+{"type":"message","id":"00000000","parentId":null,"timestamp":"2026-07-20T15:59:59.000Z","message":{"role":"user","content":"Previous Review Day."}}
+{"type":"message","id":"00000001","parentId":"00000000","timestamp":"2026-07-20T16:00:00.000Z","message":{"role":"user","content":[{"type":"text","text":"Plan the Pi review."},{"type":"image","data":"synthetic-image","mimeType":"image/png"}]}}
+{"type":"message","id":"00000002","parentId":"00000001","timestamp":"2026-07-20T16:00:01.000Z","message":{"role":"assistant","content":[{"type":"thinking","thinking":"Synthetic private reasoning."},{"type":"toolCall","id":"tool-1","name":"read","arguments":{"path":"/synthetic/private"}},{"type":"text","text":"The Pi review is planned."}]}}
+{"type":"message","id":"00000003","parentId":"00000002","timestamp":"2026-07-20T16:00:02.000Z","message":{"role":"toolResult","toolCallId":"tool-1","toolName":"read","content":[{"type":"text","text":"Synthetic tool output."}],"isError":false}}
+{"type":"message","id":"00000004","parentId":"00000003","timestamp":"2026-07-20T16:00:03.000Z","message":{"role":"bashExecution","command":"printenv","output":"Synthetic command output."}}
+{"type":"message","id":"00000005","parentId":"00000004","timestamp":"2026-07-20T16:00:04.000Z","message":{"role":"custom","customType":"synthetic-extension","content":"Synthetic custom message.","display":true}}
+{"type":"compaction","id":"00000006","parentId":"00000005","timestamp":"2026-07-20T16:00:05.000Z","summary":"Synthetic compaction summary.","firstKeptEntryId":"00000001","tokensBefore":100}
+{"type":"branch_summary","id":"00000007","parentId":"00000001","timestamp":"2026-07-20T16:00:06.000Z","fromId":"00000006","summary":"Synthetic branch summary."}
+{"type":"custom_message","id":"00000008","parentId":"00000007","timestamp":"2026-07-20T16:00:07.000Z","customType":"synthetic-extension","content":"Synthetic injected context.","display":true}
+{"type":"message","id":"0000000a","parentId":"00000001","timestamp":"2026-07-21T02:00:00.000Z","message":{"role":"user","content":"Explore branch A."}}
+{"type":"message","id":"0000000b","parentId":"00000001","timestamp":"2026-07-21T02:00:00.000Z","message":{"role":"assistant","content":[{"type":"text","text":"Explore branch B."}]}}
+{"type":"message","id":"0000000c","parentId":"0000000b","timestamp":"2026-07-21T15:59:59.000Z","message":{"role":"assistant","content":[{"type":"text","text":"The Review Day is complete."}]}}
+{"type":"message","id":"0000000d","parentId":"0000000c","timestamp":"2026-07-21T16:00:00.000Z","message":{"role":"user","content":"Next Review Day."}}
