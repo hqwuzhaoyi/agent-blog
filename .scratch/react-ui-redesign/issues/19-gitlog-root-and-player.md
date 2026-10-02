@@ -1,7 +1,7 @@
 # 19: gitlog.si 根路径、内容模块与播放器辨识
 
 Status: ready-for-agent
-Execution: in-progress
+Execution: completed
 
 用户要求区分音量与播放进度、评估 THE STORY & SOURCES / CHAPTERS 的组件替换，随后将站点域名改为 https://gitlog.si/ 根路径，并指定后续浏览器使用 ego。
 
@@ -32,3 +32,8 @@ sol_public：三个浏览器回归迁移到ego heredoc。
 ## Acceptance domain correction
 
 New domain binding deployment succeeded (`8bfbe5b4-7ba8-4821-bfd4-c37bf1d9acdf`), but Cloudflare reports gitlog.si zone pending and public NS still points to Porkbun. The operator explicitly chose to validate on the established domain first. Active origin is therefore `https://blog.wuzhaoyi.xyz` with root paths, while gitlog.si stays configured for a later DNS cutover. This is the final acceptance scope; new-domain DNS is postponed by the operator.
+
+
+Final acceptance: Worker `8afc60ca-1c1b-4830-8438-36841beb6187`, application commit `82ddf51`, active `https://blog.wuzhaoyi.xyz/`. Root200, legacy prefix308 to same-host root with query preserved, admin200/unauthenticated API401, 28 browser resources pass. Ego verifies official slider keyboard seek/audio0.1s, volume5% displayed distinctly, same audio after route navigation, chapter default-open, no English decorative labels, correct established-domain canonical and no mobile overflow. Both RSS feeds (5/2 entries) and two enclosure HEAD/Range checks pass with default urllib after existing BIC exception was extended to root paths.
+
+`src/site-origin.json` is the shared active-origin configuration for canonical metadata and publisher defaults; deployment enforces agreement with Worker PUBLIC_ORIGIN. gitlog.si remains configured but DNS cutover is deferred per user instruction.
