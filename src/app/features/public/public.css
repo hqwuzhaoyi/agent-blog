@@ -12,10 +12,9 @@
 .public-site .public-brand small{display:block;margin-top:1px;font-size:10px;font-weight:400;color:var(--muted);letter-spacing:.03em}
 .public-site .public-nav{display:flex;gap:5px;align-items:center}
 .public-site .public-nav a{color:var(--muted);font-size:13px;padding:9px 14px;border-radius:999px;white-space:nowrap}
-.public-site .public-nav a:hover,.public-site .public-nav .is-active{background:color-mix(in srgb,var(--primary) 8%,transparent);color:var(--primary)}
+.public-site .public-nav .is-active{background:color-mix(in srgb,var(--primary) 8%,transparent);color:var(--primary)}
 .public-site .header-actions{display:flex;align-items:center;gap:12px}
 .public-site .header-search{display:grid;place-items:center;width:38px;height:38px;color:var(--muted)!important;border-radius:50%}
-.public-site .header-search:hover{background:var(--surface)}
 .public-site .subscribe-button{height:38px;min-height:38px;font-size:12px;padding:0 17px;background:var(--surface)}
 .public-site .mobile-menu-button{display:none}
 .public-site .public-main{max-width:1280px;margin:auto;padding:0 var(--public-gutter) 88px}
@@ -58,8 +57,7 @@
 .public-site .section-count{font-size:12px;font-family:monospace;font-weight:400;border:1px solid var(--border);padding:3px 8px;border-radius:999px;color:var(--muted);letter-spacing:0}
 .public-site .section-link{display:flex;align-items:center;gap:9px;font-size:12px;white-space:nowrap}
 .public-site .episode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:23px}
-.public-site .episode-card{border:1px solid var(--border);border-radius:18px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .18s,border-color .18s}
-.public-site .episode-card:hover{border-color:color-mix(in srgb,var(--primary) 45%,var(--border));box-shadow:0 10px 32px -20px #1c342633}
+.public-site .episode-card{border:1px solid var(--border);border-radius:18px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column}
 .public-site .episode-card-art{position:relative;display:block;padding:12px 12px 0}
 .public-site .episode-cover-compact{aspect-ratio:1.8;border-radius:11px;padding:20px;box-shadow:none}
 .public-site .episode-cover-compact .cover-top{font-size:8px}
@@ -143,7 +141,7 @@
 .public-site .player-volume-row>label{display:flex;gap:10px;align-items:center;flex:1}
 .public-site .player-volume-row input{max-width:140px}
 .public-site .player-volume-row button{font-size:11px;padding-left:0;height:36px;min-height:36px}
-.public-site .persistent-player{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 32px));z-index:40;border:1px solid var(--border);border-radius:18px;background:color-mix(in srgb,var(--surface) 94%,transparent);box-shadow:0 12px 40px -18px #13282055;backdrop-filter:blur(12px);padding:10px 14px}
+.public-site .persistent-player{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 32px));z-index:40;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:0 12px 40px -18px #13282055;padding:10px 14px}
 .public-site .persistent-player[hidden]{display:none}
 .public-site .persistent-player-inner{display:flex;gap:15px;align-items:center}
 .public-site .persistent-cover{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;border-radius:10px;background:var(--primary);color:var(--background)}
@@ -279,3 +277,40 @@
 .public-site .hero-listen .episode-inline-player{border:none;background:none;padding:0;margin:0}
 .public-site .episode-card-summary,.public-site .home-reviews .entry-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .public-site .mobile-nav-subscribe{margin-top:12px;align-self:flex-start;font-size:13px}
+
+/* Frequent interactions: immediate state changes, short pointer feedback only.
+   EASE_OUT matches beUI/lib/ease.ts. No scroll or progress interpolation. */
+.public-site{--ease-out:cubic-bezier(0.16,1,0.3,1)}
+.public-site :is(a,button,input,select):focus-visible{outline:2px solid var(--primary);outline-offset:4px}
+.public-site [data-beui-button],.public-site .header-search,.public-site [data-sheet-close]{transition:transform 140ms var(--ease-out)}
+.public-site [data-beui-button]:active:not(:disabled):not(:focus-visible){transform:scale(var(--beui-press-scale,.97))}
+.public-site :is(.header-search,[data-sheet-close]):active:not(:focus-visible){transform:scale(.97)}
+.public-site :is(.section-link,.read-link,.detail-back,.subscription-options a) svg{transition:transform 160ms var(--ease-out)}
+.public-site :is(.card-play,.entry-play)[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--primary-foreground)}
+.public-site .chapter-button{position:relative;border-radius:6px}
+.public-site .chapter-button[aria-current=true]{color:var(--primary);background:color-mix(in srgb,var(--primary) 8%,transparent);box-shadow:inset 2px 0 var(--primary)}
+.public-site .chapter-button[aria-current=true]>span:first-child{color:var(--primary)}
+.public-site .chapter-button:active{background:color-mix(in srgb,var(--primary) 12%,transparent)}
+.public-site .archive-results-heading{min-height:49px}
+.public-site .archive-reset{font-size:11px;min-height:32px}
+.public-site .player-control-group input[type=range]{min-height:28px;touch-action:pan-y}
+.public-site .persistent-player-title{min-height:44px}
+.public-site :is(.player-progress-caption,.persistent-player-title>span:last-child){font-variant-numeric:tabular-nums}
+@media(hover:hover) and (pointer:fine){
+.public-site .public-nav a:hover{background:color-mix(in srgb,var(--primary) 8%,transparent);color:var(--primary)}
+.public-site .header-search:hover,.public-site .chapter-button:hover{background:var(--surface)}
+.public-site .episode-card:has(a:hover),.public-site .episode-card:focus-within{border-color:var(--primary)}
+.public-site :is(.review-copy,.entry-copy):hover h3,.public-site .episode-card-title:hover{color:var(--primary)!important}
+.public-site :is(.section-link:hover,.review-copy:hover .read-link) svg{transform:translateX(3px)}
+.public-site .detail-back:hover svg{transform:translateX(-3px)}
+.public-site .subscription-options a:hover{border-color:var(--primary)}
+.public-site .subscription-options a:hover>svg:last-child{transform:translate(2px,-2px)}
+}
+@media(pointer:coarse),(max-width:760px){
+.public-site :is(.header-search,.mobile-menu-button,.card-play,.archive-reset,.persistent-player .persistent-toggle,.persistent-player .persistent-dismiss){min-width:44px;min-height:44px}
+.public-site .hero-chapters button{min-height:44px}
+.public-site .player-control-group input[type=range]{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+.public-site [data-beui-button],.public-site .header-search,.public-site [data-sheet-close],.public-site :is(.section-link,.read-link,.detail-back,.subscription-options a) svg{transition:none;transform:none!important}
+}

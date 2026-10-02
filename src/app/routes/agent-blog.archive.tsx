@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { getPublicContent } from "../server/public-data";
 import { Tabs } from "../features/public/beui/tabs";
 import { EpisodeRow, ReviewRow } from "../features/public/content";
+import { useRef } from "react";
+import { Button } from "../features/public/beui/button";
 import { Search } from "lucide-react";
 import { text } from "../features/public/locale";
 import { siteConfig } from "../site";
@@ -55,11 +57,18 @@ function Archive() {
   const { episodes, reviews } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const update = (next: Partial<Search>) => {
+  const searchInput = useRef<HTMLInputElement>(null);
+  const update = (next: Partial<Search>, replace = false) => {
     void navigate({
       search: (previous) => ({ ...previous, ...next }),
       resetScroll: false,
+      replace,
     });
+  };
+  const hasFilters = search.type !== "all" || Boolean(search.q || search.month);
+  const clearFilters = () => {
+    update({ type: "all", q: "", month: "" });
+    searchInput.current?.focus({ preventScroll: true });
   };
   const items = [
     ...episodes.map((entry) => ({ type: "episodes" as const, entry })),
@@ -105,10 +114,11 @@ function Archive() {
         <label className="min-w-0 flex-1">
           {siteConfig.language === "zh-CN" ? "关键词" : "Keyword"}
           <input
+            ref={searchInput}
             type="search"
             className="mt-1 block w-full rounded-lg border border-border bg-card px-3 py-2"
             value={search.q}
-            onChange={(event) => update({ q: event.target.value })}
+            onChange={(event) => update({ q: event.target.value }, true)}
             placeholder={
               siteConfig.language === "zh-CN"
                 ? "搜索公开内容"
@@ -135,7 +145,7 @@ function Archive() {
       <div className="archive-results-heading"><p role="status" className="text-sm text-muted-foreground">
         {filtered.length}{" "}
         {siteConfig.language === "zh-CN" ? "条公开内容" : "published entries"}
-      </p><Search size={15} aria-hidden="true" /></div>
+      </p>{hasFilters ? <Button variant="ghost" size="sm" className="archive-reset" onClick={clearFilters}>{text("重置筛选", "Reset filters")}</Button> : <Search size={15} aria-hidden="true" />}</div>
       <ul className="archive-results">
         {filtered.map((item) =>
           item.type === "episodes" ? (

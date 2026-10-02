@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import { Play, Headphones, ArrowRight, CalendarDays } from 'lucide-react';
+import { Play, Pause, Headphones, ArrowRight, CalendarDays } from 'lucide-react';
 import type { PublishedEntry } from '../../../../cloudflare/content-models';
-import { usePlayerActions, timestamp } from './player/provider';
+import { usePlayback, timestamp } from './player/provider';
 import { Button } from './beui/button';
 import { siteConfig } from '../../site';
 import { text } from './locale';
@@ -15,12 +15,14 @@ export function EpisodeCover({ episode, compact = false }: { episode: PublishedE
   </div>;
 }
 export function EpisodeCard({ episode }: { episode: PublishedEntry<'episodes'> }) {
-  const { play } = usePlayerActions();
-  return <li className="episode-card"><Link to="/agent-blog/episodes/$id" params={{ id: episode.id }} className="episode-card-art"><EpisodeCover episode={episode} compact /></Link><div className="episode-card-body"><p className="content-meta"><time dateTime={episode.data.date.toISOString()}>{displayDate(episode.data.date)}</time><span>{timestamp(episode.data.duration)}</span></p><Link to="/agent-blog/episodes/$id" params={{ id: episode.id }} className="episode-card-title">{episode.data.title}</Link><p className="episode-card-summary">{episode.data.summary}</p><Button variant="outline" className="card-play" onClick={() => play(episode)} aria-label={`${siteConfig.player.play} ${episode.data.title}`}><Play size={14} fill="currentColor" aria-hidden="true" />{siteConfig.player.play}</Button></div></li>;
+  const { episodeId, playing, toggleEpisode } = usePlayback();
+  const active = episodeId === episode.id && playing;
+  return <li className="episode-card"><Link to="/agent-blog/episodes/$id" params={{ id: episode.id }} className="episode-card-art"><EpisodeCover episode={episode} compact /></Link><div className="episode-card-body"><p className="content-meta"><time dateTime={episode.data.date.toISOString()}>{displayDate(episode.data.date)}</time><span>{timestamp(episode.data.duration)}</span></p><Link to="/agent-blog/episodes/$id" params={{ id: episode.id }} className="episode-card-title">{episode.data.title}</Link><p className="episode-card-summary">{episode.data.summary}</p><Button variant="outline" className="card-play" onClick={() => toggleEpisode(episode)} aria-pressed={active} aria-label={`${active ? siteConfig.player.pause : siteConfig.player.play} ${episode.data.title}`}>{active ? <Pause size={14} aria-hidden="true" /> : <Play size={14} fill="currentColor" aria-hidden="true" />}{active ? siteConfig.player.pause : siteConfig.player.play}</Button></div></li>;
 }
 export function EpisodeRow({ episode }: { episode: PublishedEntry<'episodes'> }) {
-  const { play } = usePlayerActions();
-  return <li className="archive-entry"><span className="entry-icon"><Headphones size={19} aria-hidden="true" /></span><Link to="/agent-blog/episodes/$id" params={{ id: episode.id }} className="entry-copy"><p className="content-meta">{siteConfig.episodes.title}<span>{displayDate(episode.data.date)} · {timestamp(episode.data.duration)}</span></p><h3>{episode.data.title}</h3><p className="entry-summary">{episode.data.summary}</p></Link><Button variant="outline" className="entry-play" onClick={() => play(episode)} aria-label={`${siteConfig.player.play} ${episode.data.title}`}><Play size={14} fill="currentColor" aria-hidden="true" /><span>{siteConfig.player.play}</span></Button></li>;
+  const { episodeId, playing, toggleEpisode } = usePlayback();
+  const active = episodeId === episode.id && playing;
+  return <li className="archive-entry"><span className="entry-icon"><Headphones size={19} aria-hidden="true" /></span><Link to="/agent-blog/episodes/$id" params={{ id: episode.id }} className="entry-copy"><p className="content-meta">{siteConfig.episodes.title}<span>{displayDate(episode.data.date)} · {timestamp(episode.data.duration)}</span></p><h3>{episode.data.title}</h3><p className="entry-summary">{episode.data.summary}</p></Link><Button variant="outline" className="entry-play" onClick={() => toggleEpisode(episode)} aria-pressed={active} aria-label={`${active ? siteConfig.player.pause : siteConfig.player.play} ${episode.data.title}`}>{active ? <Pause size={14} aria-hidden="true" /> : <Play size={14} fill="currentColor" aria-hidden="true" />}<span>{active ? siteConfig.player.pause : siteConfig.player.play}</span></Button></li>;
 }
 export function ReviewRow({ review }: { review: PublishedEntry<'reviews'> }) {
   return <li className="review-entry"><div className="review-date"><CalendarDays size={16} aria-hidden="true" /><time dateTime={review.data.date.toISOString()}>{displayDate(review.data.date)}</time></div><Link to="/agent-blog/reviews/$id" params={{ id: review.id }} className="review-copy"><p className="content-meta">{review.data.source}</p><h3>{review.data.title}</h3><p className="entry-summary">{review.data.summary}</p><span className="read-link">{siteConfig.review.read}<ArrowRight size={15} aria-hidden="true" /></span></Link></li>;

@@ -11,12 +11,12 @@ import {
   forwardRef,
   type PointerEvent,
   type ReactNode,
+  type CSSProperties,
   useCallback,
   useRef,
   useState,
 } from "react";
-import { EASE_OUT, SPRING_PRESS } from "./lib/ease";
-import { useHoverCapable } from "./lib/use-hover-capable";
+import { EASE_OUT } from "./lib/ease";
 import { cn } from "./lib/utils";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "outline";
@@ -66,9 +66,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     {
       variant = "primary",
       size = "md",
-      pressScale = 0.93,
+      pressScale = 0.97,
       ripple = false,
       className,
+      style,
       children,
       onPointerDown,
       ...rest
@@ -76,7 +77,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) {
     const reduce = useReducedMotion();
-    const canHover = useHoverCapable();
     const [ripples, setRipples] = useState<Ripple[]>([]);
     const nextId = useRef(0);
 
@@ -105,9 +105,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         ref={ref}
         type="button"
-        whileTap={reduce ? undefined : { scale: pressScale }}
-        whileHover={reduce || !canHover ? undefined : { scale: 1.02 }}
-        transition={SPRING_PRESS}
+        data-beui-button
+        style={{ "--beui-press-scale": pressScale, ...style } as CSSProperties}
         onPointerDown={handlePointerDown}
         className={cn(
           "inline-flex items-center justify-center font-medium select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
@@ -138,7 +137,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                   initial={{ scale: 0.05, opacity: 0.3 }}
                   animate={{ scale: 1, opacity: 0 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 1.6, ease: EASE_OUT }}
+                  transition={{ duration: 0.28, ease: EASE_OUT }}
                   onAnimationComplete={() =>
                     setRipples((prev) => prev.filter((x) => x.id !== r.id))
                   }
@@ -158,22 +157,20 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
     {
       variant = "primary",
       size = "md",
-      pressScale = 0.93,
+      pressScale = 0.97,
       className,
+      style,
       children,
       ...rest
     },
     ref,
   ) {
-    const reduce = useReducedMotion();
-    const canHover = useHoverCapable();
 
     return (
       <motion.a
         ref={ref}
-        whileTap={reduce ? undefined : { scale: pressScale }}
-        whileHover={reduce || !canHover ? undefined : { scale: 1.02 }}
-        transition={SPRING_PRESS}
+        data-beui-button
+        style={{ "--beui-press-scale": pressScale, ...style } as CSSProperties}
         className={cn(
           "inline-flex items-center justify-center font-medium select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
           "transition-colors",

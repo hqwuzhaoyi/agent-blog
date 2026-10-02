@@ -35,11 +35,11 @@ type Controller = {
   setInlineVisible: (visible: boolean) => void;
 };
 const Context = createContext<Controller | null>(null);
-const ActionsContext = createContext<Pick<Controller, "play"> | null>(null);
-export function usePlayerActions() {
-  const actions = useContext(ActionsContext);
-  if (!actions) throw new Error("Player provider missing");
-  return actions;
+const PlaybackContext = createContext<{ episodeId: string | null; playing: boolean; toggleEpisode: (episode: Episode) => void } | null>(null);
+export function usePlayback() {
+  const playback = useContext(PlaybackContext);
+  if (!playback) throw new Error("Player provider missing");
+  return playback;
 }
 export function usePlayer() {
   const controller = useContext(Context);
@@ -101,7 +101,12 @@ export function PublicPlayerProvider({ children }: { children: ReactNode }) {
         })),
       );
   }, []);
-  const actions = useMemo(() => ({ play }), [play]);
+  const toggleEpisode = useCallback((episode: Episode) => {
+    if (episodeRef.current?.id === episode.id && audio.current && !audio.current.paused) audio.current.pause();
+    else play(episode);
+  }, [play]);
+  // Cards subscribe to playback changes, never to the progress clock.
+  const playback = useMemo(() => ({ episodeId: state.episode?.id ?? null, playing: state.playing, toggleEpisode }), [state.episode?.id, state.playing, toggleEpisode]);
   const controller = useMemo<Controller>(
     () => ({
       audio,
@@ -155,7 +160,7 @@ export function PublicPlayerProvider({ children }: { children: ReactNode }) {
     [state, play, setInlineVisible],
   );
   return (
-    <ActionsContext.Provider value={actions}>
+    <PlaybackContext.Provider value={playback}>
       <Context.Provider value={controller}>
         <audio
           ref={audio}
@@ -199,7 +204,7 @@ export function PublicPlayerProvider({ children }: { children: ReactNode }) {
         />
         {children}
       </Context.Provider>
-    </ActionsContext.Provider>
+    </PlaybackContext.Provider>
   );
 }
 export function timestamp(time: number) {
@@ -229,7 +234,7 @@ export function PlayerControls() {
         >
           −10
         </Button>
-        <Button onClick={toggle} size="lg" ripple>
+        <Button onClick={toggle} size="lg">
           {state.playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} fill="currentColor" aria-hidden="true" />}{state.playing ? siteConfig.player.pause : siteConfig.player.play}
         </Button>
         <Button
@@ -276,14 +281,18 @@ export function PlayerControls() {
   );
 }
 export function Chapters({ episode }: { episode: Episode }) {
-  const { play } = usePlayerActions();
+  const { state, play } = usePlayer();
+  const activeIndex = state.episode?.id === episode.id
+    ? episode.data.chapters.findLastIndex(chapter => chapter.start <= state.time)
+    : -1;
   return (
     <ol className="divide-y divide-border">
       {episode.data.chapters.map((chapter, index) => (
         <li key={`${index}-${chapter.start}`}>
           <button
             type="button"
-            className="flex min-h-12 w-full gap-4 py-3 text-left hover:text-primary"
+            className="chapter-button flex min-h-12 w-full gap-4 py-3 text-left"
+            aria-current={index === activeIndex ? "true" : undefined}
             onClick={() => play(episode, chapter.start)}
           >
             <span className="font-mono text-muted-foreground">
@@ -320,7 +329,7 @@ export function EpisodePlayer({ episode }: { episode: Episode }) {
       {active ? (
         <PlayerControls />
       ) : (
-        <Button onClick={() => play(episode)} size="lg" ripple><Play size={18} fill="currentColor" aria-hidden="true" />
+        <Button onClick={() => play(episode)} size="lg"><Play size={18} fill="currentColor" aria-hidden="true" />
           {siteConfig.language === "zh-CN" ? "播放本期" : "Play episode"} ·{" "}
           {timestamp(episode.data.duration)}
         </Button>
@@ -331,6 +340,7 @@ export function EpisodePlayer({ episode }: { episode: Episode }) {
 export function PersistentPlayer() {
   const { state, toggle, dismiss } = usePlayer();
   const [open, setOpen] = useState(false);
+  useEffect(() => { if (!state.episode) setOpen(false); }, [state.episode]);
   if (!state.episode) return null;
   return (
     <>
@@ -353,7 +363,7 @@ export function PersistentPlayer() {
               {siteConfig.player.expand}
             </span>
           </button>
-          <Button onClick={toggle} className="persistent-toggle" ripple aria-label={state.playing ? siteConfig.player.pause : siteConfig.player.play}>
+          <Button onClick={toggle} className="persistent-toggle" aria-label={state.playing ? siteConfig.player.pause : siteConfig.player.play}>
             {state.playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} fill="currentColor" aria-hidden="true" />}<span>{state.playing ? siteConfig.player.pause : siteConfig.player.play}</span>
           </Button>
           <Button

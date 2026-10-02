@@ -192,10 +192,8 @@ export function BottomSheet({
               transition={DRAWER}
               {...gate}
               onClick={() => onOpenChange(false)}
-              // A dim scrim with a light blur. backdrop-blur is GPU-expensive and
-              // re-rasterizes every frame the sheet drags over it; a small radius
-              // plus more opacity keeps the glass look without the jank.
-              className="pointer-events-auto fixed inset-0 z-50 bg-background/40 backdrop-blur-sm"
+              // An opaque tint avoids re-rasterizing background blur during drag.
+              className="pointer-events-auto fixed inset-0 z-50 bg-black/30"
             />
           )}
         </PresenceGate>
