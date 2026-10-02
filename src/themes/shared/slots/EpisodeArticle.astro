@@ -21,7 +21,7 @@ const { episode, Content, labels, archiveUrl, feedUrl } = Astro.props;
   <section class="coffee-chapters" aria-labelledby="chapters-heading">
     <h2 id="chapters-heading">{labels.chapters}</h2>
     <ol><li class="coffee-chapter-marker" aria-hidden="true"></li>{episode.chapters.map((chapter) => (
-      <li id={chapter.id}><a href={`#${chapter.id}`} data-start={chapter.start}><span class="coffee-chapter-time">{chapter.timestamp}</span><span class="coffee-chapter-title">{chapter.title}</span><span class="coffee-chapter-indicator" aria-hidden="true">▶</span><span class="coffee-chapter-progress" aria-hidden="true"></span></a></li>
+      <li id={chapter.id}><button type="button" data-start={chapter.start}><span class="coffee-chapter-time">{chapter.timestamp}</span><span class="coffee-chapter-title">{chapter.title}</span><span class="coffee-chapter-indicator" aria-hidden="true">▶</span><span class="coffee-chapter-progress" aria-hidden="true"></span></button></li>
     ))}</ol>
   </section>
   <div class="coffee-notes"><Content /></div>

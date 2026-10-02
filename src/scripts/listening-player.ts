@@ -38,7 +38,7 @@ export function initListeningPlayer() {
   let slot: HTMLElement | null = null;
   let trigger: HTMLButtonElement | null = null;
   let marker: HTMLElement | null = null;
-  let links: Array<{ element: HTMLAnchorElement; progress: HTMLElement | null; top: number; height: number }> = [];
+  let links: Array<{ element: HTMLButtonElement; progress: HTMLElement | null; top: number; height: number }> = [];
   let lastIndex: number | undefined;
   let lastWidth = 0;
   let lastX: number | undefined;
@@ -80,7 +80,7 @@ export function initListeningPlayer() {
     markerMovement = undefined;
     markerTarget = "";
     marker = document.querySelector<HTMLElement>(".coffee-chapter-marker");
-    links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".coffee-chapters a[data-start]")).map(element => ({ element, progress: element.querySelector<HTMLElement>(".coffee-chapter-progress"), top: 0, height: 0 }));
+    links = Array.from(document.querySelectorAll<HTMLButtonElement>(".coffee-chapters button[data-start]")).map(element => ({ element, progress: element.querySelector<HTMLElement>(".coffee-chapter-progress"), top: 0, height: 0 }));
     lastIndex = undefined;
     resizeObserver.disconnect();
     for (const target of [slot, document.querySelector(".site-header"), document.querySelector(".coffee-article-header")]) if (target) resizeObserver.observe(target);
@@ -292,7 +292,7 @@ export function initListeningPlayer() {
   document.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target : null;
     const start = target?.closest("[data-play-episode]");
-    const chapter = target?.closest<HTMLAnchorElement>(".coffee-chapters a[data-start]");
+    const chapter = target?.closest<HTMLButtonElement>(".coffee-chapters button[data-start]");
     if (!start && !chapter) return;
     // A fast history navigation can expose the new DOM before page-load runs.
     // Refresh from that DOM before responding to an immediate listener action.
