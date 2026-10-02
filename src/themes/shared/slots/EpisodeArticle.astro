@@ -10,7 +10,7 @@ const { episode, Content, labels, archiveUrl, feedUrl } = Astro.props;
     <h1 transition:name={`episode-title-${episode.id}`} transition:animate="initial">{episode.title}</h1>
     <p class="coffee-description">{episode.summary}</p>
   </header>
-  <section class="coffee-player" aria-label={episode.title}>
+  <section id="listen" class="coffee-player" aria-label={episode.title}>
     <div class="coffee-player-slot" data-player-slot={episode.id}>
       <button type="button" class="player-start" data-play-episode>{labels.start} <span aria-hidden="true">▶</span></button>
       <noscript><audio controls preload="metadata" src={episode.audio.url}><a href={episode.audio.url}>{labels.download}</a></audio><style>.player-start{display:none}.coffee-player-slot{min-height:0}</style></noscript>

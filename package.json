@@ -22,7 +22,8 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
-    "astro": "^7.0.7"
+    "astro": "^7.0.7",
+    "motion": "^13.5.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",

@@ -181,7 +181,7 @@ a:focus-visible { outline: 2px solid var(--signal); outline-offset: 5px; border-
   background: var(--signal);
   opacity: 0;
   pointer-events: none;
-  transition: transform 250ms var(--ease-in-out), opacity 160ms ease;
+  transition: opacity 160ms ease;
 }
 .nav-indicator[data-visible="true"] { opacity: .07; }
 ::view-transition-group(*) { animation-duration: 250ms; animation-timing-function: var(--ease-in-out); }
@@ -205,7 +205,7 @@ html[data-client-navigation] :is(.coffee-intro, .coffee-article-header, .coffee-
   background: var(--signal);
   opacity: 0;
   pointer-events: none;
-  transition: transform 250ms var(--ease-in-out), opacity 160ms ease;
+  transition: opacity 160ms ease;
 }
 .coffee-chapter-marker[data-visible="true"] { opacity: .08; }
 .coffee-chapters a.is-current::before { opacity: 0; }
@@ -305,3 +305,10 @@ html[data-theme="quiet-minimal"] { background: var(--paper); }
 @keyframes route-loading { from { transform: translateX(-100%); } to { transform: translateX(285%); } }
 html[data-navigating="true"] .site-header::after { opacity: 1; animation: route-loading 900ms linear infinite; }
 @media (prefers-reduced-motion: reduce) { html[data-navigating="true"] .site-header::after { animation: none; width: 100%; opacity: .35; } }
+
+.coffee-player { scroll-margin-top: 5rem; }
+.player-actions .player-mode-toggle { width: 32px; height: 32px; }
+.player-mode-toggle svg { width: 20px; height: 20px; transition: transform 160ms var(--ease-out); }
+.listening-player[data-mode="docked"] .player-mode-toggle svg { transform: rotate(180deg); }
+@media (max-width: 560px) { .player-actions .player-mode-toggle { width: 40px; height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .player-mode-toggle svg { transition: none; } }

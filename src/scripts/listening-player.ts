@@ -1,4 +1,6 @@
-import { TransitionBeforePreparationEvent } from "astro:transitions/client";
+import { animate as animateMotion } from "motion/mini";
+import { spring } from "motion";
+import { navigate, TransitionBeforePreparationEvent } from "astro:transitions/client";
 import { canExpandPlayer, chapterIndexAt, displayTime, progressWithin, type ListeningEpisode } from "../lib/listening";
 
 export function initListeningPlayer() {
@@ -9,6 +11,7 @@ export function initListeningPlayer() {
   const media = audio;
   const surface = shell.querySelector<HTMLElement>(".player-surface")!;
   const toggle = shell.querySelector<HTMLButtonElement>(".player-toggle")!;
+  const modeToggle = shell.querySelector<HTMLButtonElement>(".player-mode-toggle")!;
   const mute = shell.querySelector<HTMLButtonElement>(".player-mute")!;
   const range = shell.querySelector<HTMLInputElement>(".player-range")!;
   const fill = shell.querySelector<HTMLElement>(".player-range-fill")!;
@@ -25,7 +28,10 @@ export function initListeningPlayer() {
   let pendingSeek: number | undefined;
   let frame = 0;
   let scrollFrame = false;
-  let movement: Animation | undefined;
+  let movement: ReturnType<typeof animateMotion> | undefined;
+  let markerMovement: ReturnType<typeof animateMotion> | undefined;
+  let markerTarget = "";
+  let compactRequested = false;
   let navigating = false;
   let navigationSignal: AbortSignal | undefined;
   let lastChapter = "";
@@ -70,6 +76,9 @@ export function initListeningPlayer() {
   function cachePageElements() {
     slot = document.querySelector<HTMLElement>("[data-player-slot]");
     trigger = document.querySelector<HTMLButtonElement>("[data-play-episode]");
+    markerMovement?.stop();
+    markerMovement = undefined;
+    markerTarget = "";
     marker = document.querySelector<HTMLElement>(".coffee-chapter-marker");
     links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".coffee-chapters a[data-start]")).map(element => ({ element, progress: element.querySelector<HTMLElement>(".coffee-chapter-progress"), top: 0, height: 0 }));
     lastIndex = undefined;
@@ -92,6 +101,7 @@ export function initListeningPlayer() {
     media.pause();
     episode = next;
     started = false;
+    compactRequested = false;
     dismissed = false;
     pendingSeek = undefined;
     lastChapter = "";
@@ -107,6 +117,7 @@ export function initListeningPlayer() {
   }
   function position(animate = true) {
     if (!episode || dismissed) {
+      stopPositionAnimation();
       if (!shell.hidden) shell.hidden = true;
       if (document.body.classList.contains("has-docked-player")) document.body.classList.remove("has-docked-player");
       if (trigger?.hidden) trigger.hidden = false;
@@ -116,8 +127,8 @@ export function initListeningPlayer() {
     const bounds = geometry!;
     const onEpisode = slot?.dataset.playerSlot === episode.id && pageEpisode?.audio.url === episode.audio.url;
     const top = bounds.top - scrollY;
-    const expanded = !!onEpisode && canExpandPlayer(top, top + bounds.height, bounds.headerBottom, bounds.viewportBottom, shell.dataset.mode === "expanded" || Boolean(shell.hidden));
-    const visible = expanded || started;
+    const expanded = !compactRequested && !!onEpisode && canExpandPlayer(top, top + bounds.height, bounds.headerBottom, bounds.viewportBottom, shell.dataset.mode === "expanded" || Boolean(shell.hidden));
+    const visible = expanded || started || (compactRequested && onEpisode);
     if (trigger && trigger.hidden !== (onEpisode && visible)) trigger.hidden = !!(onEpisode && visible);
     if (!visible) {
       if (!shell.hidden) shell.hidden = true;
@@ -127,9 +138,12 @@ export function initListeningPlayer() {
     const mode = expanded ? "expanded" : "docked";
     const changed = shell.dataset.mode !== mode;
     const old = changed && !shell.hidden ? surface.getBoundingClientRect() : undefined;
-    if (changed) movement?.cancel();
+    if (changed) stopPositionAnimation();
     if (shell.hidden) shell.hidden = false;
     if (changed) shell.dataset.mode = mode;
+    const modeLabel = expanded ? shell.dataset.collapseLabel! : shell.dataset.expandLabel!;
+    if (modeToggle.getAttribute("aria-label") !== modeLabel) modeToggle.setAttribute("aria-label", modeLabel);
+    if (modeToggle.getAttribute("aria-expanded") !== String(expanded)) modeToggle.setAttribute("aria-expanded", String(expanded));
     const width = expanded ? bounds.width : Math.min(680, bounds.viewportWidth - 32);
     const widthChanged = lastWidth !== width;
     if (widthChanged) { shell.style.width = `${width}px`; lastWidth = width; }
@@ -143,13 +157,26 @@ export function initListeningPlayer() {
     if (old && changed && animate && !navigating && !reduced.matches) {
       const viewportX = expanded ? x - scrollX : x;
       const viewportY = expanded ? y - scrollY : y;
-      movement = surface.animate([
-        { transform: `translate(${old.left - viewportX}px, ${old.top - viewportY}px) scale(${old.width / width}, ${old.height / playerHeight})` },
-        { transform: "translate(0, 0) scale(1)" },
-      ], { duration: 250, easing: "cubic-bezier(0.77, 0, 0.175, 1)" });
+      // Preserve the currently displayed rectangle when an in-flight switch reverses.
+      // Full transform strings let Motion use native, compositor-driven animation.
+      const control = animateMotion(surface, {
+        transform: [
+          `translate(${old.left - viewportX}px, ${old.top - viewportY}px) scale(${old.width / width}, ${old.height / playerHeight})`,
+          "translate(0, 0) scale(1)",
+        ],
+      }, { type: spring, duration: .25, bounce: 0 });
+      movement = control;
+      void control.then(() => {
+        if (movement === control) { movement = undefined; surface.style.removeProperty("transform"); }
+      });
     }
   }
-  function stopPositionAnimation() { movement?.cancel(); movement = undefined; }
+  function stopPositionAnimation() {
+    movement?.stop();
+    movement = undefined;
+    // Scrolling must immediately return to native document positioning.
+    surface.style.removeProperty("transform");
+  }
   function queuePosition(fromScroll = false) {
     if (fromScroll) { scrollFrame = true; stopPositionAnimation(); }
     if (frame) return;
@@ -206,7 +233,15 @@ export function initListeningPlayer() {
       const height = `${active.height}px`;
       const transform = `translateY(${active.top}px)`;
       if (marker.style.height !== height) marker.style.height = height;
-      if (marker.style.transform !== transform) marker.style.transform = transform;
+      if (markerTarget !== transform) {
+        const hasPreviousPosition = markerTarget !== "";
+        markerTarget = transform;
+        markerMovement?.stop();
+        markerMovement = undefined;
+        if (hasPreviousPosition && !reduced.matches && !geometryDirty) {
+          markerMovement = animateMotion(marker, { transform }, { type: spring, duration: .25, bounce: 0 });
+        } else marker.style.transform = transform;
+      }
     }
   }
   function seek(seconds: number) {
@@ -230,6 +265,19 @@ export function initListeningPlayer() {
     }
     sync();
   }
+  modeToggle.addEventListener("click", () => {
+    if (shell.dataset.mode === "expanded") {
+      compactRequested = true;
+      position();
+      return;
+    }
+    compactRequested = false;
+    position();
+    if (shell.dataset.mode === "expanded") return;
+    if (slot && slot.dataset.playerSlot === episode?.id && pageEpisode?.audio.url === episode?.audio.url) {
+      slot.scrollIntoView({ behavior: reduced.matches ? "instant" : "smooth", block: "center" });
+    } else if (episode) void navigate(`${episode.url}#listen`);
+  });
   toggle.addEventListener("click", () => { if (media.paused) void play(); else media.pause(); });
   shell.querySelectorAll<HTMLButtonElement>("[data-skip]").forEach((button) => button.addEventListener("click", () => seek(media.currentTime + Number(button.dataset.skip))));
   shell.querySelector(".player-dismiss")!.addEventListener("click", () => { media.pause(); dismissed = true; position(); });
@@ -270,7 +318,13 @@ export function initListeningPlayer() {
   addEventListener("touchmove", stopPositionAnimation, { passive: true });
   addEventListener("resize", invalidateGeometry);
   window.visualViewport?.addEventListener("resize", invalidateGeometry);
-  reduced.addEventListener("change", () => { movement?.cancel(); position(false); });
+  reduced.addEventListener("change", () => {
+    stopPositionAnimation();
+    markerMovement?.stop();
+    markerMovement = undefined;
+    if (marker && markerTarget) marker.style.transform = markerTarget;
+    position(false);
+  });
   document.addEventListener("animationend", (event) => {
     if (event.target instanceof Element && event.target.matches(".coffee-player")) invalidateGeometry();
   });
