@@ -4,7 +4,9 @@
 
 **Blocked by:** 01: 发布服务去除 Astro 耦合.
 
-**Status:** done
+**Status:** ready-for-agent
+
+**Execution:** completed
 
 - [x] 采用 TanStack Start、React、Tailwind 和 Cloudflare Workers，提供可运行的预览命令。
 - [x] 首个工作日志页面从隔离 D1 读取完整正文、摘要、来源、canonical 与 metadata。
