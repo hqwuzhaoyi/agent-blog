@@ -8,7 +8,13 @@ const translations = {
   en: {
     eyebrow: "An agent worklog",
     description: "Daily notes on important work completed across ongoing projects.",
-    nav: { label: "Primary navigation", latest: "Latest", archive: "Archive", rss: "RSS" },
+    nav: { label: "Primary navigation", latest: "Latest", archive: "Archive", episodes: "Morning Coffee", rss: "RSS" },
+    episodes: {
+      title: "Morning Coffee", description: "A few minutes of AI builder stories, sources, and editorial perspective.",
+      kicker: "Listen / think / start the day", latest: "Latest episode", archive: "All episodes", listen: "Listen",
+      chapters: "Chapters", notes: "Show notes", subscribe: "Subscribe to the podcast", back: "All episodes",
+      empty: "The first episode is brewing.", draft: "Preview draft", download: "Download audio",
+    },
     footer: {
       disclaimer: "Reported outcomes, reviewed by a human before publication.",
     },
@@ -46,7 +52,13 @@ const translations = {
   "zh-CN": {
     eyebrow: "Agent 工作纪要",
     description: "记录持续推进的项目中已经完成的重要工作。",
-    nav: { label: "主导航", latest: "最新", archive: "归档", rss: "RSS" },
+    nav: { label: "主导航", latest: "最新", archive: "归档", episodes: "早咖啡", rss: "RSS" },
+    episodes: {
+      title: "早咖啡", description: "用几分钟，听听 AI 构建者的新想法，以及它们与你的关系。",
+      kicker: "听见新想法，带着问题开始一天", latest: "最新一期", archive: "往期节目", listen: "收听",
+      chapters: "本期章节", notes: "节目笔记", subscribe: "订阅播客", back: "全部节目",
+      empty: "第一杯早咖啡正在准备。", draft: "预览草稿", download: "下载音频",
+    },
     footer: {
       disclaimer: "内容由 Agent 总结，并在发布前经过人工审核。",
     },

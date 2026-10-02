@@ -4,6 +4,8 @@ import { resolveThemeDefinition } from "../src/themes/resolution";
 
 const component = (name: string) => Symbol(name) as unknown as AstroComponentFactory;
 const sharedSlots = {
+  EpisodeList: component("EpisodeList"),
+  EpisodeArticle: component("EpisodeArticle"),
   Header: component("Header"),
   BlogIntro: component("BlogIntro"),
   ReviewList: component("ReviewList"),
@@ -30,6 +32,8 @@ describe("Theme registry seam", () => {
     expect(Object.keys(theme.slots).sort()).toEqual([
       "ArchiveList",
       "BlogIntro",
+      "EpisodeArticle",
+      "EpisodeList",
       "Footer",
       "Header",
       "ReviewArticle",

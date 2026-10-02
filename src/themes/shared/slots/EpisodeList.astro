@@ -1,0 +1,22 @@
+---
+import type { EpisodeListProps } from "../contracts";
+interface Props extends EpisodeListProps {}
+const { episodes, labels, feedUrl } = Astro.props;
+---
+<section class="coffee-intro">
+  <p class="coffee-eyebrow">{labels.kicker}</p>
+  <h1>{labels.title}<span aria-hidden="true"> /</span></h1>
+  <p class="coffee-description">{labels.description}</p>
+  <a class="coffee-subscribe" href={feedUrl}>{labels.subscribe} ↗</a>
+</section>
+<section class="coffee-list" aria-label={labels.archive}>
+  {episodes.length === 0 ? <p class="coffee-empty">{labels.empty}</p> : episodes.map((episode, index) => (
+    <article class:list={["coffee-entry", { "coffee-entry--latest": index === 0 }]}>
+      <div class="coffee-meta"><time datetime={episode.dateTime}>{episode.displayDate}</time><span>{episode.displayDuration}</span>{episode.draft && <span>{labels.draft}</span>}</div>
+      {index === 0 && <p class="coffee-eyebrow">{labels.latest}</p>}
+      <h2><a href={episode.url}>{episode.title}</a></h2>
+      <p>{episode.summary}</p>
+      <a class="coffee-listen" href={episode.url}>{labels.listen} <span aria-hidden="true">→</span></a>
+    </article>
+  ))}
+</section>

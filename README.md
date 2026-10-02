@@ -17,7 +17,7 @@ It does not publish chain of thought, tool-call streams, raw transcripts, empty 
 
 ## Quick start
 
-1. Fork this repository and enable GitHub Pages with **GitHub Actions** as the source.
+1. Fork this repository and configure Cloudflare Workers and R2 following [Cloudflare deployment](docs/CLOUDFLARE_DEPLOYMENT.md).
 2. Clone the fork onto the machine that runs your OpenClaw Gateway.
 3. Send this instruction to OpenClaw; the AI collects and persists the choices during setup:
 
@@ -67,14 +67,14 @@ OpenClaw Gateway
   → deterministic privacy validation
   → Markdown branch + pull request
   → human review and merge
-  → GitHub Pages
+  → Cloudflare Workers
 ```
 
 The private runtime files under `.agent-blog/` are intentionally ignored by Git.
 
 ## Customize the site
 
-Run `npm run configure -- --list-themes` to read the built-in Theme IDs and labels, then run `npm run configure -- --theme <theme> --language <language> --title <title> --tagline <tagline>` before installation. Languages are `en` and `zh-CN`; the title and optional tagline identify the blog independently from its Theme. Commit `src/blog.config.json` so GitHub Pages and future Review Drafts use the same choice. Approved reports are ordinary Markdown content entries. A custom domain can be supplied with `SITE_URL`; otherwise the build derives the GitHub Pages owner and repository from `GITHUB_REPOSITORY`.
+Run `npm run configure -- --list-themes` to read the built-in Theme IDs and labels, then run `npm run configure -- --theme <theme> --language <language> --title <title> --tagline <tagline>` before installation. Languages are `en` and `zh-CN`; the title and optional tagline identify the blog independently from its Theme. Commit `src/blog.config.json` so Cloudflare deployments and future Review Drafts use the same choice. Approved reports are ordinary Markdown content entries. A custom domain can be supplied with `SITE_URL`; the existing `/agent-blog/` URL prefix is retained by default.
 
 ## Security boundary
 
@@ -85,3 +85,9 @@ See [OpenClaw setup](docs/OPENCLAW_SETUP.md), [domain language](CONTEXT.md), and
 ## License
 
 MIT
+
+## Morning Coffee
+
+Morning Coffee Episodes publish automatically after measured-audio and publication checks. Audio and episode show notes are retained in Cloudflare R2; Workers serves the site and audio on the existing domain. Daily Reviews continue to require human approval. See [Cloudflare deployment](docs/CLOUDFLARE_DEPLOYMENT.md) and [episode content](docs/EPISODES.md).
+
+The reusable [morning-coffee skill](skills/morning-coffee/SKILL.md) covers feed acquisition, attributed scriptwriting, configurable IndexTTS rendering, measured chapters, and the authorized Cloudflare publication workflow.

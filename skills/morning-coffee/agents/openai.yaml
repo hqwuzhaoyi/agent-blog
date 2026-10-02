@@ -1,0 +1,4 @@
+interface:
+  display_name: "早咖啡制作与发布"
+  short_description: "制作有来源的中文 AI 播客，校验真实章节并发布到 Cloudflare"
+  default_prompt: "使用 $morning-coffee 获取近期 AI 素材、制作中文早咖啡，并按当前配置发布。"

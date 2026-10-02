@@ -1,0 +1,16 @@
+---
+import { render } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getEpisodes, presentEpisode } from "@/lib/episodes";
+import { sitePath } from "@/lib/paths";
+import { activeTheme, siteConfig } from "@/site.config";
+export async function getStaticPaths() {
+  return (await getEpisodes(import.meta.env.DEV)).map((episode) => ({ params: { id: episode.id }, props: { episode } }));
+}
+const { episode } = Astro.props;
+const { Content } = await render(episode);
+const EpisodeArticle = activeTheme.slots.EpisodeArticle;
+---
+<BaseLayout title={episode.data.title} description={episode.data.summary} pageClass="episode-page" noindex={episode.data.draft}>
+  <EpisodeArticle episode={presentEpisode(episode, siteConfig.locale)} Content={Content} labels={siteConfig.episodes} archiveUrl={sitePath("episodes/")} feedUrl={sitePath("episodes/rss.xml")} />
+</BaseLayout>

@@ -1,3 +1,5 @@
+import EpisodeList from "./shared/slots/EpisodeList.astro";
+import EpisodeArticle from "./shared/slots/EpisodeArticle.astro";
 import Header from "./shared/slots/Header.astro";
 import BlogIntro from "./shared/slots/BlogIntro.astro";
 import ReviewList from "./shared/slots/ReviewList.astro";
@@ -12,6 +14,8 @@ import type { ThemeSlots } from "./shared/contracts";
 import { themeCatalog } from "./catalog.mjs";
 
 const sharedSlots = {
+  EpisodeList,
+  EpisodeArticle,
   Header,
   BlogIntro,
   ReviewList,
