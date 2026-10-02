@@ -82,3 +82,20 @@ describe("Static Site seam", () => {
     }
   });
 });
+
+describe("Episode publication boundary", () => {
+  test("publishes the episode entry and feed without exposing preview drafts or local audio URLs", async () => {
+    const [home, episodes, feed, combinedFeed] = await Promise.all([
+      builtFile("index.html"), builtFile("episodes/index.html"),
+      builtFile("episodes/rss.xml"), builtFile("rss.xml"),
+    ]);
+    expect(home).toContain('href="/agent-blog/episodes/"');
+    expect(episodes).toContain("早咖啡");
+    expect(episodes).toContain('href="/agent-blog/episodes/rss.xml"');
+    expect(feed).toContain("http://www.itunes.com/dtds/podcast-1.0.dtd");
+    for (const output of [episodes, feed, combinedFeed]) {
+      expect(output).not.toContain("当AI替你决定什么值得打断你");
+      expect(output).not.toContain("preview-audio");
+    }
+  });
+});

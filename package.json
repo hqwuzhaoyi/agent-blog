@@ -14,16 +14,23 @@
     "test:watch": "vitest",
     "review": "node scripts/review.mjs",
     "review:manual": "node scripts/review.mjs manual",
-    "review:fixture": "node scripts/review.mjs fixture --fixture test/fixtures/gateway-day.json --draft test/fixtures/review-draft.json --dry-run"
+    "review:fixture": "node scripts/review.mjs fixture --fixture test/fixtures/gateway-day.json --draft test/fixtures/review-draft.json --dry-run",
+    "deploy": "node scripts/deploy-cloudflare.mjs",
+    "deploy:check": "node scripts/deploy-cloudflare.mjs --dry-run",
+    "episode:publish": "node scripts/publish-episode.mjs",
+    "check:rss": "python3 scripts/check-rss.py"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
-    "astro": "^7.0.7"
+    "astro": "^7.0.7",
+    "motion": "^13.5.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@types/node": "^26.6.4",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.146.0"
   },
   "engines": {
     "node": ">=24"

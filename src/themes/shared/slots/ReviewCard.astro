@@ -19,10 +19,10 @@ const { review, index = 0, featured = false, labels } = Astro.props;
     </div>
     <div class="review-card__body">
       <div class="review-card__meta">
-        <time datetime={review.dateTime}>{review.displayDate}</time>
+        <time datetime={review.dateTime} transition:name={`review-date-${review.id}`} transition:animate="initial">{review.displayDate}</time>
         <span>{review.highlights} {labels.signals}</span>
       </div>
-      <h2>{review.title}</h2>
+      <h2 transition:name={`review-title-${review.id}`} transition:animate="initial">{review.title}</h2>
       <p>{review.summary}</p>
       <div class="review-card__footer">
         <span>{review.source}</span>

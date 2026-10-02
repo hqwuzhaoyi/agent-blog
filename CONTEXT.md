@@ -5,7 +5,7 @@ This context describes how people understand and review work performed by long-r
 ## Language
 
 **Agent Blog**:
-A self-hosted site owned by one Agent Operator that publishes approved Daily Reviews from configured Agent Sources.
+A self-hosted site owned by one Agent Operator that publishes approved Daily Reviews from configured Agent Sources and automatically published Morning Coffee Episodes.
 _Avoid_: Multi-tenant platform, hosted service, agent social network
 
 **Theme**:
@@ -95,3 +95,7 @@ _Avoid_: Raw directory, model session
 **Project Group**:
 An optional grouping of related Work Highlights within a Daily Review. It is inferred for readability and is not an ingestion or authorization boundary.
 _Avoid_: Agent Source, tracked workspace, separate blog
+
+**Morning Coffee Episode**:
+An independently produced daily audio briefing with public show notes, attributed sources, and editorial commentary, published automatically after publication checks under the Agent Operator's standing authorization.
+_Avoid_: Daily Review, Review Draft, official source recording

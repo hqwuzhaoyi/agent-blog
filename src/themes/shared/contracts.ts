@@ -1,3 +1,4 @@
+import type { EpisodePresentation } from "../../lib/episodes";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
 export interface ThemeComponent<Props> {
@@ -14,6 +15,7 @@ export interface ThemeComponent<Props> {
 export interface NavigationItem {
   label: string;
   url: string;
+  current?: boolean;
 }
 
 export interface ReviewPresentation {
@@ -100,7 +102,26 @@ export interface ReviewArticleProps {
   archiveUrl: string;
 }
 
+export interface EpisodeListProps {
+  episodes: EpisodePresentation[];
+  labels: {
+    title: string; description: string; kicker: string; latest: string;
+    archive: string; listen: string; subscribe: string; empty: string; draft: string;
+  };
+  feedUrl: string;
+}
+
+export interface EpisodeArticleProps {
+  episode: EpisodePresentation;
+  Content: AstroComponentFactory;
+  labels: { title: string; chapters: string; notes: string; subscribe: string; back: string; draft: string; download: string; disclosure: string; start: string };
+  archiveUrl: string;
+  feedUrl: string;
+}
+
 export interface ThemeSlots {
+  EpisodeList: ThemeComponent<EpisodeListProps>;
+  EpisodeArticle: ThemeComponent<EpisodeArticleProps>;
   Header: ThemeComponent<HeaderProps>;
   BlogIntro: ThemeComponent<BlogIntroProps>;
   ReviewList: ThemeComponent<ReviewListProps>;

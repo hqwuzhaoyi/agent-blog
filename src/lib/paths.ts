@@ -6,3 +6,7 @@ export function sitePath(path = "") {
 export function reviewPath(id: string) {
   return sitePath(`reviews/${id}/`);
 }
+
+export function episodePath(id: string) {
+  return sitePath(`episodes/${id}/`);
+}

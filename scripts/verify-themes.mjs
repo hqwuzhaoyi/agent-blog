@@ -51,7 +51,7 @@ try {
     requireText(home, `href="${expectedReviewPath}"`, `${id} home page`);
     requireText(home, `href="${expectedArchivePath}"`, `${id} home page`);
     requireText(home, "human before publication", `${id} home page`);
-    requireText(home, "<nav aria-label=", `${id} home page`);
+    if (!/<nav\b[^>]*\baria-label=/.test(home)) throw new Error(`${id} home page has no labelled navigation`);
     requireText(home, "<main>", `${id} home page`);
     requireText(home, "<footer", `${id} home page`);
     for (const productCopy of [

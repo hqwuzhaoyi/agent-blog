@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Verify Cloudflare deployment
 
 on:
   push:
@@ -7,31 +7,19 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-      - name: Build and upload Astro site
-        uses: withastro/action@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v5
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/prepare-cloudflare-assets.mjs
+      - run: npx wrangler deploy --dry-run
+# Live deployment runs through scripts/deploy-cloudflare.mjs on the publisher
+# host so every deployment restores the episode catalog from R2.
