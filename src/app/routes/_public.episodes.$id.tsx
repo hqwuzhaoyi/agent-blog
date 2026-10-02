@@ -9,7 +9,7 @@ import {
 } from "../features/public/player/provider";
 import { displayDate, EpisodeCover } from "../features/public/content";
 import { BouncyAccordion } from "../features/public/beui/bouncy-accordion";
-import { siteConfig } from "../site";
+import { siteConfig, siteOrigin } from "../site";
 export const Route = createFileRoute("/_public/episodes/$id")({
   loader: async ({ params }) => {
     const episode = await getPublishedEpisode({ data: params.id });
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/_public/episodes/$id")({
           links: [
             {
               rel: "canonical",
-              href: `https://gitlog.si/episodes/${episode.id}/`,
+              href: `${siteOrigin}/episodes/${episode.id}/`,
             },
           ],
         }

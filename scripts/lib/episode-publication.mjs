@@ -1,6 +1,7 @@
+import deployment from "../../src/site-origin.json" with { type: "json" };
 import { createHash } from "node:crypto";
 
-export function prepareEpisode({ day, source, publication, parts, duration, audio, shownotes, site = "https://gitlog.si" }) {
+export function prepareEpisode({ day, source, publication, parts, duration, audio, shownotes, site = deployment.origin }) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || new Date(`${day}T00:00:00Z`).toISOString().slice(0, 10) !== day) throw new Error("Invalid episode day");
   if (!source.title?.trim() || !source.disclosure?.trim() || !publication.summary?.trim()) throw new Error("Title, disclosure and summary are required");
   if (!Number.isFinite(duration) || duration <= 3 || !audio?.length) throw new Error("Measured audio is required");

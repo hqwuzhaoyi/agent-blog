@@ -95,3 +95,16 @@ test("production RSS preserves subscriber GUID while canonical link and enclosur
     expect(xml).toContain("<itunes:duration>30</itunes:duration>");
   }
 });
+
+
+test("acceptance on the established domain does not redirect to the pending domain", async () => {
+  const env = { ...bindings(), PUBLIC_ORIGIN: "https://blog.wuzhaoyi.xyz" };
+  const root = await call(new Request("https://blog.wuzhaoyi.xyz/"), env);
+  expect(root.status).toBe(200);
+  expect(root.headers.get("Location")).toBeNull();
+  const prefixed = await call(new Request("https://blog.wuzhaoyi.xyz/agent-blog/episodes/day?from=old"), env);
+  expect(prefixed.status).toBe(308);
+  expect(prefixed.headers.get("Location")).toBe("https://blog.wuzhaoyi.xyz/episodes/day?from=old");
+  const pending = await call(new Request("https://gitlog.si/episodes/day"), env);
+  expect(pending.headers.get("Location")).toBe("https://blog.wuzhaoyi.xyz/episodes/day");
+});

@@ -1,3 +1,5 @@
+import deployment from "../src/site-origin.json";
+export const configuredOrigin = deployment.origin;
 export const legacyOrigin = "https://blog.wuzhaoyi.xyz";
 export const productionOrigin = "https://gitlog.si";
 export function rootPath(path: string) {

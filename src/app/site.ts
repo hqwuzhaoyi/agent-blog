@@ -1,3 +1,5 @@
+import deployment from "../site-origin.json";
+export const siteOrigin = deployment.origin;
 import preferences from "../blog.config.json";
 import { resolveTheme } from "./themes";
 

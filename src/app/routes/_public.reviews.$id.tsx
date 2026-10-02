@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { getPublishedReview } from "../server/public-data";
 import { Article } from "../components/Article";
-import { siteConfig } from "../site";
+import { siteConfig, siteOrigin } from "../site";
 export const Route = createFileRoute("/_public/reviews/$id")({
   loader: async ({ params }) => {
     const review = await getPublishedReview({ data: params.id });
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_public/reviews/$id")({
           links: [
             {
               rel: "canonical",
-              href: `https://gitlog.si/reviews/${loaderData.id}/`,
+              href: `${siteOrigin}/reviews/${loaderData.id}/`,
             },
           ],
         }

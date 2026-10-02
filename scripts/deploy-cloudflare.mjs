@@ -78,6 +78,9 @@ export async function deploy({ dryRun = false } = {}) {
       )
     )
       throw new Error("Refusing to deploy preview bindings to production");
+    const siteOrigin = JSON.parse(await readFile(join(root, "src/site-origin.json"), "utf8")).origin;
+    if (generated.vars?.PUBLIC_ORIGIN !== siteOrigin)
+      throw new Error("PUBLIC_ORIGIN must match src/site-origin.json before deployment");
     console.log(
       wrangler([
         "deploy",

@@ -27,3 +27,8 @@ root：组件/播放器视觉、脚本/文档/测试集成、ego验收、部署�
 sol_foundation：React根路径与公开音频展示归一化。
 sol_services：Worker路由兼容、域名配置、音频与RSS转换、迁移测试。
 sol_public：三个浏览器回归迁移到ego heredoc。
+
+
+## Acceptance domain correction
+
+New domain binding deployment succeeded (`8bfbe5b4-7ba8-4821-bfd4-c37bf1d9acdf`), but Cloudflare reports gitlog.si zone pending and public NS still points to Porkbun. The operator explicitly chose to validate on the established domain first. Active origin is therefore `https://blog.wuzhaoyi.xyz` with root paths, while gitlog.si stays configured for a later DNS cutover. This is the final acceptance scope; new-domain DNS is postponed by the operator.

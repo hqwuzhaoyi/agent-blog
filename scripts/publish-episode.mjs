@@ -1,3 +1,4 @@
+import deployment from "../src/site-origin.json" with { type: "json" };
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { parseArgs } from "node:util";
@@ -23,5 +24,5 @@ if (!values["dry-run"]) {
   await api(`audio/${values.day}/${hash}`, { method: "PUT", headers: { "Content-Type": "audio/mpeg", "Content-Length": String(audio.length) }, body: audio });
   result = await submitContent("episodes", values.day, episode.data, shownotes.trim());
 }
-await writeFile(join(directory, "publication-result.json"), JSON.stringify({ ...result, url: `https://gitlog.si/episodes/${values.day}/`, audio: episode.data.audio.url }, null, 2));
+await writeFile(join(directory, "publication-result.json"), JSON.stringify({ ...result, url: `${deployment.origin}/episodes/${values.day}/`, audio: episode.data.audio.url }, null, 2));
 console.log(JSON.stringify(result));

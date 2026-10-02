@@ -1,7 +1,8 @@
+import deployment from "../src/site-origin.json" with { type: "json" };
 /** Read-only deployment acceptance: SSR plus the actual browser resource URLs. */
 import assert from 'node:assert/strict';
 import { parseArgs } from 'node:util';
-const { values } = parseArgs({ options: { origin: { type: 'string', default: 'https://gitlog.si' } } });
+const { values } = parseArgs({ options: { origin: { type: 'string', default: deployment.origin } } });
 const origin = new URL(values.origin).origin;
 const checked = new Set();
 for (const path of ['/', '/admin/']) {

@@ -1,4 +1,4 @@
-import { normalizedRequest, rootPath, legacyOrigin, productionOrigin } from "./site-urls";
+import { normalizedRequest, rootPath, legacyOrigin, productionOrigin, configuredOrigin } from "./site-urls";
 import start from "@tanstack/react-start/server-entry";
 import audio from "./worker.mjs";
 import { handlePublication } from "./publication";
@@ -10,14 +10,16 @@ export default {
     const url = new URL(request.url),
       originalPath = url.pathname;
     const path = rootPath(originalPath);
+    const canonicalOrigin = new URL(env.PUBLIC_ORIGIN || configuredOrigin).origin;
+    const redirectOrigin = [legacyOrigin, productionOrigin].includes(url.origin) && url.origin !== canonicalOrigin;
     const producer = path.startsWith("/api/");
     const staticAsset = path.startsWith("/assets/") || path === "/favicon.svg" || path === "/robots.txt";
     if (!producer && !staticAsset && ["GET", "HEAD"].includes(request.method) &&
-      (originalPath !== path || url.origin === legacyOrigin)) {
+      (originalPath !== path || redirectOrigin)) {
       const target = new URL(request.url);
-      if (url.origin === legacyOrigin) target.host = new URL(productionOrigin).host;
+      if (redirectOrigin) { const canonical = new URL(canonicalOrigin); target.protocol = canonical.protocol; target.host = canonical.host; }
       target.pathname = path;
-      return Response.redirect(target.href, 308);
+      return new Response(null, { status: 308, headers: { Location: target.href, "Cache-Control": "no-store" } });
     }
     request = normalizedRequest(request);
     if (path.startsWith("/assets/") || path === "/favicon.svg" || path === "/robots.txt") return env.ASSETS.fetch(request);

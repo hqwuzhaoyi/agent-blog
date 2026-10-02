@@ -1,3 +1,4 @@
+import deployment from "../../src/site-origin.json" with { type: "json" };
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 export async function contentClient() {
@@ -12,7 +13,7 @@ export async function contentClient() {
   const url =
     process.env.BLOG_PUBLICATION_URL ??
     config.url ??
-    "https://gitlog.si";
+    deployment.origin;
   const token = process.env.BLOG_SUBMIT_TOKEN ?? config.token;
   if (!token)
     throw new Error(

@@ -51,7 +51,7 @@ function item(
   config: FeedConfig,
 ) {
   const link = `${origin}/${entry.collection}/${encodeURIComponent(entry.id)}/`;
-  const guid = origin === productionOrigin ? `${legacyOrigin}/agent-blog/${entry.collection}/${encodeURIComponent(entry.id)}/` : link;
+  const guid = [productionOrigin, legacyOrigin].includes(origin) ? `${legacyOrigin}/agent-blog/${entry.collection}/${encodeURIComponent(entry.id)}/` : link;
   const episode =
     entry.collection === "episodes"
       ? (entry as PublishedEntry<"episodes">)

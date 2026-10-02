@@ -4,7 +4,7 @@ import { NotebookPen } from "lucide-react";
 import { getPublicReviews } from "../server/public-data";
 import { EmptyContent, ReviewRow } from "../features/public/content";
 import { text } from "../features/public/locale";
-import { siteConfig } from "../site";
+import { siteConfig, siteOrigin } from "../site";
 
 const description = text(
   "记录项目中的重要进展、解决的问题，以及人与 Agent 共同完成的工作。",
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_public/reviews/")({
       { title: `${siteConfig.nav.latest} · ${siteConfig.title}` },
       { name: "description", content: description },
     ],
-    links: [{ rel: "canonical", href: "https://gitlog.si/reviews/" }],
+    links: [{ rel: "canonical", href: `${siteOrigin}/reviews/` }],
   }),
   pendingComponent: () => <p role="status" className="py-12">{text("正在加载工作日志…", "Loading worklogs…")}</p>,
   errorComponent: ({ reset }) => (
