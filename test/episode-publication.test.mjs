@@ -11,7 +11,7 @@ describe("Automatic episode preparation", () => {
     const result = prepareEpisode(episode());
     expect(result.data.chapters.map((chapter) => chapter.start)).toEqual([3, 7.5, 12, 16.5]);
     expect(result.data.audio.length).toBe(11);
-    expect(result.data.audio.url).toMatch(/^https:\/\/blog.wuzhaoyi.xyz\/agent-blog\/audio\/2026-10-02\/[a-f0-9]{64}\.mp3$/);
+    expect(result.data.audio.url).toMatch(/^https:\/\/blog\.wuzhaoyi\.xyz\/audio\/2026-10-02\/[a-f0-9]{64}\.mp3$/);
     expect(result.data.draft).toBe(false);
     expect(prepareEpisode(episode()).audioKey).toBe(result.audioKey);
   });

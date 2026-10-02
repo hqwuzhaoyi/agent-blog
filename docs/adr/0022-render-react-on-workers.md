@@ -1,0 +1,3 @@
+# Render React on Workers with beUI and a focused review workbench
+
+The Agent Operator chose to replace Astro with React, use beUI for reader controls, and adapt shadcn-admin for the reviewer workbench. TanStack Start provides public SSR and shares the Router ecosystem with the admin source; the public and reviewer layouts load independently while one root audio controller survives navigation. Content publication remains governed by ADR-0021: D1 revisions and explicit Review Approval, private R2 audio, and no rebuild or PR for publishing content. Existing Theme identities and prepared presentation boundaries remain, with React components replacing framework-specific slots.

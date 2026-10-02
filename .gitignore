@@ -6,3 +6,11 @@ dist/
 public/preview-audio/
 .wrangler/
 .cloudflare-assets/
+
+.dev.vars
+worker-configuration.d.ts
+dist-react/
+.cloudflare/
+
+.dev.vars.*
+!.dev.vars.react-preview.example

@@ -1,29 +1,9 @@
 # Morning Coffee episodes
 
-Audio and automatically published show notes are stored in Cloudflare R2. Cloudflare Workers serves pages, RSS, and audio. Morning Coffee publication is automatic under the operator's standing authorization; Daily Reviews retain their human review gate.
+D1 stores published titles, summaries, show notes, ordered measured chapters and audio metadata. Private R2 stores final MP3s, served through Cloudflare Workers with stable content-addressed URLs and byte ranges. Publishing validates the uploaded audio and writes D1 without building or deploying the application.
 
-## Content
+The existing Hermes schedule automatically publishes after complete audio validation and measured chapter checks. Worklogs use a separate human confirmation gate. See [Cloudflare deployment](CLOUDFLARE_DEPLOYMENT.md) for authentication, commands, API limits and recovery.
 
-Each `src/data/episodes/<YYYY-MM-DD>.md` entry provides title, summary, date, measured duration in seconds, an AI voice disclosure, audio metadata (`url`, byte `length`, and `audio/mpeg` type), and ordered chapters (`title`, measured `start` in seconds).
+`src/data/episodes` remains a historical fixture source. Its October 1 seed is an unpublished local preview and is never imported into live D1. Local development normally reads the local D1 database; use the isolated preview seeder and playable local fixture. Private `public/preview-audio` files are stripped by the deployment wrapper.
 
-Published entries require an HTTPS audio URL. Use the stable Workers audio URL on the blog domain rather than an expiring signed URL. The R2 bucket remains private. Store only the final mixed MP3; keep voice tracks, synthesis parts, and private production records locally. R2 credentials belong in private runtime configuration, never in content or Git.
-
-A `draft: true` entry appears only in the development server and receives a noindex directive. Production pages and both RSS feeds exclude drafts. The checked-in October 1 seed remains a local preview draft. Its published counterpart is restored from R2 during deployment.
-
-## Local preview
-
-Run `npm ci` and `npm run dev`. The episode collection is at `/agent-blog/episodes/` and the seed page is at `/agent-blog/episodes/2026-10-01/`.
-
-The seed's local preview MP3 is copied to `public/preview-audio/2026-10-01.mp3`, which is ignored by Git. These files are only for local preview. Remove `public/preview-audio/` before creating a production build intended for manual deployment. Clean CI checkouts contain no preview audio.
-
-## RSS
-
-`/agent-blog/episodes/rss.xml` contains only published podcast episodes. The site's `/agent-blog/rss.xml` also includes published episodes alongside Daily Reviews. Episode items include the stable audio URL, actual byte length, MIME type, and measured duration.
-
-Chapter links seek the player to their measured offset, play on click, and preserve a shareable page anchor. Loading an anchored page seeks without autoplay.
-
-## Automatic publication
-
-The publisher uses `publication.json` (summary and chapter section references), public `shownotes.md`, and the completed renderer artifacts. It derives duration using ffprobe, completely decodes the MP3, computes chapter offsets from measured parts, uploads content-addressed audio, and deploys the entire site with the full R2 episode catalog.
-
-See [Cloudflare deployment](CLOUDFLARE_DEPLOYMENT.md) for commands, scheduling, and recovery. Telegram delivery remains exclusively owned by the existing Hermes cron.
+`/episodes/rss.xml` includes only published episodes; `/rss.xml` combines published episodes and reviews. Enclosures use exact byte lengths, audio/mpeg MIME and measured duration. Chapter buttons seek and play without anchor navigation or page scrolling.

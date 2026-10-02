@@ -1,11 +1,7 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname === "/") {
-      url.pathname = "/agent-blog/";
-      return Response.redirect(url.toString(), 302);
-    }
-    const match = /^\/agent-blog\/audio\/(\d{4}-\d{2}-\d{2})\/([a-f0-9]{64})\.mp3$/.exec(url.pathname);
+    const match = /^\/(?:agent-blog\/)?audio\/(\d{4}-\d{2}-\d{2})\/([a-f0-9]{64})\.mp3$/.exec(url.pathname);
     if (!match) return env.ASSETS.fetch(request);
     if (!["GET", "HEAD"].includes(request.method)) {
       return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD" } });

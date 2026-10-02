@@ -1,0 +1,331 @@
+
+.public-site{--public-gutter:clamp(20px,4vw,56px);color:var(--foreground);font-size:16px;line-height:1.65;background:var(--background)}
+.public-site a{text-decoration:none}
+.public-site ul,.public-site ol{margin:0;padding:0;list-style:none}
+.public-site button{font-family:inherit}
+.public-site svg{flex-shrink:0}
+.public-site .eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 18px;font-size:11px;font-weight:650;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.public-site .public-header{border-bottom:1px solid var(--border);background:var(--background)}
+.public-site .public-header-inner{display:flex;align-items:center;gap:28px;justify-content:space-between;max-width:1280px;margin:auto;padding:22px var(--public-gutter)}
+.public-site .public-brand{display:flex;gap:11px;align-items:center;color:var(--foreground)!important;font-size:17px;font-weight:700;letter-spacing:-.035em;white-space:nowrap}
+.public-site .brand-mark{display:grid;place-items:center;background:var(--primary);color:var(--background);width:42px;height:42px;border-radius:14px}
+.public-site .public-brand small{display:block;margin-top:1px;font-size:10px;font-weight:400;color:var(--muted);letter-spacing:.03em}
+.public-site .public-nav{display:flex;gap:5px;align-items:center}
+.public-site .public-nav a{color:var(--muted);font-size:13px;padding:9px 14px;border-radius:999px;white-space:nowrap}
+.public-site .public-nav .is-active{background:color-mix(in srgb,var(--primary) 8%,transparent);color:var(--primary)}
+.public-site .header-actions{display:flex;align-items:center;gap:12px}
+.public-site .header-search{display:grid;place-items:center;width:38px;height:38px;color:var(--muted)!important;border-radius:50%}
+.public-site .subscribe-button{height:38px;min-height:38px;font-size:12px;padding:0 17px;background:var(--surface)}
+.public-site .mobile-menu-button{display:none}
+.public-site .public-main{max-width:1280px;margin:auto;padding:0 var(--public-gutter) 88px}
+.public-site .public-hero{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(40px,7vw,96px);align-items:center;padding:64px 0 72px}
+.public-site .hero-copy{min-width:0}
+.public-site .hero-copy h1{font-size:clamp(38px,4.5vw,66px);line-height:1.17;letter-spacing:-.055em;max-width:670px;margin:0 0 24px;font-weight:650;text-wrap:balance}
+.public-site .hero-summary{font-size:17px;line-height:1.85;max-width:510px;color:var(--muted);margin:0 0 24px}
+.public-site .live-dot{height:7px;width:7px;border-radius:50%;background:var(--accent)}
+.public-site .eyebrow-separator{color:var(--border);padding:0 4px}
+.public-site .hero-meta{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted)}
+.public-site .hero-meta span:last-child{display:flex;align-items:center;gap:6px}
+.public-site .hero-listen{display:flex;gap:22px;align-items:center;margin:28px 0}
+.public-site .hero-listen .episode-inline-player{margin:0;border:none;padding:0;background:none;flex:0 1 auto}
+.public-site .hero-listen .episode-inline-player:has(.player-control-group){width:100%}
+.public-site .hero-notes{font-size:13px;white-space:nowrap}
+.public-site .hero-listen:has(.player-control-group){align-items:flex-start;flex-direction:column}
+.public-site .hero-chapters{border-top:1px solid var(--border);padding-top:19px;max-width:560px}
+.public-site .hero-chapters>p{display:flex;gap:9px;align-items:center;font-size:11px;color:var(--muted);margin:0 0 6px}
+.public-site .hero-chapters>p span{font-family:monospace;color:var(--accent)}
+.public-site .hero-chapters ol{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.public-site .hero-chapters li{border:none!important}
+.public-site .hero-chapters button{min-height:34px;font-size:12px;padding:5px 10px;gap:9px}
+.public-site .hero-chapters button>span:first-child{font-size:11px}
+.public-site .featured-cover-link{align-self:center;display:block;max-width:460px}
+.public-site .episode-cover{aspect-ratio:1.04;overflow:hidden;position:relative;display:flex;flex-direction:column;justify-content:space-between;border-radius:22px;padding:28px;background:#254d3d;color:#f3eddc;box-shadow:0 16px 40px -28px #153d2a55;isolation:isolate}
+.public-site .episode-cover:after{content:'';position:absolute;inset:0;z-index:-1;opacity:.14;background-image:radial-gradient(#e9e4d1 .6px,transparent .6px);background-size:5px 5px}
+.public-site .cover-top{display:flex;justify-content:space-between;font-size:11px;line-height:1.4;letter-spacing:.17em;font-weight:500}
+.public-site .cover-top>span:last-child{text-align:right;font-family:monospace;letter-spacing:.04em}
+.public-site .cover-orbit{position:absolute;inset:19% 19% 12%;display:grid;place-items:center;z-index:-1}
+.public-site .cover-orbit svg{width:100%;height:100%;overflow:visible}
+.public-site .cover-orbit circle{fill:none;stroke:#f1ecd533;stroke-width:1}
+.public-site .cover-orbit path{fill:none;stroke:#f1ecd5;stroke-width:8;stroke-linecap:round}
+.public-site .cover-sun{position:absolute;width:26px;height:26px;border-radius:50%;background:#ce8864;right:6%;top:18%;box-shadow:0 0 0 7px #ce88641a}
+.public-site .cover-bottom{display:flex;justify-content:space-between;align-items:center;font-size:clamp(28px,3vw,45px);font-weight:450;letter-spacing:-.06em;line-height:1.15}
+.public-site .cover-caption{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);padding:15px 2px}
+.public-site .public-section{padding:52px 0;border-top:1px solid var(--border)}
+.public-site .section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px}
+.public-site .section-heading .eyebrow{margin-bottom:9px;font-size:10px}
+.public-site .section-heading h2{display:flex;gap:12px;align-items:center;font-size:27px;font-weight:600;letter-spacing:-.04em;margin:0}
+.public-site .section-count{font-size:12px;font-family:monospace;font-weight:400;border:1px solid var(--border);padding:3px 8px;border-radius:999px;color:var(--muted);letter-spacing:0}
+.public-site .section-link{display:flex;align-items:center;gap:9px;font-size:12px;white-space:nowrap}
+.public-site .episode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:23px}
+.public-site .episode-card{border:1px solid var(--border);border-radius:18px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column}
+.public-site .episode-card-art{position:relative;display:block;padding:12px 12px 0}
+.public-site .episode-cover-compact{aspect-ratio:1.8;border-radius:11px;padding:20px;box-shadow:none}
+.public-site .episode-cover-compact .cover-top{font-size:8px}
+.public-site .episode-cover-compact .cover-bottom{font-size:24px}
+.public-site .episode-cover-compact .cover-orbit{inset:8% 26%}
+.public-site .episode-cover-compact .cover-sun{width:14px;height:14px;box-shadow:0 0 0 4px #ce88641a}
+.public-site .episode-cover-compact .cover-orbit path{stroke-width:6}
+.public-site .card-open{position:absolute;right:24px;top:24px;display:grid;place-items:center;width:28px;height:28px;color:#f3eddc;background:#f3eddc14;border-radius:50%}
+.public-site .episode-card-body{padding:20px 22px 22px;display:flex;flex-direction:column;align-items:flex-start;flex:1}
+.public-site .content-meta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:11px;color:var(--muted);margin:0 0 10px}
+.public-site .content-meta>span:last-child{margin-left:auto;font-family:monospace}
+.public-site .episode-card-title{color:var(--foreground)!important;font-size:20px;font-weight:600;line-height:1.5;letter-spacing:-.025em}
+.public-site .episode-card-summary{font-size:12px;line-height:1.85;color:var(--muted);margin:10px 0 18px}
+.public-site .card-play{margin-top:auto;height:35px;min-height:35px;font-size:11px;padding:0 15px}
+.public-site .review-section-layout{display:grid;grid-template-columns:270px 1fr;gap:60px}
+.public-site .review-intro h3{font-size:26px;font-weight:500;line-height:1.6;letter-spacing:-.05em;white-space:pre-line;margin:5px 0 17px}
+.public-site .review-intro p{max-width:230px;font-size:12px;line-height:1.9;color:var(--muted)}
+.public-site .review-entry{display:grid;grid-template-columns:135px 1fr;gap:25px;padding:24px 0;border-bottom:1px solid var(--border)}
+.public-site .review-entry:first-child{padding-top:6px}
+.public-site .review-date{display:flex;gap:7px;align-items:center;align-self:start;font-size:10px;color:var(--muted);padding-top:4px;flex-wrap:wrap}
+.public-site .review-copy{min-width:0}
+.public-site .review-copy .content-meta{margin-bottom:6px;font-size:10px}
+.public-site .review-copy h3,.public-site .entry-copy h3{font-size:18px;font-weight:600;line-height:1.65;letter-spacing:-.02em;margin:0 0 9px;color:var(--foreground)}
+.public-site .entry-summary{font-size:12px;color:var(--muted);line-height:1.9;margin:0}
+.public-site .read-link{display:flex;align-items:center;gap:7px;font-size:11px;margin-top:12px}
+.public-site .public-footer{max-width:1280px;margin:auto;padding:36px var(--public-gutter) 112px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:24px}
+.public-site .footer-brand{font-size:16px;font-weight:650;color:var(--foreground)!important}
+.public-site .public-footer p{color:var(--muted);font-size:11px;margin:9px 0 0}
+.public-site .footer-links{display:flex;align-items:start;gap:25px}
+.public-site .footer-links a{display:flex;gap:7px;align-items:center;font-size:11px}
+.public-site .public-footer .footer-note{grid-column:1/-1;padding-top:25px;margin-top:0;border-top:1px solid var(--border);font-family:monospace;font-size:10px}
+.public-site .public-list-page,.public-site .archive-page{padding:55px 0 0}
+.public-site .public-page-heading{margin:0 0 38px;max-width:700px}
+.public-site .public-page-heading h1{font-size:clamp(38px,4vw,54px);letter-spacing:-.05em;font-weight:600;line-height:1.2;margin:0 0 17px}
+.public-site .public-page-heading>p:not(.eyebrow){font-size:15px;color:var(--muted);max-width:560px}
+.public-site .page-total{display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);margin-top:8px}
+.public-site .archive-toolbar{border:1px solid var(--border);background:var(--surface);border-radius:18px;padding:22px 25px;margin-bottom:30px}
+.public-site .archive-filter-form{display:grid;grid-template-columns:1fr 200px;gap:20px;margin-top:22px}
+.public-site .archive-filter-form label{font-size:11px;color:var(--muted)}
+.public-site .archive-filter-form select{min-height:44px;font:inherit;font-size:13px;display:block;width:100%;margin-top:7px;border:1px solid var(--border);border-radius:10px;padding:11px 12px;background:var(--background);color:var(--foreground)}
+.public-site .archive-results-heading{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:10px}
+.public-site .archive-results-heading p{font-size:11px;margin:0;color:var(--muted)}
+.public-site .archive-results .review-entry{grid-template-columns:155px 1fr;padding:25px 0}
+.public-site .archive-entry{display:flex;align-items:center;gap:20px;border-bottom:1px solid var(--border);padding:25px 0}
+.public-site .entry-icon{width:40px;height:40px;border:1px solid var(--border);border-radius:13px;display:grid;place-items:center;background:var(--surface);color:var(--primary);flex-shrink:0}
+.public-site .entry-copy{flex:1;min-width:0}
+.public-site .entry-copy .content-meta>span:last-child{margin-left:0}
+.public-site .entry-play{flex-shrink:0}
+.public-site .public-empty{display:flex;gap:14px;align-items:center;padding:32px;border:1px dashed var(--border);border-radius:16px;color:var(--muted);font-size:14px;margin:25px 0}
+.public-site .public-detail{padding-top:45px}
+.public-site .detail-back{display:inline-flex;align-items:center;gap:8px;font-size:11px;margin-bottom:28px;color:var(--muted)!important}
+.public-site .episode-detail-hero{display:grid;grid-template-columns:1.5fr .65fr;gap:65px;align-items:center;padding:5px 0 40px}
+.public-site .episode-detail-hero h1{font-size:clamp(32px,4vw,52px);line-height:1.3;letter-spacing:-.05em;margin:17px 0;font-weight:650}
+.public-site .episode-detail-summary{font-size:17px;color:var(--muted);line-height:1.8}
+.public-site .episode-disclosure{display:flex;gap:7px;align-items:flex-start;font-size:11px;color:var(--muted);margin-top:20px;max-width:620px}
+.public-site .episode-disclosure svg{margin-top:3px}
+.public-site .detail-body-layout{display:grid;grid-template-columns:minmax(0,720px) 265px;gap:65px;align-items:start;border-top:1px solid var(--border);padding-top:38px}
+.public-site .show-notes h2{font-size:21px;font-weight:600;margin:0 0 26px}
+.public-site .show-notes .article-body{font-size:17px;line-height:1.95}
+.public-site .detail-chapters{min-width:0}
+.public-site .detail-chapters h2{font-size:14px;font-weight:600;margin:0 0 15px}
+.public-site .detail-chapters .chapter-button{font-size:12px;gap:12px;min-height:45px;padding:10px 10px}
+.public-site .download-link{display:inline-flex;align-items:center;gap:8px;padding:12px 19px;border:1px solid var(--border);border-radius:999px;font-size:12px;margin-top:28px}
+.public-site .reading-article{max-width:760px;margin:50px auto 0;padding:0 0 30px}
+.public-site .reading-article header{padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:35px}
+.public-site .reading-article h1{font-size:clamp(32px,4vw,49px);font-weight:600;letter-spacing:-.045em;line-height:1.4;margin:18px 0}
+.public-site .article-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent)}
+.public-site .article-meta{font-size:11px;line-height:1.8}
+.public-site .article-summary{font-size:17px;line-height:1.9;color:var(--muted);margin:22px 0 0}
+.public-site .article-body ul{list-style:disc}
+.public-site .article-body ol{list-style:decimal}
+.public-site .article-body ul,.public-site .article-body ol{margin:1em 0;padding-left:1.5em}
+.public-site .article-body{font-size:17px}
+.public-site .episode-inline-player{margin:25px 0 30px;border:1px solid var(--border);border-radius:18px;padding:23px;background:var(--surface)}
+.public-site .player-control-group{max-width:600px}
+.public-site .player-control-group .player-seek-control,.public-site .player-control-group .player-volume-control{font-size:11px;color:var(--muted)}
+.public-site .player-control-group>p{font-size:11px;margin-top:0}
+.public-site .player-progress-caption{font-size:10px!important;font-family:monospace}
+.public-site .player-volume-row{display:flex;gap:12px;align-items:center;border-top:1px solid var(--border);padding-top:16px;margin-top:20px}
+.public-site .player-volume-control{display:grid;gap:5px;width:180px;max-width:calc(100% - 56px);min-width:0}
+.public-site .player-volume-slider{width:100%;min-width:0;border:1px solid var(--border)}
+.public-site .player-seek-slider{margin-top:8px;background:color-mix(in srgb,var(--primary) 9%,var(--background))}
+.public-site .player-seek-slider>[aria-hidden]>div{background:color-mix(in srgb,var(--primary) 28%,transparent)}
+.public-site .player-seek-slider [role=slider]{background:var(--primary)}
+.public-site .player-volume-row .player-mute{width:44px;height:44px;min-height:44px;padding:0}
+.public-site .persistent-player{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 32px));z-index:40;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:0 12px 40px -18px #13282055;padding:10px 14px}
+.public-site .persistent-player[hidden]{display:none}
+.public-site .persistent-player-inner{display:flex;gap:15px;align-items:center}
+.public-site .persistent-cover{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;border-radius:10px;background:var(--primary);color:var(--background)}
+.public-site .persistent-player-title{min-width:0;flex:1;text-align:left;background:none;border:none;padding:0;color:var(--foreground)}
+.public-site .persistent-player-title>span:first-child{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:600}
+.public-site .persistent-player-title>span:last-child{display:flex;gap:7px;align-items:center;font-size:10px;color:var(--muted);margin-top:2px}
+.public-site .persistent-player .persistent-toggle{height:38px;min-height:38px;padding:0 16px;font-size:12px}
+.public-site .persistent-player .persistent-dismiss{width:32px;height:32px;padding:0}
+.public-site.public-player-sheet{font-size:15px}
+.public-site.public-player-sheet .player-control-group{padding-top:14px}
+.public-site.public-player-sheet h3{font-size:13px}
+.public-site.public-player-sheet ol button{font-size:13px}
+.public-site .mobile-nav{display:flex;flex-direction:column;padding:14px 0 25px;gap:5px}
+.public-site .mobile-nav a{padding:12px 15px;border-radius:12px;font-size:16px}
+.public-site .mobile-nav .is-active{background:color-mix(in srgb,var(--primary) 8%,transparent)}
+.public-site .subscription-options{display:grid;gap:12px;padding:16px 0 24px}
+.public-site .subscription-options a{display:flex;gap:14px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:20px}
+.public-site .subscription-options a>span{flex:1}
+.public-site .subscription-options strong{font-size:14px;font-weight:600}
+.public-site .subscription-options small{display:block;color:var(--muted);font-size:11px;margin-top:6px}
+@media(min-width:1600px){
+.public-site .public-hero{padding-top:80px;padding-bottom:90px}}
+@media(max-width:1050px){
+.public-site .public-nav{gap:0}
+.public-site .public-nav a{padding:8px 9px}
+.public-site .public-header-inner{gap:15px}
+.public-site .public-brand small{display:none}
+.public-site .public-hero{gap:40px}
+.public-site .review-section-layout{grid-template-columns:200px 1fr;gap:35px}
+.public-site .detail-body-layout{gap:35px;grid-template-columns:minmax(0,1fr) 240px}
+.public-site .episode-detail-hero{gap:40px}
+.public-site .episode-grid{gap:16px}
+.public-site .episode-card-body{padding:18px}}
+@media(max-width:760px){
+.public-site .public-header-inner{padding:17px 20px;gap:12px}
+.public-site .public-brand{font-size:16px;gap:9px}
+.public-site .brand-mark{width:34px;height:34px;border-radius:11px}
+.public-site .public-nav,.public-site .subscribe-button{display:none}
+.public-site .mobile-menu-button{display:inline-flex;width:34px;height:34px}
+.public-site .header-actions{gap:3px}
+.public-site .header-search{width:32px;height:34px}
+.public-site .public-main{padding-bottom:60px}
+.public-site .public-hero{grid-template-columns:1fr;gap:30px;padding:36px 0 38px}
+.public-site .hero-copy h1{font-size:42px;line-height:1.2;letter-spacing:-.065em;margin-bottom:18px}
+.public-site .hero-summary{font-size:14px;line-height:1.85;margin-bottom:18px}
+.public-site .hero-meta{font-size:11px}
+.public-site .hero-copy .eyebrow{font-size:11px;margin-bottom:18px;gap:7px}
+.public-site .hero-listen{gap:20px;margin:23px 0}
+.public-site .hero-notes{font-size:11px}
+.public-site .hero-listen button{height:44px;font-size:13px;padding:0 19px}
+.public-site .hero-chapters{padding-top:15px}
+.public-site .hero-chapters ol{gap:0 10px}
+.public-site .hero-chapters button{font-size:11px}
+.public-site .featured-cover-link{max-width:none}
+.public-site .featured-cover-link>.episode-cover{aspect-ratio:1.38;padding:23px;border-radius:18px}
+.public-site .featured-cover-link .cover-orbit{inset:6% 24%}
+.public-site .featured-cover-link .cover-top{font-size:9px}
+.public-site .featured-cover-link .cover-bottom{font-size:34px}
+.public-site .cover-caption{font-size:10px;padding:12px 1px 0}
+.public-site .public-section{padding:32px 0}
+.public-site .section-heading{align-items:center;gap:10px;margin-bottom:20px}
+.public-site .section-heading h2{font-size:23px;gap:8px}
+.public-site .section-heading .eyebrow{font-size:11px;margin-bottom:7px}
+.public-site .section-count{font-size:10px;padding:2px 6px}
+.public-site .section-link{font-size:10px;gap:5px}
+.public-site .episode-grid{grid-template-columns:1fr;gap:20px}
+.public-site .episode-card{border-radius:16px}
+.public-site .episode-card-art{padding:10px 10px 0}
+.public-site .episode-cover-compact{aspect-ratio:1.85;padding:19px}
+.public-site .episode-card-body{padding:18px 20px 20px}
+.public-site .episode-card-title{font-size:19px}
+.public-site .episode-card-summary{font-size:12px;margin-bottom:16px}
+.public-site .card-play{height:38px;min-height:38px;font-size:12px}
+.public-site .review-section-layout{grid-template-columns:1fr;gap:15px}
+.public-site .review-intro{display:none}
+.public-site .review-entry,.public-site .archive-results .review-entry{grid-template-columns:1fr;gap:9px;padding:21px 0}
+.public-site .review-date{font-size:11px}
+.public-site .review-copy h3,.public-site .entry-copy h3{font-size:17px;line-height:1.65}
+.public-site .review-copy .content-meta{font-size:11px}
+.public-site .review-copy .entry-summary{font-size:12px}
+.public-site .public-footer{padding-top:28px;grid-template-columns:1fr;gap:24px}
+.public-site .footer-links{flex-wrap:wrap;gap:14px}
+.public-site .public-footer .footer-note{padding-top:20px}
+.public-site .public-list-page,.public-site .archive-page{padding-top:35px}
+.public-site .public-page-heading{margin-bottom:27px}
+.public-site .public-page-heading h1{font-size:37px}
+.public-site .public-page-heading>p:not(.eyebrow){font-size:13px}
+.public-site .archive-toolbar{padding:18px 16px;border-radius:16px}
+.public-site .archive-filter-form{grid-template-columns:minmax(0,1fr) 120px;gap:12px;margin-top:18px}
+.public-site .archive-filter-form select{font-size:12px;padding:10px;min-height:44px}
+.public-site .archive-entry{gap:11px;padding:22px 0}
+.public-site .archive-entry>.entry-icon{display:none}
+.public-site .entry-copy .content-meta{display:block;font-size:11px}
+.public-site .entry-copy .content-meta span{display:block;margin-top:4px}
+.public-site .entry-copy h3{margin-bottom:6px}
+.public-site .entry-summary{font-size:11px}
+.public-site .entry-play{width:38px;min-height:38px;height:38px;padding:0}
+.public-site .entry-play span{display:none}
+.public-site .public-detail{padding-top:28px}
+.public-site .detail-back{margin-bottom:23px;font-size:10px}
+.public-site .episode-detail-hero{grid-template-columns:1fr;gap:0;padding-bottom:24px}
+.public-site .episode-detail-hero>.episode-cover{display:none}
+.public-site .episode-detail-hero h1{font-size:36px;line-height:1.35}
+.public-site .episode-detail-summary{font-size:14px}
+.public-site .episode-disclosure{font-size:10px;line-height:1.8}
+.public-site .detail-body-layout{grid-template-columns:1fr;gap:30px;padding-top:25px}
+.public-site .detail-chapters{grid-row:1}
+.public-site .show-notes h2{font-size:20px}
+.public-site .show-notes .article-body{font-size:16px}
+.public-site .reading-article{margin:32px auto 0}
+.public-site .reading-article h1{font-size:33px;line-height:1.45}
+.public-site .article-summary{font-size:15px;line-height:1.9}
+.public-site .article-body{font-size:16px}
+.public-site .persistent-player{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100% - 24px);padding:9px 10px;border-radius:15px}
+.public-site .persistent-player-inner{gap:10px}
+.public-site .persistent-cover{width:35px;height:35px;border-radius:9px}
+.public-site .persistent-player-title>span:first-child{font-size:11px}
+.public-site .persistent-player-title>span:last-child{font-size:9px}
+.public-site .persistent-toggle{height:34px;min-height:34px;padding:0 13px}
+.public-site .persistent-toggle svg{width:14px}
+.public-site .persistent-toggle span{display:none}
+.public-site .persistent-player .persistent-dismiss{width:25px;height:30px}
+.public-site .episode-inline-player{padding:18px}
+.public-site .hero-listen .episode-inline-player{padding:0}
+.public-site .player-control-group label{font-size:11px}
+.public-site .player-control-group .player-volume-control{font-size:10px}
+.public-site .player-volume-row button{font-size:10px}
+.public-site .public-empty{padding:22px;font-size:12px}
+.public-site.public-navigation-sheet .mobile-nav a{font-size:15px}}
+@media(prefers-reduced-motion:reduce){
+.public-site .episode-card{transition:none}
+.public-site .persistent-player{backdrop-filter:none}}
+.public-site .hero-listen .episode-inline-player{border:none;background:none;padding:0;margin:0}
+.public-site .episode-card-summary,.public-site .home-reviews .entry-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.public-site .mobile-nav-subscribe{margin-top:12px;align-self:flex-start;font-size:13px}
+
+/* Frequent interactions: immediate state changes, short pointer feedback only.
+   EASE_OUT matches beUI/lib/ease.ts. No scroll or progress interpolation. */
+.public-site{--ease-out:cubic-bezier(0.16,1,0.3,1)}
+.public-site :is(a,button,input,select):focus-visible{outline:2px solid var(--primary);outline-offset:4px}
+.public-site .header-search,.public-site [data-sheet-close]{transition:transform 140ms var(--ease-out)}
+.public-site :is(.header-search,[data-sheet-close]):active:not(:focus-visible){transform:scale(.97)}
+.public-site :is(.section-link,.read-link,.detail-back,.subscription-options a) svg{transition:transform 160ms var(--ease-out)}
+.public-site :is(.card-play,.entry-play)[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--primary-foreground)}
+.public-site .chapter-button{position:relative;border-radius:6px;padding-inline:10px}
+.public-site .chapter-button>span:first-child{flex-shrink:0;white-space:nowrap}
+.public-site .chapter-button>span:last-child{min-width:0;overflow-wrap:anywhere}
+.public-site .chapter-button[aria-current=true]{color:var(--primary);background:color-mix(in srgb,var(--primary) 8%,transparent);box-shadow:inset 2px 0 var(--primary)}
+.public-site .chapter-button[aria-current=true]>span:first-child{color:var(--primary)}
+.public-site .chapter-button:active{background:color-mix(in srgb,var(--primary) 12%,transparent)}
+.public-site .archive-results-heading{min-height:49px}
+.public-site .archive-reset{font-size:11px;min-height:32px}
+.public-site .persistent-player-title{min-height:44px}
+.public-site :is(.player-progress-caption,.persistent-player-title>span:last-child){font-variant-numeric:tabular-nums}
+@media(hover:hover) and (pointer:fine){
+.public-site .public-nav a:hover{background:color-mix(in srgb,var(--primary) 8%,transparent);color:var(--primary)}
+.public-site .header-search:hover,.public-site .chapter-button:hover{background:var(--surface)}
+.public-site .episode-card:has(a:hover),.public-site .episode-card:focus-within{border-color:var(--primary)}
+.public-site :is(.review-copy,.entry-copy):hover h3,.public-site .episode-card-title:hover{color:var(--primary)!important}
+.public-site :is(.section-link:hover,.review-copy:hover .read-link) svg{transform:translateX(3px)}
+.public-site .detail-back:hover svg{transform:translateX(-3px)}
+.public-site .subscription-options a:hover{border-color:var(--primary)}
+.public-site .subscription-options a:hover>svg:last-child{transform:translate(2px,-2px)}
+}
+@media(pointer:coarse),(max-width:760px){
+.public-site :is(.header-search,.mobile-menu-button,.card-play,.archive-reset,.persistent-player .persistent-toggle,.persistent-player .persistent-dismiss){min-width:44px;min-height:44px}
+.public-site .hero-chapters button{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+/* Also handles preference changes while a Motion gesture is active. */
+.public-site [data-beui-button]{transform:none!important}
+.public-site .header-search,.public-site [data-sheet-close],.public-site :is(.section-link,.read-link,.detail-back,.subscription-options a) svg{transition:none;transform:none!important}
+}
+
+.public-site .player-control-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12px;font-weight:600;color:var(--foreground)}
+.public-site .player-time-readout,.public-site .player-volume-value{font-variant-numeric:tabular-nums;font-family:monospace;white-space:nowrap}
+.public-site .player-time-readout{color:var(--primary)}
+.public-site .player-time-readout>span{color:var(--muted);font-weight:400}
+.public-site .player-volume-control .player-control-heading{font-size:11px;color:var(--muted);font-weight:500}
+.public-site .notes-heading{display:flex;align-items:center;gap:10px}
+.public-site .chapter-accordion{border:1px solid var(--border);border-radius:28px;overflow:hidden}
+.public-site .chapter-accordion .chapter-accordion-trigger{min-height:60px;gap:10px;padding:0 18px}
+.public-site .chapter-accordion-title{display:flex;align-items:center;gap:10px}
+.public-site .chapter-accordion-title>span{font-family:monospace;font-size:11px;color:var(--muted);font-weight:400}
+.public-site .detail-chapters .chapter-button{min-height:44px}

@@ -1,0 +1,42 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "agent-blog-react-preview",
+  "main": "cloudflare/react-entry.ts",
+  "compatibility_date": "2026-10-02",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": false,
+  "d1_databases": [
+    {
+      "binding": "CONTENT",
+      "database_name": "agent-blog-react-preview",
+      "database_id": "00000000-0000-0000-0000-000000000002",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "AUDIO",
+      "bucket_name": "agent-blog-react-preview-audio"
+    }
+  ],
+  "env": {
+    "react-preview": {
+      "d1_databases": [
+        {
+          "binding": "CONTENT",
+          "database_name": "agent-blog-react-preview",
+          "database_id": "00000000-0000-0000-0000-000000000002",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "AUDIO",
+          "bucket_name": "agent-blog-react-preview-audio"
+        }
+      ]
+    }
+  }
+}

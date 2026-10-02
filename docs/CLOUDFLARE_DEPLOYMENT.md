@@ -1,10 +1,10 @@
-# Cloudflare deployment
+# Cloudflare deployment and content publication
 
-The blog is served by the `agent-blog` Cloudflare Worker at `https://blog.wuzhaoyi.xyz/agent-blog/`. The domain root redirects to the retained blog path. The private R2 bucket `agent-blog-audio` stores mixed MP3s and published episode Markdown; the Worker exposes only content-addressed audio paths. Static assets contain no local preview audio.
+The React/TanStack Start application runs on Worker `agent-blog` at `https://blog.wuzhaoyi.xyz/` during acceptance. D1 `agent-blog-content` is authoritative for live content. Private R2 `agent-blog-audio` stores final MP3s. Content publication is independent of application deployment.
 
-## Authentication and deployment
+## Application deployment
 
-Use Node 24+, npm, ffmpeg, ffprobe, and Wrangler. The publisher host uses Wrangler OAuth credentials outside the repository; run `npx wrangler login` if access must be renewed. A CI publisher can instead receive a Cloudflare API token and account ID through private environment variables. The token must authorize Workers deployment, the R2 bucket, and the domain binding.
+Use Node 24+, npm and Wrangler. The deployment host needs Workers deployment, domain and D1 configuration permissions. Local Wrangler OAuth credentials remain outside Git; refresh with `npx wrangler login` if D1 permission is missing.
 
 ```bash
 npm ci
@@ -12,60 +12,109 @@ npm run deploy:check
 npm run deploy
 ```
 
-Both commands first restore the complete published episode catalog from R2, then build the site. `deploy:check` performs no remote writes. Do not deploy raw `dist` output or run `wrangler deploy` directly after a local development build: that build excludes remotely published episodes. A local lock serializes publisher commands; use one publishing host and avoid simultaneous deployments from CI or other hosts.
+The wrapper builds the React/TanStack Start Worker using the production Wrangler configuration, strips private preview audio and generated local secret files from `dist-react`, verifies the generated production bindings, and deploys through that generated configuration. Development/build commands default to isolated preview bindings; only the deployment wrapper selects production. It does not restore, upload or replace content. GitHub Actions validates builds only. Code deployment and content publication can happen independently without overwriting a catalog.
 
-The repository's deployment workflow validates the Cloudflare build only; it no longer deploys GitHub Pages. Application changes and approved Daily Reviews are deployed by running `npm run deploy` after updating the publisher checkout. Episode publishing itself has no dependency on Git commits, PRs, or merges.
+## Database provisioning and migration
 
-## RSS reader compatibility
+For a new installation, create D1 and private R2 resources and set their bindings in `wrangler.jsonc`. Set Worker secrets `SUBMIT_TOKEN` and `REVIEW_TOKEN` independently using Wrangler secrets; use long random values and keep them outside Git. Provision the schema before deploying:
 
-Some RSS clients use non-browser User-Agent headers. Cloudflare Browser Integrity Check can reject these with error 1010 even when ordinary browser and curl requests succeed. The zone has a narrow custom rule named `Agent Blog RSS and audio clients` that skips only Browser Integrity Check for GET/HEAD requests to this blog's two feed endpoints and audio download paths:
-
-```text
-(http.host eq "blog.wuzhaoyi.xyz" and http.request.method in {"GET" "HEAD"} and (http.request.uri.path in {"/agent-blog/rss.xml" "/agent-blog/episodes/rss.xml"} or starts_with(http.request.uri.path, "/agent-blog/audio/")))
+```bash
+npx wrangler d1 migrations apply agent-blog-content --remote
 ```
 
-Use the Skip action with only the Browser Integrity Check product (`bic`) selected. This rule does not skip other WAF components or change ordinary page checks. It is a zone setting, separate from the Worker deployment. See [Cloudflare's selective BIC configuration](https://developers.cloudflare.com/waf/tools/browser-integrity-check/).
+This installation migrated the three already-approved historical reviews and two already-published episodes. The import only reads legacy approved review Markdown and the R2 published catalog; it never imports the checked-in episode preview draft. Legacy R2 Markdown/catalog remain available as recovery backups and are no longer updated.
 
-Run `npm run check:rss` after publication to verify both feeds, item identities and dates, enclosure MIME types and exact lengths, and audio HEAD/Range access using Python's default User-Agent. This is a live integration check, independent of the offline test suite. A feed update becomes visible when the reader next fetches it; this deployment does not send subscriber notifications.
+```bash
+npm run content:migrate -- --remote
+```
+
+Migration uses insert-if-absent identities so retries do not replace current content or publication pointers. The ignored `.agent-blog/content-migration.sql` records the import; protect it as content data.
+
+## Publisher authentication
+
+Hermes/OpenClaw use only `SUBMIT_TOKEN`. Configure `BLOG_SUBMIT_TOKEN` and optional `BLOG_PUBLICATION_URL` (the origin), or a 0600 `.agent-blog/publication-client.json`:
+
+```json
+{ "url": "https://blog.wuzhaoyi.xyz", "token": "YOUR_PRIVATE_SUBMISSION_TOKEN" }
+```
+
+The submit key can create/update private review drafts, upload final audio, and automatically publish validated episodes. It cannot approve a worklog. Keep the reviewer key out of agent credentials, messages and production materials. This host's reviewer key is stored privately at `.agent-blog/reviewer-key`; the operator can use it to log in at `/admin/`. Login creates a one-day signed HttpOnly, Secure, SameSite=Strict cookie. Approval is a same-origin POST, bound to the exact current draft revision.
+
+## Worklog publication
+
+Submit publication-safe frontmatter Markdown (title, summary, date, source, platforms, highlights):
+
+```bash
+npm run review:submit -- --file /absolute/path/to/draft.md --id hermes-YYYY-MM-DD
+```
+
+The JSON result contains `status: draft`, revision and a complete private preview URL. Preview capabilities permit viewing only. The operator logs in at `/admin/`, opens the draft, reads the complete preview, and clicks confirmation. The public article, lists and RSS then read the approved revision from D1. Edits remain drafts while the previous approved revision stays online. Stale confirmation returns 409 and requires reviewing the latest draft.
+
+D1 holds immutable `content_revisions`, `content_heads` with separate draft/public pointers, and `publication_audit` with approval actor/time. Draft IDs use stable source-and-day identities. Body HTML is sanitized on rendering. The React workbench uses reviewer JSON APIs under `/admin/api/` for session/list/detail/revision/save/approval/audit/episode operations within the reviewer-cookie path. Unsaved editor state blocks approval and SPA navigation requires a discard decision. Public requests query only published pointers; private preview responses are no-store/noindex and never enter feeds.
 
 ## Automatic episodes
 
-The existing Hermes morning-coffee job starts at 07:15 Asia/Shanghai, targeting completion before 08:00. It retains the existing feed, TTS, mixed audio, and single Telegram delivery. Website deployment failure must not block delivery of the new MP3 in Telegram.
+The existing Hermes morning-coffee job starts at 07:15 Asia/Shanghai, targeting completion before 08:00. It retains its source feed, TTS, mixing and single Telegram delivery. Website failure must not block Telegram audio delivery.
 
-The render directory must contain:
-
-- `episode.json`: title, disclosure, original segments and sources.
-- `episode.mp3`: final mixed audio.
-- `episode.parts/manifest.json`: measured segment durations and pauses.
-- `shownotes.md`: public content and attributed sources only.
-- `publication.json`: a summary and four to six chapters referencing manifest sections.
-
-```json
-{
-  "summary": "A short episode description",
-  "chapters": [
-    { "title": "Opening", "section": 0 },
-    { "title": "Main story", "section": 2 },
-    { "title": "Briefs", "section": 6 },
-    { "title": "Editorial perspective", "section": 9 },
-    { "title": "Closing", "section": 10 }
-  ]
-}
-```
-
-Section references must match that episode's actual manifest; these example sections are specific to the October 1 seed. Never estimate timestamps. Keep archive-only music information and production records in private `notes.md`.
+The directory must contain `episode.json`, final `episode.mp3`, measured `episode.parts/manifest.json`, public `shownotes.md` and `publication.json` with summary and four to six chapter section references. Chapter offsets come from measured synthesis parts, never estimates. Keep raw materials and production records local.
 
 ```bash
 npm run episode:publish -- --directory /absolute/path/to/render-output --day YYYY-MM-DD --dry-run
 npm run episode:publish -- --directory /absolute/path/to/render-output --day YYYY-MM-DD
 ```
 
-The command validates the inputs, completely decodes audio, measures the final duration, creates a content-addressed audio URL, restores previous episode Markdown, builds, uploads audio and publication metadata, and deploys Workers. Retries use the same date and hash rather than duplicating episodes. `publication-result.json` records the deployment outcome; verify the live page and audio before reporting publication success.
+The command validates inputs, completely decodes/probes audio and measures chapters. A content-addressed MP3 uploads through the API to R2; then metadata and body are saved in D1 and automatically published. The Worker checks the object MIME type and actual byte size before publishing. Upload limit: 25 MiB. `publication-result.json` records the outcome. Dry-run validates locally without remote access or deployment.
 
-`publication/catalog.json` in R2 lists published episode dates. `publication/episodes/<day>.md` holds each episode's public Markdown, and `episodes/<day>/<sha256>.mp3` holds audio. These objects are not exposed through a public R2 domain.
+## API contract
 
-## Recovery
+All `/api/` calls require `Authorization: Bearer SUBMIT_TOKEN`.
 
-A build or validation failure makes no remote changes. An upload/deployment failure can leave validated metadata in R2 while the existing live Worker version remains active; rerun the command or `npm run deploy` to converge. Do not delete past episodes or reset the R2 catalog when retrying.
+- `GET /api/reviews/:id` or `/api/episodes/:id`: current draft/public revision identifiers.
+- `PUT /api/reviews/:id`: `{data, body, expectedRevision}` → private draft and preview URL.
+- `PUT /api/audio/:day/:sha256`: final MP3 bytes with Content-Length; verifies hash before storage.
+- `PUT /api/episodes/:day`: `{data, body, expectedRevision}` → validates uploaded audio, saves and publishes.
 
-Use Cloudflare's Worker version history to roll back a bad deployment. Restore old DNS only when intentionally returning to the former host; the previous record was a proxied CNAME `blog.wuzhaoyi.xyz → hqwuzhaoyi.github.io`, TTL auto. Private local backups of DNS and cron configuration are kept in `.agent-blog/`. To undo the scheduling change, pause the same Hermes job, restore the saved prompt/schedule, then resume it; do not create a second delivery job.
+Use `null` expectedRevision for new content. Updates must match the current revision; identical content retries return the existing revision. Conflicting edits return 409. Content revision hashes identify complete metadata/body snapshots. Approval audit and published pointers update in the same D1 batch.
+
+## RSS compatibility
+
+Both `/rss.xml` and `/episodes/rss.xml` dynamically read published D1 content. Public content responses are no-store so a stale cached feed does not hide publications. Feed updates become visible on the reader's next fetch; this is not a subscriber notification service.
+
+A zone rule named `Agent Blog RSS and audio clients` skips only Browser Integrity Check for GET/HEAD requests to the two feeds and audio paths. The rule is a zone setting separate from Worker deployments; other WAF checks remain active. See [Cloudflare BIC](https://developers.cloudflare.com/waf/tools/browser-integrity-check/).
+
+Run `npm run check:rss` after publication to verify identities/dates and audio enclosure MIME, length, HEAD and Range with Python's default User-Agent.
+
+## Local development and recovery
+
+Use the isolated local configuration, dedicated test credentials and generated playable fixture:
+
+```bash
+npm run react:db:seed
+npm run dev
+# Open http://localhost:3100/
+npm run test:runtime
+npm run test:browser
+```
+
+The seeder refuses production bindings and remote origins. It creates `.dev.vars.react-preview` from the committed fixture example when absent. See [React preview](REACT_PREVIEW.md) for the default build/check commands. Unit tests use real SQLite and mocked HTTP audio resources; browser/runtime tests use the running isolated Worker and do not write live content.
+
+Audio upload can leave an unreferenced object if the content write fails; retry the same episode. Database content publication never replaces the Worker deployment. Roll back application code through Worker version history; restore D1 content separately using D1 backups/export or retained immutable revisions. The pre-React D1-backed Worker version `39aaeb49-3178-4c13-a6c3-9532863d3332` remains a compatible application rollback target; rollback does not remove D1/R2 content. Preserve database and audio when retrying, and back up D1 before future schema migrations.
+
+
+## Root domain migration (2026-10-03)
+
+The canonical origin is `https://gitlog.si` with `/`, `/episodes/`, `/reviews/`, `/archive`, `/admin/`, `/rss.xml` and `/episodes/rss.xml`. `wrangler.jsonc` binds the new custom domain while retaining `blog.wuzhaoyi.xyz` for compatibility. Reader GET/HEAD requests on the old domain or old `/agent-blog` prefix return 308 to the corresponding root URL, preserving query parameters. Legacy submission API requests are normalized inside the Worker so bearer authorization and request bodies do not depend on cross-origin redirects.
+
+D1/R2 resource identities and immutable content revisions are unchanged. Owned historical audio URLs are normalized when preparing public/admin/feed output; unrelated external URLs are untouched. Production RSS item GUIDs keep their established legacy identities while links and enclosures use the new origin, preventing existing subscriptions from treating the same entries as new episodes. New operator cookies use `Path=/admin/`; operators sign in on the new domain.
+
+Browser acceptance uses ego-browser task spaces and CLI heredocs. Runtime/API tests still run against isolated local bindings; never seed or execute fixture publication checks against production.
+
+
+### Acceptance hold on the established domain
+
+The operator requested acceptance at `https://blog.wuzhaoyi.xyz/` while `gitlog.si` remains Cloudflare Pending (nameserver delegation incomplete). `src/site-origin.json` and the Worker PUBLIC_ORIGIN therefore both use the established origin. Root paths, component changes and legacy prefix normalization remain active; requests on the established domain do not redirect to the unavailable domain. Canonical metadata, producer defaults, audio and RSS all use the acceptance origin. The deployment wrapper refuses mismatched frontend/publisher and Worker origins.
+
+Both custom-domain bindings remain configured. After DNS/HTTPS for gitlog.si is ready and the operator requests cutover, update the two origin settings together and redeploy. Production GUIDs retain their legacy namespace on either host. Migration redirects are no-store so future origin changes are not retained by HTTP caches.
+
+
+During root-path acceptance, the existing zone rule `Agent Blog RSS and audio clients` (`7895641a368d4869890460c37f1c6eb8`) was updated via the authenticated Cloudflare dashboard in ego. It still skips only Browser Integrity Check, only on host `blog.wuzhaoyi.xyz`, only GET/HEAD. The expression now includes both `/rss.xml`, `/episodes/rss.xml`, `/audio/` and the corresponding legacy `/agent-blog` paths. Other security components remain enabled. Default Python urllib checks pass for both feeds and both audio enclosures.

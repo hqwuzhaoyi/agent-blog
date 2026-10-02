@@ -1,11 +1,12 @@
 """Check public RSS and podcast enclosure access using urllib's default client identity."""
+from pathlib import Path
 import argparse
 import json
 import urllib.request
 import xml.etree.ElementTree as ET
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--base', default='https://blog.wuzhaoyi.xyz/agent-blog/')
+parser.add_argument('--base', default=json.loads((Path(__file__).resolve().parents[1] / 'src/site-origin.json').read_text())['origin'] + '/')
 args = parser.parse_args()
 base = args.base.rstrip('/') + '/'
 checked_audio = set()
