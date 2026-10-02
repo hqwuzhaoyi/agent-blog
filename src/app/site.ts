@@ -175,7 +175,7 @@ export const siteConfig = {
   ...localized,
   title:
     preferences.title ||
-    (language === "zh-CN" ? "Agent 工作日志" : "Agent Worklog"),
+    (language === "zh-CN" ? "早咖啡" : "Morning Coffee"),
   tagline: preferences.tagline || localized.description,
   description: preferences.tagline || localized.description,
   home: localized.home,

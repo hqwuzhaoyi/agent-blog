@@ -1,5 +1,6 @@
 // Adapted from satnaing/shadcn-admin/src/components/layout/app-sidebar.tsx (MIT).
 import { Link } from "@tanstack/react-router";
+import { siteConfig } from "../../../site";
 import {
   AudioLines,
   CheckCheck,
@@ -46,7 +47,7 @@ export function AppSidebar({
                   <NotebookPen className="size-4" />
                 </div>
                 <div className="grid flex-1 text-start leading-tight">
-                  <span className="truncate font-semibold">Agent 工作日志</span>
+                  <span className="truncate font-semibold">{siteConfig.title}</span>
                   <span className="truncate text-xs text-muted-foreground">
                     审核工作台
                   </span>

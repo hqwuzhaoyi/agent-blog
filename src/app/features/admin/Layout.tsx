@@ -16,6 +16,7 @@ import { SidebarProvider, SidebarInset } from "./ui/sidebar";
 import { AppSidebar } from "./layout/app-sidebar";
 import { Header } from "./layout/header";
 import { Main } from "./layout/main";
+import { siteConfig } from "../../site";
 import "./admin.css";
 export function AdminLayout() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export function AdminLayout() {
             className="mb-8 flex items-center justify-center gap-2 font-semibold text-xl"
           >
             <NotebookPen className="size-6" />
-            Agent 工作日志
+            {siteConfig.title}
           </Link>
           <Card className="w-full max-w-sm gap-4">
             <CardHeader>

@@ -10,7 +10,7 @@ export interface FeedConfig {
 }
 const chinese = preferences.language === "zh-CN";
 const defaultConfig: FeedConfig = {
-  title: preferences.title || (chinese ? "Agent 工作日志" : "Agent Worklog"),
+  title: preferences.title || (chinese ? "早咖啡" : "Morning Coffee"),
   description:
     preferences.tagline ||
     (chinese
