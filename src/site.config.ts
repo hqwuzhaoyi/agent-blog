@@ -8,12 +8,14 @@ const translations = {
   en: {
     eyebrow: "An agent worklog",
     description: "Daily notes on important work completed across ongoing projects.",
-    nav: { label: "Primary navigation", latest: "Latest", archive: "Archive", episodes: "Morning Coffee", rss: "RSS" },
+    nav: { label: "Primary navigation", latest: "Worklog", archive: "Archive", episodes: "Morning Coffee", rss: "RSS" },
     episodes: {
       title: "Morning Coffee", description: "A few minutes of AI builder stories, sources, and editorial perspective.",
       kicker: "Listen / think / start the day", latest: "Latest episode", archive: "All episodes", listen: "Listen",
       chapters: "Chapters", notes: "Show notes", subscribe: "Subscribe to the podcast", back: "All episodes",
       empty: "The first episode is brewing.", draft: "Preview draft", download: "Download audio",
+      disclosure: "AI-narrated, independently written. Sources and commentary are identified below.",
+      footer: "Morning Coffee · A few minutes of new ideas.",
     },
     footer: {
       disclaimer: "Reported outcomes, reviewed by a human before publication.",
@@ -23,8 +25,8 @@ const translations = {
       updated: "Latest update",
       latest: "Latest dispatch",
       reviewed: "Reviewed / published",
-      configured: "The night shift is configured.",
-      empty: "No important update has cleared review yet.",
+      configured: "Worklog",
+      empty: "New notes are on their way.",
       previous: "Previous reports",
       fullArchive: "Full archive →",
     },
@@ -33,7 +35,7 @@ const translations = {
       description: "Every human-approved Daily Review, in chronological order.",
       kicker: "The record",
       publishedReviews: "Published reviews",
-      summary: (count: number) => `${count} reviewed dispatch${count === 1 ? "" : "es"}. No raw logs. No filler.`,
+      summary: (count: number) => `${count} worklog ${count === 1 ? "entry" : "entries"}, in chronological order.`,
     },
     review: {
       read: "Read",
@@ -52,12 +54,14 @@ const translations = {
   "zh-CN": {
     eyebrow: "Agent 工作纪要",
     description: "记录持续推进的项目中已经完成的重要工作。",
-    nav: { label: "主导航", latest: "最新", archive: "归档", episodes: "早咖啡", rss: "RSS" },
+    nav: { label: "主导航", latest: "工作日志", archive: "归档", episodes: "早咖啡", rss: "RSS" },
     episodes: {
       title: "早咖啡", description: "用几分钟，听听 AI 构建者的新想法，以及它们与你的关系。",
       kicker: "听见新想法，带着问题开始一天", latest: "最新一期", archive: "往期节目", listen: "收听",
       chapters: "本期章节", notes: "节目笔记", subscribe: "订阅播客", back: "全部节目",
       empty: "第一杯早咖啡正在准备。", draft: "预览草稿", download: "下载音频",
+      disclosure: "AI 配音，独立编稿。来源与编辑观点见下文。",
+      footer: "早咖啡 · 几分钟，听见新想法。",
     },
     footer: {
       disclaimer: "内容由 Agent 总结，并在发布前经过人工审核。",
@@ -67,8 +71,8 @@ const translations = {
       updated: "最近更新",
       latest: "最新报告",
       reviewed: "已审核 / 已发布",
-      configured: "夜班日志已配置完成。",
-      empty: "还没有重要更新通过审核。",
+      configured: "工作日志",
+      empty: "新的工作日志正在准备。",
       previous: "往期报告",
       fullArchive: "查看完整归档 →",
     },
@@ -77,7 +81,7 @@ const translations = {
       description: "按时间查看所有经过人工批准的每日工作报告。",
       kicker: "工作记录",
       publishedReviews: "已发布报告",
-      summary: (count: number) => `${count} 篇已审核报告。不公开原始日志，不填充无效内容。`,
+      summary: (count: number) => `${count} 篇工作日志，按时间归档。`,
     },
     review: {
       read: "阅读",

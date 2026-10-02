@@ -679,7 +679,7 @@ html[data-theme="quiet-minimal"] .section-heading span {
 
 html[data-theme="quiet-minimal"] .minimal-card {
   margin: 1.5rem 0;
-  animation: rise 400ms both;
+  animation: content-arrive var(--motion-enter) var(--ease-out) both;
   animation-delay: var(--delay, 0ms);
 }
 
@@ -824,4 +824,14 @@ html[data-theme="quiet-minimal"] .site-footer {
   html[data-theme="quiet-minimal"] .blog-intro { padding-top: 3rem; }
   html[data-theme="quiet-minimal"] .blog-intro__facts { flex-direction: column; gap: 0.75rem; }
   html[data-theme="quiet-minimal"] .archive-row { grid-template-columns: 2rem 1fr; }
+}
+
+/* Keep frequently used archive interactions subtle and pointer-specific. */
+html[data-theme="quiet-minimal"] .archive-row:hover strong { transform: none; }
+html[data-theme="quiet-minimal"] .archive-row strong { transition: transform var(--motion-fast) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme="quiet-minimal"] .archive-row:hover strong { transform: translateX(2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="quiet-minimal"] .archive-row:hover strong { transform: none; }
 }

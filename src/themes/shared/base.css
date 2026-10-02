@@ -13,7 +13,7 @@ a { color: inherit; }
   }
 }
 
-.coffee-intro, .coffee-article-header { padding: 4.5rem 2rem 2.5rem; border-bottom: 1px solid var(--line); }
+.coffee-intro, .coffee-article-header { padding: 3rem 2rem 2rem; border-bottom: 1px solid var(--line); }
 .coffee-eyebrow, .coffee-meta, .coffee-back, .coffee-subscribe, .coffee-listen, .coffee-player-links { font-family: var(--mono); font-size: .78rem; }
 .coffee-eyebrow { color: var(--muted); letter-spacing: .04em; }
 .coffee-intro h1 { margin: 1.5rem 0; font-size: clamp(3rem, 7vw, 5rem); font-weight: 500; line-height: 1.1; letter-spacing: -.04em; }
@@ -32,18 +32,18 @@ a { color: inherit; }
 .coffee-listen { display: inline-flex; gap: 2rem; margin-top: 1rem; text-decoration: none; color: var(--signal); }
 .coffee-empty { padding: 3rem 0; color: var(--muted); }
 .coffee-article { max-width: 56rem; margin: auto; padding-bottom: 4rem; }
-.coffee-back { display: inline-block; margin-bottom: 3rem; color: var(--muted); text-decoration: none; }
+.coffee-back { display: inline-block; margin-bottom: 2rem; color: var(--muted); text-decoration: none; }
 .coffee-article-header h1 { margin: 1.5rem 0; font-size: clamp(2rem, 5vw, 3.3rem); font-weight: 500; letter-spacing: -.04em; line-height: 1.45; }
 .coffee-player, .coffee-chapters, .coffee-notes { margin: 0 2rem; padding: 2rem 0; border-bottom: 1px solid var(--line); }
 .coffee-player audio { display: block; width: 100%; }
-.coffee-player-links { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
+.coffee-player-links { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; }
 .coffee-player-links a { color: var(--signal); text-decoration: none; }
 .coffee-disclosure { margin: 1.5rem 0 0; color: var(--muted); font-size: .75rem; line-height: 1.85; }
 .coffee-chapters h2 { margin: 0 0 1rem; font-size: 1rem; font-weight: 500; }
 .coffee-chapters ol { margin: 0; padding: 0; list-style: none; }
 .coffee-chapters a { display: grid; grid-template-columns: 4rem 1fr auto; gap: 1rem; padding: .8rem 0; text-decoration: none; font-size: .9rem; }
-.coffee-chapters a span { color: var(--signal); font-family: var(--mono); font-size: .8rem; }
-.coffee-chapters a:hover, .coffee-chapters li:target { background: var(--paper-deep); }
+.coffee-chapter-time { color: var(--signal); font-family: var(--mono); font-size: .8rem; }
+
 .coffee-notes { border: 0; font-size: 1rem; line-height: 1.85; overflow-wrap: anywhere; }
 .coffee-notes h2 { margin: 2.5rem 0 1rem; font-size: 1.4rem; font-weight: 500; }
 .coffee-notes h2:first-child { margin-top: 0; }
@@ -60,4 +60,110 @@ html[data-theme="quiet-minimal"] .coffee-player, html[data-theme="quiet-minimal"
   .coffee-player, .coffee-chapters, .coffee-notes { margin-inline: 1rem; }
   .coffee-meta { gap: .7rem; font-size: .7rem; }
   .coffee-chapters a { grid-template-columns: 3.3rem 1fr auto; gap: .6rem; }
+}
+
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --motion-fast: 160ms;
+  --motion-enter: 220ms;
+}
+
+/* Motion belongs to the page entrance and reader actions; prose stays still. */
+@keyframes content-arrive {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes content-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.coffee-intro, .coffee-article-header, .coffee-player {
+  animation: content-arrive var(--motion-enter) var(--ease-out) both;
+}
+.coffee-player { animation-delay: 40ms; }
+.coffee-entry {
+  animation: content-arrive var(--motion-enter) var(--ease-out) both;
+  animation-delay: var(--delay, 0ms);
+}
+html[data-theme="quiet-minimal"] .blog-intro__identity,
+html[data-theme="quiet-minimal"] .review-article__heading,
+html[data-theme="quiet-minimal"] .archive-hero {
+  animation: content-arrive var(--motion-enter) var(--ease-out) both;
+}
+html[data-theme="quiet-minimal"] .minimal-card,
+html[data-theme="quiet-minimal"] .archive-row {
+  animation-name: content-arrive;
+  animation-duration: var(--motion-enter);
+  animation-timing-function: var(--ease-out);
+}
+.coffee-chapters a {
+  position: relative;
+  isolation: isolate;
+  border-radius: 6px;
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+.coffee-chapters a::before {
+  position: absolute;
+  inset: 0 -.6rem;
+  z-index: -1;
+  border-radius: inherit;
+  content: "";
+  background: var(--signal);
+  opacity: 0;
+  transition: opacity var(--motion-fast) ease;
+}
+.coffee-chapters a.is-current::before { opacity: .06; }
+.coffee-chapter-title { font-family: var(--reading); }
+.coffee-chapter-indicator {
+  color: var(--signal);
+  font-size: .6rem;
+  align-self: center;
+  opacity: 0;
+  transform: scale(.9);
+  transition: opacity var(--motion-fast) ease, transform var(--motion-fast) var(--ease-out);
+}
+.coffee-chapters a.is-current .coffee-chapter-indicator { opacity: 1; transform: scale(1); }
+.coffee-chapter-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--signal);
+  opacity: .4;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--motion-fast) linear;
+}
+.coffee-listen, .coffee-subscribe, .coffee-player-links a {
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+.coffee-listen > span, .coffee-player-links a > span {
+  display: inline-block;
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+.coffee-listen:active, .coffee-subscribe:active, .coffee-player-links a:active, .coffee-chapters a:active {
+  transform: scale(.98);
+}
+a:focus-visible { outline: 2px solid var(--signal); outline-offset: 5px; border-radius: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .coffee-listen:hover > span, .coffee-player-links a:hover > span { transform: translateX(2px); }
+  .coffee-chapters a:hover::before { opacity: .04; }
+  .coffee-chapters a.is-current:hover::before { opacity: .08; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coffee-intro, .coffee-article-header, .coffee-player, .coffee-entry,
+  html[data-theme="quiet-minimal"] .blog-intro__identity,
+  html[data-theme="quiet-minimal"] .review-article__heading,
+  html[data-theme="quiet-minimal"] .archive-hero,
+  html[data-theme="quiet-minimal"] .minimal-card,
+  html[data-theme="quiet-minimal"] .archive-row {
+    animation: content-fade 120ms ease both !important;
+    animation-duration: 120ms !important;
+    animation-delay: 0ms !important;
+  }
+  .coffee-listen:active, .coffee-subscribe:active, .coffee-player-links a:active, .coffee-chapters a:active,
+  .coffee-listen:hover > span, .coffee-player-links a:hover > span, .coffee-chapter-indicator { transform: none; }
+  .coffee-chapter-progress { transition: none; }
 }

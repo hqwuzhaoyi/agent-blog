@@ -1,0 +1,11 @@
+---
+import type { BlogIntroProps } from "../../shared/contracts";
+interface Props extends BlogIntroProps {}
+const { title, tagline } = Astro.props;
+---
+<section class="blog-intro" aria-labelledby="blog-title">
+  <div class="blog-intro__identity">
+    <h1 id="blog-title">{title}</h1>
+    {tagline && <p class="blog-intro__tagline">{tagline}</p>}
+  </div>
+</section>

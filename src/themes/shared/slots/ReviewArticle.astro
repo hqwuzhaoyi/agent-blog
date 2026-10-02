@@ -26,7 +26,6 @@ const { review, Content, labels, homeUrl, archiveUrl } = Astro.props;
   </header>
   <div class="prose"><Content /></div>
   <footer class="review-article__footer">
-    <p>{labels.disclaimer}</p>
     <a href={archiveUrl}>{labels.continue}</a>
   </footer>
 </article>

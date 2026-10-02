@@ -8,6 +8,7 @@ interface Props {
   description?: string;
   pageClass?: string;
   noindex?: boolean;
+  footerText?: string;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   description = siteConfig.description,
   pageClass = "",
   noindex = false,
+  footerText = siteConfig.footer.disclaimer,
 } = Astro.props;
 const pageTitle = title === siteConfig.title ? title : `${title} — ${siteConfig.title}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -33,7 +35,7 @@ const headerProps: HeaderProps = {
   ],
 };
 const footerProps: FooterProps = {
-  disclaimer: siteConfig.footer.disclaimer,
+  disclaimer: footerText,
 };
 ---
 

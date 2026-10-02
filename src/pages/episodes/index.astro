@@ -6,6 +6,6 @@ import { activeTheme, siteConfig } from "@/site.config";
 const episodes = (await getEpisodes(import.meta.env.DEV)).map((episode) => presentEpisode(episode, siteConfig.locale));
 const EpisodeList = activeTheme.slots.EpisodeList;
 ---
-<BaseLayout title={siteConfig.episodes.title} description={siteConfig.episodes.description} pageClass="episodes-page">
+<BaseLayout title={siteConfig.episodes.title} description={siteConfig.episodes.description} footerText={siteConfig.episodes.footer} pageClass="episodes-page">
   <EpisodeList episodes={episodes} labels={siteConfig.episodes} feedUrl={sitePath("episodes/rss.xml")} />
 </BaseLayout>
