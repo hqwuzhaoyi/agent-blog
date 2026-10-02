@@ -3,6 +3,8 @@ import { getPublicContent } from "../server/public-data";
 import { Tabs } from "../features/public/beui/tabs";
 import { EpisodeRow, ReviewRow } from "../features/public/content";
 import { useRef } from "react";
+import { Input } from "../features/public/beui/input";
+import "../features/public/beui/input-layout.css";
 import { Button } from "../features/public/beui/button";
 import { Search } from "lucide-react";
 import { text } from "../features/public/locale";
@@ -39,13 +41,9 @@ export const Route = createFileRoute("/agent-blog/archive")({
           ? "公开内容暂时无法加载。"
           : "Published content could not be loaded."}
       </p>
-      <button
-        type="button"
-        onClick={reset}
-        className="mt-3 min-h-11 rounded-lg border border-border px-4"
-      >
+      <Button variant="outline" onClick={reset} className="mt-3">
         {siteConfig.language === "zh-CN" ? "重试" : "Try again"}
-      </button>
+      </Button>
     </section>
   ),
   head: () => ({
@@ -111,21 +109,17 @@ function Archive() {
         className="archive-filter-form"
         onSubmit={(event) => event.preventDefault()}
       >
-        <label className="min-w-0 flex-1">
-          {siteConfig.language === "zh-CN" ? "关键词" : "Keyword"}
-          <input
-            ref={searchInput}
-            type="search"
-            className="mt-1 block w-full rounded-lg border border-border bg-card px-3 py-2"
-            value={search.q}
-            onChange={(event) => update({ q: event.target.value }, true)}
-            placeholder={
-              siteConfig.language === "zh-CN"
-                ? "搜索公开内容"
-                : "Search published content"
-            }
-          />
-        </label>
+        <Input
+          ref={searchInput}
+          type="search"
+          label={text("关键词", "Keyword")}
+          className="archive-search-input"
+          classNames={{ label: "archive-search-label", field: "archive-search-field", input: "archive-search-native" }}
+          leftIcon={<Search size={16} aria-hidden="true" />}
+          value={search.q}
+          onChange={(value) => update({ q: value }, true)}
+          placeholder={text("搜索公开内容", "Search published content")}
+        />
         <label>
           {siteConfig.language === "zh-CN" ? "月份" : "Month"}
           <select

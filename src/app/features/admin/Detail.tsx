@@ -1,6 +1,8 @@
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { AdminRequestState } from "./request-state";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { Badge } from "./ui/badge";
 import { useEffect, useState, useRef } from "react";
 import { useBlocker } from "@tanstack/react-router";
@@ -22,6 +24,8 @@ export function ReviewDetail({ id }: { id: string }) {
     [draft, setDraft] = useState<any>(null),
     [audit, setAudit] = useState<any[]>([]),
     [error, setError] = useState(""),
+    [loadError, setLoadError] = useState(""),
+    [loading, setLoading] = useState(true),
     [pending, setPending] = useState(false),
     [tab, setTab] = useState("preview"),
     [editing, setEditing] = useState(false),
@@ -33,15 +37,19 @@ export function ReviewDetail({ id }: { id: string }) {
       JSON.stringify({ data: review.data, body: review.body });
   async function load() {
     setError("");
+    setLoadError("");
+    setLoading(true);
     try {
-      const r = await api(`/reviews/${id}`);
+      const [r, records] = await Promise.all([api(`/reviews/${id}`), api(`/reviews/${id}/audit`)]);
       setReview(r);
       setDraft({ data: r.data, body: r.body });
+      setAudit(records.items);
       setStale(false);
       setEditing(false);
-      setAudit((await api(`/reviews/${id}/audit`)).items);
     } catch (e) {
-      setError((e as Error).message);
+      setLoadError((e as Error).message);
+    } finally {
+      setLoading(false);
     }
   }
   useEffect(() => {
@@ -82,15 +90,8 @@ export function ReviewDetail({ id }: { id: string }) {
       setPending(false);
     }
   }
-  if (!review)
-    return (
-      <>
-        <p role="alert" className="text-destructive mb-4">
-          {error}
-        </p>
-        <p>读取完整预览…</p>
-      </>
-    );
+  if (!review || loadError || loading)
+    return <AdminRequestState status={loadError ? "error" : "loading"} error={loadError} loadingLabel="读取完整预览…" onRetry={load} />;
   return (
     <>
       {blocker.status === "blocked" && (
@@ -136,30 +137,13 @@ export function ReviewDetail({ id }: { id: string }) {
           <a href={success.url}>查看公开工作日志</a>
         </p>
       )}
-      <div className="admin-tabs" role="tablist" aria-label="审核内容">
-        <Button
-          role="tab"
-          variant={tab === "preview" ? "default" : "outline"}
-          aria-selected={tab === "preview"}
-          onClick={() => setTab("preview")}
-        >
-          预览
-        </Button>
-        <Button
-          role="tab"
-          variant={tab === "info" ? "default" : "outline"}
-          aria-selected={tab === "info"}
-          onClick={() => setTab("info")}
-        >
-          信息与修订
-        </Button>
-      </div>
+      <Tabs value={tab} onValueChange={setTab} className="review-workspace">
+        <TabsList className="admin-tabs" aria-label="审核内容">
+          <TabsTrigger value="preview">预览</TabsTrigger>
+          <TabsTrigger value="info">信息与修订</TabsTrigger>
+        </TabsList>
       <div className="review-grid">
-        <section
-          className={
-            "review-preview " + (tab === "preview" ? "mobile-active" : "")
-          }
-        >
+        <TabsContent value="preview" forceMount className="review-preview">
           <Article
             {...review.data}
             date={review.data.date}
@@ -202,10 +186,8 @@ export function ReviewDetail({ id }: { id: string }) {
               </label>
             </form>
           )}
-        </section>
-        <aside
-          className={"review-info " + (tab === "info" ? "mobile-active" : "")}
-        >
+        </TabsContent>
+        <TabsContent value="info" forceMount className="review-info">
           <Card className="gap-3">
             <CardHeader>
               <CardTitle>发布确认</CardTitle>
@@ -292,8 +274,9 @@ export function ReviewDetail({ id }: { id: string }) {
           ) : (
             <p>暂无确认记录。</p>
           )}
-        </aside>
+        </TabsContent>
       </div>
+      </Tabs>
       <div className="review-actions">
         <Button
           variant="outline"

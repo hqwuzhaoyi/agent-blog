@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { ArrowUpRight, NotebookPen, Loader2, LogIn } from "lucide-react";
+import { AdminRequestState } from "./request-state";
 import { api, AdminError } from "./api";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -47,10 +48,7 @@ export function AdminLayout() {
   if (session === null)
     return (
       <div className="admin-scope grid min-h-svh place-items-center">
-        <p className="flex items-center gap-2 text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
-          正在检查审核会话…
-        </p>
+        <AdminRequestState status="loading" loadingLabel="正在检查审核会话…" />
       </div>
     );
   if (!session)

@@ -1,0 +1,6 @@
+/* Archive-specific layout and typography; field geometry/focus stay upstream. */
+.public-site .archive-filter-form .archive-search-input { min-width: 0; gap: 7px; }
+.public-site .archive-search-input .archive-search-label { padding: 0; font-size: 11px; line-height: 1.65; color: var(--muted); font-weight: 400; }
+.public-site .archive-search-input .archive-search-field { background: var(--background); }
+.public-site .archive-search-input input.archive-search-native { font-size: 13px; }
+@media (max-width: 760px) { .public-site .archive-search-input input.archive-search-native { font-size: 12px; } }

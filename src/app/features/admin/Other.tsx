@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import {
   AudioLines,
   ArrowUpRight,
-  Loader2,
   Rss,
   Palette,
   ShieldCheck,
 } from "lucide-react";
+import { AdminRequestState } from "./request-state";
 import { api } from "./api";
 import { siteConfig } from "../../site";
 import {
@@ -22,12 +22,15 @@ import { Separator } from "./ui/separator";
 export function Episodes() {
   const [data, setData] = useState<any>(null),
     [error, setError] = useState(""),
-    [page, setPage] = useState(1);
+    [page, setPage] = useState(1),
+    [retry, setRetry] = useState(0);
   useEffect(() => {
-    api(`/episodes?page=${page}`)
-      .then(setData)
-      .catch((e) => setError(e.message));
-  }, [page]);
+    let active = true;
+    setData(null);
+    setError("");
+    api(`/episodes?page=${page}`).then(value => {if (active) setData(value)}).catch(e => {if (active) setError(e.message)});
+    return () => {active = false};
+  }, [page, retry]);
   return (
     <div className="space-y-6">
       <div>
@@ -36,16 +39,8 @@ export function Episodes() {
           已经公开的节目、章节与音频。
         </p>
       </div>
-      {error && (
-        <p role="alert" className="text-destructive">
-          {error}
-        </p>
-      )}
       {!data ? (
-        <p className="flex items-center gap-2 text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" />
-          读取中…
-        </p>
+        <AdminRequestState status={error ? "error" : "loading"} error={error} onRetry={() => setRetry(retry + 1)} />
       ) : (
         <>
           <div className="grid gap-4 xl:grid-cols-2">
@@ -100,10 +95,7 @@ export function Episodes() {
           </div>
           {!data.items.length && (
             <Card>
-              <CardContent className="grid place-items-center gap-2 py-8 text-muted-foreground">
-                <AudioLines className="size-8" />
-                暂无公开节目。
-              </CardContent>
+              <CardContent><AdminRequestState status="empty" emptyLabel="暂无公开节目。" /></CardContent>
             </Card>
           )}
           <div className="flex justify-end gap-2">

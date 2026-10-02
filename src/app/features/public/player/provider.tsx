@@ -13,6 +13,7 @@ import { Link } from "@tanstack/react-router";
 import type { PublishedEntry } from "../../../../../cloudflare/content-models";
 import { siteConfig } from "../../../site";
 import { Button } from "../beui/button";
+import { RangeSlider } from "../beui/range-slider";
 import { BottomSheet } from "../beui/bottom-sheet";
 type Episode = PublishedEntry<"episodes">;
 type State = {
@@ -245,18 +246,20 @@ export function PlayerControls() {
           +10
         </Button>
       </div>
-      <label className="block text-sm">
+      <div className="player-seek-control block text-sm">
         {siteConfig.player.seek}
-        <input
-          className="block w-full accent-primary"
-          type="range"
+        <RangeSlider
+          className="player-seek-slider min-h-11"
           min={0}
           max={state.duration || 1}
           step={0.1}
           value={Math.min(state.time, state.duration || 1)}
-          onChange={(event) => seek(Number(event.target.value))}
+          onValueChange={seek}
+          aria-label={siteConfig.player.seek}
+          formatValueText={(time) => `${timestamp(time)} / ${timestamp(state.duration)}`}
+          showTicks={false}
         />
-      </label>
+      </div>
       <div className="player-progress-caption flex justify-between text-sm text-muted-foreground">
         <span>{timestamp(state.time)}</span>
         <span>{timestamp(state.duration)}</span>
@@ -264,18 +267,20 @@ export function PlayerControls() {
       <div className="player-volume-row"><Button variant="ghost" onClick={() => setVolume(state.volume ? 0 : 1)}>{state.volume ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
         {state.volume ? siteConfig.player.mute : siteConfig.player.unmute}
       </Button>
-      <label className="flex items-center gap-3 text-sm">
+      <div className="player-volume-control flex items-center gap-3 text-sm">
         {siteConfig.language === "zh-CN" ? "音量" : "Volume"}
-        <input
-          type="range"
+        <RangeSlider
           min={0}
           max={1}
           step={0.05}
           value={state.volume}
-          onChange={(event) => setVolume(Number(event.target.value))}
-          className="accent-primary"
+          onValueChange={setVolume}
+          aria-label={siteConfig.language === "zh-CN" ? "音量" : "Volume"}
+          formatValueText={(volume) => `${Math.round(volume * 100)}%`}
+          className="player-volume-slider min-h-11"
+          showTicks={false}
         />
-      </label>
+      </div>
       </div>{state.error && <p role="alert">{state.error}</p>}
     </div>
   );

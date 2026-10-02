@@ -7,12 +7,11 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  FileSearch,
   ArrowUpRight,
-  Loader2,
   FilterX,
 } from "lucide-react";
 import { api } from "./api";
+import { AdminRequestState } from "./request-state";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -30,7 +29,8 @@ export function ReviewList({ published = false }: { published?: boolean }) {
     [page, setPage] = useState(1),
     [limit, setLimit] = useState(10),
     [data, setData] = useState<any>(null),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [retry, setRetry] = useState(0);
   useEffect(() => {
     let active = true;
     setData(null);
@@ -47,7 +47,7 @@ export function ReviewList({ published = false }: { published?: boolean }) {
     return () => {
       active = false;
     };
-  }, [published, q, source, page, limit]);
+  }, [published, q, source, page, limit, retry]);
   const pages = Math.max(1, Math.ceil((data?.total || 0) / limit));
   return (
     <div className="flex flex-col gap-6">
@@ -115,11 +115,6 @@ export function ReviewList({ published = false }: { published?: boolean }) {
             )}
           </div>
         </div>
-        {error && (
-          <p role="alert" className="text-destructive">
-            {error}
-          </p>
-        )}
         <div className="overflow-hidden rounded-md border">
           <Table className={data?.items?.length ? "min-w-[720px]" : "w-full"}>
             <TableHeader
@@ -139,15 +134,10 @@ export function ReviewList({ published = false }: { published?: boolean }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {!data && !error ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-40 text-center">
-                    <span className="inline-flex items-center gap-2 text-muted-foreground">
-                      <Loader2 className="size-4 animate-spin" />
-                      读取中…
-                    </span>
-                  </TableCell>
-                </TableRow>
+              {!data ? (
+                <TableRow><TableCell colSpan={6} className="h-40 text-center">
+                  <AdminRequestState status={error ? "error" : "loading"} error={error} onRetry={() => setRetry(retry + 1)} />
+                </TableCell></TableRow>
               ) : data?.items?.length ? (
                 data.items.map((r: any) => (
                   <TableRow key={r.id}>
@@ -202,13 +192,7 @@ export function ReviewList({ published = false }: { published?: boolean }) {
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} className="h-44 text-center">
-                    <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                      <FileSearch className="size-8 opacity-60" />
-                      <p className="font-medium text-foreground">
-                        没有符合条件的工作日志
-                      </p>
-                      <p className="text-sm">调整关键词或来源筛选。</p>
-                    </div>
+                    <AdminRequestState status="empty" emptyLabel="没有符合条件的工作日志" emptyDescription="调整关键词或来源筛选。" />
                   </TableCell>
                 </TableRow>
               )}
@@ -217,7 +201,7 @@ export function ReviewList({ published = false }: { published?: boolean }) {
         </div>
         <div className="flex items-center justify-between gap-4 flex-wrap px-1">
           <p className="text-sm text-muted-foreground">
-            共 {data?.total ?? 0} 条 · 第 {page} / {pages} 页
+            {data ? `共 ${data.total} 条 · 第 ${page} / ${pages} 页` : ""}
           </p>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 text-sm">

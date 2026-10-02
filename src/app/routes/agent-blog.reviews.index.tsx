@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "../features/public/beui/button";
 import { NotebookPen } from "lucide-react";
 import { getPublicReviews } from "../server/public-data";
 import { EmptyContent, ReviewRow } from "../features/public/content";
@@ -23,9 +24,9 @@ export const Route = createFileRoute("/agent-blog/reviews/")({
   errorComponent: ({ reset }) => (
     <section className="py-12">
       <p role="alert">{text("工作日志暂时无法加载。", "Worklogs could not be loaded.")}</p>
-      <button type="button" onClick={reset} className="mt-3 min-h-11 rounded-lg border border-border px-4">
+      <Button variant="outline" onClick={reset} className="mt-3">
         {text("重试", "Try again")}
-      </button>
+      </Button>
     </section>
   ),
   component: Worklogs,

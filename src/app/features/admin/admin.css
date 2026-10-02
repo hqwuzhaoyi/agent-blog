@@ -220,16 +220,12 @@ html[data-mode="dark"] [data-admin-portal="true"] {
     display: block;
   }
   .admin-tabs {
-    display: flex;
+    display: inline-flex;
     gap: 8px;
     margin: 16px 0;
   }
-  .review-preview,
-  .review-info {
+  .review-workspace [data-slot="tabs-content"][data-state="inactive"] {
     display: none;
-  }
-  .mobile-active {
-    display: block;
   }
   .review-actions {
     flex-wrap: wrap;

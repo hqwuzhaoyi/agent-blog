@@ -23,3 +23,13 @@ The following upstream implementations are copied into this feature, with import
 `Lists.tsx` adapts the TasksTable/DataTableToolbar/DataTablePagination composition to server-backed filters and bounded server pagination, using copied Table/Input/Button/Badge components. It does not copy TanStack Table state or demo task data. Source rows, title, date, status and pagination totals come from the real reviewer JSON response; no bulk publication is offered.
 
 `Detail.tsx` and `Other.tsx` use the copied Button/Card/Badge/Separator primitives with Agent Blog's existing full-preview/edit/conflict/audit/podcast/settings behavior. They are business-specific pages, not upstream demos. The shared article preview retains reading typography while chrome uses scoped neutral shadcn-admin tokens and 14px text. Portal tokens are also scoped, so public green reading styles cannot recolor admin Sheets or menus.
+
+## Request-state and mobile review Tabs batch (2026-10-03)
+
+`ui/tabs.tsx` is the complete `src/components/ui/tabs.tsx` implementation from the same upstream commit above, with only its utils import redirected locally. It uses `@radix-ui/react-tabs` Root/List/Trigger/Content for linked IDs, keyboard focus and selection. The package dependency is managed by the parent agent.
+
+`Detail.tsx` composes controlled Tabs and force-mounted Contents. Existing responsive CSS hides only the inactive mobile panel; both desktop panels remain visible. The stored preview, editor nodes, local draft, TanStack dirty-navigation guard and revision-bound approval remain page-owned. Source panels are not replaced by motion wrappers or conditional unmounts.
+
+`request-state.tsx` is a project-owned presentation adapter over the existing shadcn Button/Skeleton and Lucide icons. It presents exactly one loading/error/empty state; pages own their fetch and retry callbacks. Detail loading waits for both review and actual audit records before presenting the complete workbench. The adapter neither fetches data nor grants any approval authority.
+
+`test/admin-component-browser.mjs` checks local-only session-scoped mocked GET failures/recovery for lists, episodes, initial review and audit, plus desktop dual panels, mobile Arrow/Home/End tabs, aria relationships, mounted preview/editor and dirty approval disabling. It logs into the isolated preview, forbids content-write requests in the mock, and closes its task-owned browser session. It makes no production requests or saved-draft/publication changes.

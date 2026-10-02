@@ -10,3 +10,16 @@ MIT source from starc007/ui-components at commit `9f19813a3ea19ce167da9920fba565
 | lib/ease.ts, lib/use-hover-capable.ts, lib/presence-gate.tsx, lib/touch.ts, lib/utils.ts | Corresponding upstream lib sources (hover hook originally lib/hooks/use-hover-capable.ts) | Original motion tokens, hover detection, exit interaction gating, touch helpers and cn(clsx/twMerge) | Relocated files only |
 
 The earlier minimal button/tab/sheet implementations were replaced by these complete upstream component sources. The site's editorial page composition and single audio controller are project code; they are not an upstream beUI page template. No Pro components or proprietary assets are included.
+
+
+## Official registry additions (2026-10-03)
+
+The following complete public MIT source files were inspected through the live beUI registry and added without recreating their interaction engines. Existing helpers and local adaptations were preserved.
+
+| Local source | Registry item / upstream path | Adaptation |
+| --- | --- | --- |
+| input.tsx | https://beui.dev/r/input.json · components/motion/input.tsx | Local utils import and provenance comment only; archive layout uses the public classNames API, with URL search/ref handling in the route |
+| range-slider.tsx | https://beui.dev/r/range-slider.json · components/motion/range-slider.tsx | Local helper imports only; existing Motion thumb/fill spring and drag behavior retained; consuming player supplies controlled value, onValueChange, Chinese labels, formatted values, showTicks=false and a 44px target |
+| lib/use-slider.ts | range-slider item · lib/hooks/use-slider.ts | Complete official pointer capture, value snapping and keyboard/ARIA helper; no custom gesture implementation |
+
+The range-slider item also includes ease, touch and utils helpers. Those were already present and reused, not overwritten. React, Motion and utility dependencies were already installed.
