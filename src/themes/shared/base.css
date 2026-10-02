@@ -216,6 +216,8 @@ html[data-client-navigation] :is(.coffee-intro, .coffee-article-header, .coffee-
   z-index: 30;
   transform-origin: top left;
 }
+/* The expanded card lives in document coordinates so native scrolling carries it. */
+.listening-player[data-mode="expanded"] { position: absolute; z-index: 10; }
 .listening-player[hidden], .listening-player [hidden], .player-start[hidden] { display: none !important; }
 .player-surface {
   display: flex;

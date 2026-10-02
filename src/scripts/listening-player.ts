@@ -24,6 +24,7 @@ export function initListeningPlayer() {
   let dismissed = false;
   let pendingSeek: number | undefined;
   let frame = 0;
+  let scrollFrame = false;
   let movement: Animation | undefined;
   let navigating = false;
   let navigationSignal: AbortSignal | undefined;
@@ -58,7 +59,7 @@ export function initListeningPlayer() {
     if (articleHeader && articleRect) measuredSizes.set(articleHeader, { width: articleRect.width, height: articleRect.height });
     if (slot && rect) measuredSizes.set(slot, { width: rect.width, height: rect.height });
     geometry = {
-      top: (rect?.top ?? 0) + scrollY, left: rect?.left ?? 0, width: rect?.width ?? 0, height: rect?.height ?? 0,
+      top: (rect?.top ?? 0) + scrollY, left: (rect?.left ?? 0) + scrollX, width: rect?.width ?? 0, height: rect?.height ?? 0,
       headerBottom: headerRect?.bottom ?? 0,
       viewportBottom: (window.visualViewport?.height ?? innerHeight) + (window.visualViewport?.offsetTop ?? 0), viewportWidth: innerWidth,
     };
@@ -135,23 +136,29 @@ export function initListeningPlayer() {
     // A layout measurement is needed only for a resize or an actual mode change.
     if (changed || widthChanged || !playerHeight) playerHeight = shell.offsetHeight;
     const x = expanded ? bounds.left : (bounds.viewportWidth - width) / 2;
-    const y = expanded ? top : bounds.viewportBottom - playerHeight - 16;
+    const y = expanded ? bounds.top : bounds.viewportBottom - playerHeight - 16;
     const finalTransform = `translate3d(${x}px, ${y}px, 0)`;
     if (lastX !== x || lastY !== y) { shell.style.transform = finalTransform; lastX = x; lastY = y; }
     if (document.body.classList.contains("has-docked-player") !== !expanded) document.body.classList.toggle("has-docked-player", !expanded);
     if (old && changed && animate && !navigating && !reduced.matches) {
+      const viewportX = expanded ? x - scrollX : x;
+      const viewportY = expanded ? y - scrollY : y;
       movement = surface.animate([
-        { transform: `translate(${old.left - x}px, ${old.top - y}px) scale(${old.width / width}, ${old.height / playerHeight})` },
+        { transform: `translate(${old.left - viewportX}px, ${old.top - viewportY}px) scale(${old.width / width}, ${old.height / playerHeight})` },
         { transform: "translate(0, 0) scale(1)" },
       ], { duration: 250, easing: "cubic-bezier(0.77, 0, 0.175, 1)" });
     }
   }
-  function queuePosition() {
+  function stopPositionAnimation() { movement?.cancel(); movement = undefined; }
+  function queuePosition(fromScroll = false) {
+    if (fromScroll) { scrollFrame = true; stopPositionAnimation(); }
     if (frame) return;
     frame = requestAnimationFrame(() => {
       frame = 0;
       if (geometryDirty) { measureGeometry(); sync(); }
-      position();
+      const followGesture = scrollFrame;
+      scrollFrame = false;
+      position(!followGesture);
     });
   }
   function sync() {
@@ -258,7 +265,9 @@ export function initListeningPlayer() {
   });
   document.addEventListener("astro:after-swap", () => { readPage(); });
   document.addEventListener("astro:page-load", () => { navigating = false; navigationSignal = undefined; readPage(); });
-  addEventListener("scroll", queuePosition, { passive: true });
+  addEventListener("scroll", () => queuePosition(true), { passive: true });
+  addEventListener("wheel", stopPositionAnimation, { passive: true });
+  addEventListener("touchmove", stopPositionAnimation, { passive: true });
   addEventListener("resize", invalidateGeometry);
   window.visualViewport?.addEventListener("resize", invalidateGeometry);
   reduced.addEventListener("change", () => { movement?.cancel(); position(false); });
