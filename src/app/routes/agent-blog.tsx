@@ -1,52 +1,15 @@
-import { AudioLines, Rss, Search } from "lucide-react";
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
-import { PersistentPlayer } from "../features/public/player/provider";
-import { siteConfig } from "../site";
-export const Route = createFileRoute("/agent-blog")({
-  component: PublicLayout,
-});
+import { useState } from 'react';
+import { createFileRoute, Link, Outlet } from '@tanstack/react-router';
+import { AudioLines, Rss, Search, Menu, ArrowUpRight } from 'lucide-react';
+import { PersistentPlayer } from '../features/public/player/provider';
+import { BottomSheet } from '../features/public/beui/bottom-sheet';
+import { Button } from '../features/public/beui/button';
+import { siteConfig } from '../site';
+import { text } from '../features/public/locale';
+import '../features/public/public.css';
+export const Route = createFileRoute('/agent-blog')({ component: PublicLayout });
 function PublicLayout() {
-  return (
-    <>
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5">
-          <Link to="/agent-blog" className="inline-flex items-center gap-3 text-lg font-semibold tracking-tight">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground"><AudioLines size={21} aria-hidden="true" /></span>{siteConfig.title}
-          </Link>
-          <nav
-            aria-label={siteConfig.nav.label}
-            className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm font-medium"
-          >
-            <Link to="/agent-blog/episodes">{siteConfig.nav.episodes}</Link>
-            <Link
-              to="/agent-blog/archive"
-              search={{ type: "reviews", q: "", month: "" }}
-            >
-              {siteConfig.nav.latest}
-            </Link>
-            <Link
-              to="/agent-blog/archive"
-              search={{ type: "all", q: "", month: "" }}
-            >
-              <span className="inline-flex items-center gap-1.5"><Search size={15} aria-hidden="true" />{siteConfig.nav.archive}</span>
-            </Link>
-            <a href="/agent-blog/rss.xml" className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5"><Rss size={14} aria-hidden="true" />{siteConfig.nav.rss}</a>
-          </nav>
-        </div>
-      </header>
-      <main className="mx-auto max-w-6xl px-5 pb-32">
-        <Outlet />
-      </main>
-      <footer className="mx-auto max-w-6xl border-t border-border px-5 py-8 text-sm text-muted-foreground">
-        <p>{siteConfig.tagline}</p>
-        <div className="mt-3 flex gap-5">
-          <a href="/agent-blog/episodes/rss.xml">
-            {siteConfig.episodes.subscribe}
-          </a>
-          <a href="/agent-blog/rss.xml">{siteConfig.nav.rss}</a>
-        </div>
-      </footer>
-      <PersistentPlayer />
-    </>
-  );
+  const [panel, setPanel] = useState<'menu' | 'subscribe' | null>(null);
+  const navigation = <><Link to="/agent-blog" activeOptions={{ exact: true }} activeProps={{ className: 'is-active' }} onClick={() => setPanel(null)}>{text('首页', 'Home')}</Link><Link to="/agent-blog/episodes" activeOptions={{ exact: false }} activeProps={{ className: 'is-active' }} onClick={() => setPanel(null)}>{siteConfig.nav.episodes}</Link><Link to="/agent-blog/archive" search={{ type: 'reviews', q: '', month: '' }} activeProps={{ className: 'is-active' }} onClick={() => setPanel(null)}>{siteConfig.nav.latest}</Link><Link to="/agent-blog/archive" search={{ type: 'all', q: '', month: '' }} activeProps={{ className: 'is-active' }} onClick={() => setPanel(null)}>{siteConfig.nav.archive}</Link></>;
+  return <div className="public-site"><header className="public-header"><div className="public-header-inner"><Link to="/agent-blog" className="public-brand"><span className="brand-mark"><AudioLines size={22} aria-hidden="true" /></span><span>{siteConfig.title}<small>{text('听见新想法，读懂新进展', 'New ideas. Meaningful progress.')}</small></span></Link><nav className="public-nav" aria-label={siteConfig.nav.label}>{navigation}</nav><div className="header-actions"><Link to="/agent-blog/archive" search={{ type: 'all', q: '', month: '' }} className="header-search" aria-label={text('搜索公开内容', 'Search published content')}><Search size={19} aria-hidden="true" /></Link><Button variant="outline" className="subscribe-button" onClick={() => setPanel('subscribe')}><Rss size={15} aria-hidden="true" />{text('订阅', 'Subscribe')}</Button><Button variant="ghost" size="icon" className="mobile-menu-button" onClick={() => setPanel('menu')} aria-label={text('打开导航菜单', 'Open navigation menu')}><Menu size={22} aria-hidden="true" /></Button></div></div></header><main className="public-main"><Outlet /></main><footer className="public-footer"><div><Link to="/agent-blog" className="footer-brand">{siteConfig.title}</Link><p>{siteConfig.tagline}</p></div><div className="footer-links"><a href="/agent-blog/episodes/rss.xml">{siteConfig.episodes.subscribe}<ArrowUpRight size={14} aria-hidden="true" /></a><a href="/agent-blog/rss.xml">{text('订阅全部内容', 'Subscribe to all content')}<ArrowUpRight size={14} aria-hidden="true" /></a></div><p className="footer-note">{text('持续记录，慢慢读。', 'Made for listening. Made for reading.')}</p></footer><PersistentPlayer /><BottomSheet open={panel !== null} onOpenChange={open => { if (!open) setPanel(null); }} title={panel === 'subscribe' ? text('选择订阅', 'Choose a feed') : siteConfig.nav.label} snapPoints={['auto']} className="public-site public-navigation-sheet">{panel === 'menu' ? <nav className="mobile-nav" aria-label={siteConfig.nav.label}>{navigation}<Button variant="outline" className="mobile-nav-subscribe" onClick={() => setPanel("subscribe")}><Rss size={16} aria-hidden="true" />{text("订阅", "Subscribe")}</Button></nav> : <div className="subscription-options"><a href="/agent-blog/episodes/rss.xml"><Rss size={21} /><span><strong>{siteConfig.episodes.subscribe}</strong><small>{siteConfig.episodes.description}</small></span><ArrowUpRight size={18} /></a><a href="/agent-blog/rss.xml"><Rss size={21} /><span><strong>{text('订阅全部内容', 'All published content')}</strong><small>{text('早咖啡与工作日志，一个 RSS 入口。', 'Morning Coffee and worklogs in one feed.')}</small></span><ArrowUpRight size={18} /></a></div>}</BottomSheet></div>;
 }

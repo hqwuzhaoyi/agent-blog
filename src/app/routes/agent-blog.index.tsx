@@ -1,90 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { getPublicContent } from "../server/public-data";
-import { siteConfig } from "../site";
-import {
-  EpisodePlayer,
-  Chapters,
-  timestamp,
-} from "../features/public/player/provider";
-import { EpisodeRow, ReviewRow, displayDate } from "../features/public/content";
-export const Route = createFileRoute("/agent-blog/")({
-  loader: () => getPublicContent(),
-  head: () => ({
-    meta: [
-      { title: siteConfig.title },
-      { name: "description", content: siteConfig.description },
-    ],
-  }),
-  component: Home,
-});
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { ArrowRight, ArrowUpRight, Headphones } from 'lucide-react';
+import { getPublicContent } from '../server/public-data';
+import { siteConfig } from '../site';
+import { EpisodePlayer, Chapters, timestamp } from '../features/public/player/provider';
+import { EpisodeCard, ReviewRow, EpisodeCover, SectionHeading, EmptyContent, displayDate } from '../features/public/content';
+import { text } from '../features/public/locale';
+export const Route = createFileRoute('/agent-blog/')({ loader: () => getPublicContent(), head: () => ({ meta: [{ title: siteConfig.title }, { name: 'description', content: siteConfig.description }] }), component: Home });
 function Home() {
-  const { episodes, reviews } = Route.useLoaderData();
-  const latest = episodes[0];
-  return (
-    <>
-      <section className="grid gap-10 border-b border-border py-12 md:grid-cols-[1.4fr_1fr]">
-        {latest ? (
-          <>
-            <div>
-              <p className="text-sm text-muted-foreground">
-                {siteConfig.episodes.latest} · {displayDate(latest.data.date)} ·{" "}
-                {timestamp(latest.data.duration)}
-              </p>
-              <h1 className="my-4 text-4xl font-semibold leading-tight">
-                {latest.data.title}
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                {latest.data.summary}
-              </p>
-              <EpisodePlayer episode={latest} />
-              <Link to="/agent-blog/episodes/$id" params={{ id: latest.id }}>
-                {siteConfig.episodes.notes} →
-              </Link>
-            </div>
-            <aside className="rounded-2xl border border-border bg-card p-6">
-              <p className="text-sm uppercase tracking-widest text-muted-foreground">
-                Morning Coffee
-              </p>
-              <h2 className="my-4 text-2xl font-semibold">
-                {siteConfig.episodes.chapters}
-              </h2>
-              <Chapters episode={latest} />
-            </aside>
-          </>
-        ) : (
-          <div>
-            <h1 className="text-3xl font-semibold">
-              {siteConfig.episodes.title}
-            </h1>
-            <p className="mt-4">{siteConfig.episodes.empty}</p>
-          </div>
-        )}
-      </section>
-      <div className="grid gap-12 py-10 md:grid-cols-2">
-        <section>
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">
-              {siteConfig.episodes.archive}
-            </h2>
-            <Link to="/agent-blog/episodes">{siteConfig.episodes.back} →</Link>
-          </div>
-          <ul>
-            {episodes.slice(0, 5).map((episode) => (
-              <EpisodeRow key={episode.id} episode={episode} />
-            ))}
-          </ul>
-          {!episodes.length && <p>{siteConfig.episodes.empty}</p>}
-        </section>
-        <section>
-          <h2 className="text-2xl font-semibold">{siteConfig.home.latest}</h2>
-          <ul>
-            {reviews.slice(0, 5).map((review) => (
-              <ReviewRow key={review.id} review={review} />
-            ))}
-          </ul>
-          {!reviews.length && <p>{siteConfig.home.empty}</p>}
-        </section>
-      </div>
-    </>
-  );
+  const { episodes, reviews } = Route.useLoaderData(); const latest = episodes[0];
+  return <><section className="public-hero">{latest ? <><div className="hero-copy"><p className="eyebrow"><span className="live-dot" />{siteConfig.episodes.latest}<span className="eyebrow-separator">/</span>{siteConfig.episodes.title}</p><h1>{latest.data.title}</h1><p className="hero-summary">{latest.data.summary}</p><div className="hero-meta"><time dateTime={latest.data.date.toISOString()}>{displayDate(latest.data.date)}</time><span>·</span><span><Headphones size={15} aria-hidden="true" />{timestamp(latest.data.duration)}</span></div><div className="hero-listen"><EpisodePlayer episode={latest} /><Link to="/agent-blog/episodes/$id" params={{ id: latest.id }} className="hero-notes">{siteConfig.episodes.notes} →</Link></div><div className="hero-chapters"><p>{siteConfig.episodes.chapters}<span>{latest.data.chapters.length}</span></p><Chapters episode={latest} /></div></div><Link to="/agent-blog/episodes/$id" params={{ id: latest.id }} className="featured-cover-link"><EpisodeCover episode={latest} /><span className="cover-caption">{text('一杯咖啡的时间，听见新想法。', 'Fresh ideas, one coffee at a time.')}<ArrowUpRight size={18} aria-hidden="true" /></span></Link></> : <div className="hero-copy"><p className="eyebrow">Morning Coffee</p><h1>{siteConfig.episodes.title}</h1><EmptyContent>{siteConfig.episodes.empty}</EmptyContent></div>}</section><section className="home-episodes public-section"><SectionHeading eyebrow="THE LISTENING ROOM" title={siteConfig.episodes.archive} count={episodes.length}><Link to="/agent-blog/episodes" className="section-link">{siteConfig.episodes.back}<ArrowRight size={17} aria-hidden="true" /></Link></SectionHeading>{episodes.length ? <ul className="episode-grid">{episodes.slice(0, 3).map(episode => <EpisodeCard key={episode.id} episode={episode} />)}</ul> : <EmptyContent>{siteConfig.episodes.empty}</EmptyContent>}</section><section className="home-reviews public-section"><SectionHeading eyebrow="NOTES ON PROGRESS" title={siteConfig.nav.latest} count={reviews.length}><Link to="/agent-blog/archive" search={{ type: 'reviews', q: '', month: '' }} className="section-link">{text('全部工作日志', 'All worklogs')}<ArrowRight size={17} aria-hidden="true" /></Link></SectionHeading><div className="review-section-layout"><div className="review-intro"><h3>{text('重要的进展，\n值得留下一页。', 'Progress worth\nputting into words.')}</h3><p>{siteConfig.description}</p></div><ul className="review-list">{reviews.slice(0, 4).map(review => <ReviewRow key={review.id} review={review} />)}</ul></div>{!reviews.length && <EmptyContent>{siteConfig.home.empty}</EmptyContent>}</section></>;
 }

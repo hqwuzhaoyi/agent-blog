@@ -1,3 +1,5 @@
+import { ArrowLeft } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { getPublishedReview } from "../server/public-data";
 import { Article } from "../components/Article";
@@ -31,13 +33,13 @@ export const Route = createFileRoute("/agent-blog/reviews/$id")({
 function ReviewPage() {
   const review = Route.useLoaderData();
   return (
-    <Article
+    <div className="public-detail"><Link to="/agent-blog/archive" search={{ type: "reviews", q: "", month: "" }} className="detail-back"><ArrowLeft size={14} aria-hidden="true" />{siteConfig.nav.latest}</Link><Article
       title={review.data.title}
       summary={review.data.summary}
       date={review.data.date.toISOString()}
       source={review.data.source}
       platforms={review.data.platforms}
       html={review.html}
-    />
+    /></div>
   );
 }

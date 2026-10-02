@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { getPublicContent } from "../server/public-data";
 import { Tabs } from "../features/public/beui/tabs";
 import { EpisodeRow, ReviewRow } from "../features/public/content";
+import { Search } from "lucide-react";
+import { text } from "../features/public/locale";
 import { siteConfig } from "../site";
 type Search = {
   type: "all" | "episodes" | "reviews";
@@ -79,11 +81,11 @@ function Archive() {
           .includes(search.q.toLocaleLowerCase().trim())),
   );
   return (
-    <section className="mx-auto max-w-3xl py-12">
-      <h1 className="mb-6 text-3xl font-semibold">
+    <section className="archive-page">
+      <header className="public-page-heading"><p className="eyebrow">THE COLLECTION</p><h1>
         {siteConfig.archive.title}
-      </h1>
-      <Tabs
+      </h1><p>{text("在声音与文字之间，找到你感兴趣的进展。", "Find ideas and progress, in sound and in words.")}</p></header>
+      <div className="archive-toolbar"><Tabs
         label={siteConfig.language === "zh-CN" ? "内容类型" : "Content type"}
         value={search.type}
         onValueChange={(value) => update({ type: value as Search["type"] })}
@@ -97,7 +99,7 @@ function Archive() {
         ]}
       />
       <form
-        className="my-6 flex flex-wrap gap-4"
+        className="archive-filter-form"
         onSubmit={(event) => event.preventDefault()}
       >
         <label className="min-w-0 flex-1">
@@ -129,12 +131,12 @@ function Archive() {
             ))}
           </select>
         </label>
-      </form>
-      <p role="status" className="text-sm text-muted-foreground">
+      </form></div>
+      <div className="archive-results-heading"><p role="status" className="text-sm text-muted-foreground">
         {filtered.length}{" "}
         {siteConfig.language === "zh-CN" ? "条公开内容" : "published entries"}
-      </p>
-      <ul>
+      </p><Search size={15} aria-hidden="true" /></div>
+      <ul className="archive-results">
         {filtered.map((item) =>
           item.type === "episodes" ? (
             <EpisodeRow key={`episode-${item.entry.id}`} episode={item.entry} />

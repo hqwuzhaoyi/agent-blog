@@ -14,6 +14,7 @@ const browser = (...args) => {
 };
 const evaluate = code => JSON.parse(browser('eval', code));
 const eventually = predicate => { for (let attempt = 0; attempt < 30; attempt++) if (predicate()) return; assert.fail('Browser state did not settle'); };
+browser('set', 'viewport', '1440', '1000');
 browser('open', `${origin}/agent-blog/`);
 assert.equal(evaluate('document.querySelectorAll("audio").length'), 1);
 assert.equal(evaluate('document.querySelector("audio").paused'), true);

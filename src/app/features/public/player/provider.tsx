@@ -1,4 +1,4 @@
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, X, AudioLines } from "lucide-react";
 import {
   createContext,
   useContext,
@@ -214,7 +214,7 @@ export function PlayerControls() {
     (item) => item.start <= state.time,
   );
   return (
-    <div className="space-y-3">
+    <div className="player-control-group space-y-3">
       {chapter && (
         <p className="text-sm text-muted-foreground">
           {siteConfig.language === "zh-CN" ? "当前章节：" : "Current chapter: "}
@@ -252,11 +252,11 @@ export function PlayerControls() {
           onChange={(event) => seek(Number(event.target.value))}
         />
       </label>
-      <div className="flex justify-between text-sm text-muted-foreground">
+      <div className="player-progress-caption flex justify-between text-sm text-muted-foreground">
         <span>{timestamp(state.time)}</span>
         <span>{timestamp(state.duration)}</span>
       </div>
-      <Button variant="ghost" onClick={() => setVolume(state.volume ? 0 : 1)}>{state.volume ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
+      <div className="player-volume-row"><Button variant="ghost" onClick={() => setVolume(state.volume ? 0 : 1)}>{state.volume ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
         {state.volume ? siteConfig.player.mute : siteConfig.player.unmute}
       </Button>
       <label className="flex items-center gap-3 text-sm">
@@ -271,7 +271,7 @@ export function PlayerControls() {
           className="accent-primary"
         />
       </label>
-      {state.error && <p role="alert">{state.error}</p>}
+      </div>{state.error && <p role="alert">{state.error}</p>}
     </div>
   );
 }
@@ -314,7 +314,7 @@ export function EpisodePlayer({ episode }: { episode: Episode }) {
   return (
     <section
       ref={ref}
-      className="my-8 rounded-2xl border border-border bg-card p-5"
+      className="episode-inline-player"
       aria-label={siteConfig.player.label}
     >
       {active ? (
@@ -336,12 +336,12 @@ export function PersistentPlayer() {
     <>
       <div
         hidden={state.inlineVisible && !open}
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)]"
+        className="persistent-player"
       >
-        <div className="mx-auto flex max-w-6xl items-center gap-3 p-3">
+        <div className="persistent-player-inner"><span className="persistent-cover" aria-hidden="true"><AudioLines size={20} /></span>
           <button
             type="button"
-            className="min-w-0 flex-1 text-left"
+            className="persistent-player-title"
             onClick={() => setOpen(true)}
             aria-label={siteConfig.player.expand}
           >
@@ -353,15 +353,17 @@ export function PersistentPlayer() {
               {siteConfig.player.expand}
             </span>
           </button>
-          <Button onClick={toggle} size="lg" ripple>
-            {state.playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} fill="currentColor" aria-hidden="true" />}{state.playing ? siteConfig.player.pause : siteConfig.player.play}
+          <Button onClick={toggle} className="persistent-toggle" ripple aria-label={state.playing ? siteConfig.player.pause : siteConfig.player.play}>
+            {state.playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} fill="currentColor" aria-hidden="true" />}<span>{state.playing ? siteConfig.player.pause : siteConfig.player.play}</span>
           </Button>
           <Button
             variant="ghost"
+            size="icon"
+            className="persistent-dismiss"
             onClick={dismiss}
             aria-label={siteConfig.player.close}
           >
-            {siteConfig.player.close}
+            <X size={16} aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -370,6 +372,7 @@ export function PersistentPlayer() {
         onOpenChange={setOpen}
         title={state.episode.data.title}
         snapPoints={[0.72, 0.92]}
+        className="public-site public-player-sheet"
       >
         <PlayerControls />
         <h3 className="mt-6 font-semibold">{siteConfig.episodes.chapters}</h3>

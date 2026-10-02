@@ -1,31 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { getPublicContent } from "../server/public-data";
-import { EpisodeRow } from "../features/public/content";
-import { siteConfig } from "../site";
-export const Route = createFileRoute("/agent-blog/episodes/")({
-  loader: () => getPublicContent(),
-  head: () => ({
-    meta: [
-      { title: `${siteConfig.episodes.title} · ${siteConfig.title}` },
-      { name: "description", content: siteConfig.episodes.description },
-    ],
-  }),
-  component: Episodes,
-});
-function Episodes() {
-  const { episodes } = Route.useLoaderData();
-  return (
-    <section className="mx-auto max-w-3xl py-12">
-      <h1 className="text-3xl font-semibold">{siteConfig.episodes.title}</h1>
-      <p className="mt-3 text-muted-foreground">
-        {siteConfig.episodes.description}
-      </p>
-      <ul className="mt-6">
-        {episodes.map((episode) => (
-          <EpisodeRow key={episode.id} episode={episode} />
-        ))}
-      </ul>
-      {!episodes.length && <p className="mt-6">{siteConfig.episodes.empty}</p>}
-    </section>
-  );
-}
+import { createFileRoute } from '@tanstack/react-router';
+import { Headphones } from 'lucide-react';
+import { getPublicContent } from '../server/public-data';
+import { EpisodeCard, EmptyContent } from '../features/public/content';
+import { siteConfig } from '../site';
+import { text } from '../features/public/locale';
+export const Route = createFileRoute('/agent-blog/episodes/')({ loader: () => getPublicContent(), head: () => ({ meta: [{ title: `${siteConfig.episodes.title} · ${siteConfig.title}` }, { name: 'description', content: siteConfig.episodes.description }] }), component: Episodes });
+function Episodes() { const { episodes } = Route.useLoaderData(); return <section className="public-list-page"><header className="public-page-heading"><p className="eyebrow">THE LISTENING ROOM</p><h1>{siteConfig.episodes.title}</h1><p>{siteConfig.episodes.description}</p><span className="page-total"><Headphones size={16} aria-hidden="true" />{episodes.length} {text('期公开节目', 'published episodes')}</span></header>{episodes.length ? <ul className="episode-grid">{episodes.map(episode => <EpisodeCard key={episode.id} episode={episode} />)}</ul> : <EmptyContent>{siteConfig.episodes.empty}</EmptyContent>}</section>; }

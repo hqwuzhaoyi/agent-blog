@@ -183,8 +183,8 @@ export function BottomSheet({
               type="button"
               aria-label={
                 siteConfig.language === "zh-CN"
-                  ? "关闭播放器面板"
-                  : "Close player panel"
+                  ? "关闭面板"
+                  : "Close panel"
               }
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -237,8 +237,8 @@ export function BottomSheet({
                 title
                   ? undefined
                   : siteConfig.language === "zh-CN"
-                    ? "播放器面板"
-                    : "Player panel"
+                    ? "面板"
+                    : "Panel"
               }
             >
               <div className="flex flex-col items-center px-4 pb-2 pt-3">
