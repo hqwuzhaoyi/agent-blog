@@ -17,7 +17,8 @@
     "review:fixture": "node scripts/review.mjs fixture --fixture test/fixtures/gateway-day.json --draft test/fixtures/review-draft.json --dry-run",
     "deploy": "node scripts/deploy-cloudflare.mjs",
     "deploy:check": "node scripts/deploy-cloudflare.mjs --dry-run",
-    "episode:publish": "node scripts/publish-episode.mjs"
+    "episode:publish": "node scripts/publish-episode.mjs",
+    "check:rss": "python3 scripts/check-rss.py"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

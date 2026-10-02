@@ -16,6 +16,18 @@ Both commands first restore the complete published episode catalog from R2, then
 
 The repository's deployment workflow validates the Cloudflare build only; it no longer deploys GitHub Pages. Application changes and approved Daily Reviews are deployed by running `npm run deploy` after updating the publisher checkout. Episode publishing itself has no dependency on Git commits, PRs, or merges.
 
+## RSS reader compatibility
+
+Some RSS clients use non-browser User-Agent headers. Cloudflare Browser Integrity Check can reject these with error 1010 even when ordinary browser and curl requests succeed. The zone has a narrow custom rule named `Agent Blog RSS and audio clients` that skips only Browser Integrity Check for GET/HEAD requests to this blog's two feed endpoints and audio download paths:
+
+```text
+(http.host eq "blog.wuzhaoyi.xyz" and http.request.method in {"GET" "HEAD"} and (http.request.uri.path in {"/agent-blog/rss.xml" "/agent-blog/episodes/rss.xml"} or starts_with(http.request.uri.path, "/agent-blog/audio/")))
+```
+
+Use the Skip action with only the Browser Integrity Check product (`bic`) selected. This rule does not skip other WAF components or change ordinary page checks. It is a zone setting, separate from the Worker deployment. See [Cloudflare's selective BIC configuration](https://developers.cloudflare.com/waf/tools/browser-integrity-check/).
+
+Run `npm run check:rss` after publication to verify both feeds, item identities and dates, enclosure MIME types and exact lengths, and audio HEAD/Range access using Python's default User-Agent. This is a live integration check, independent of the offline test suite. A feed update becomes visible when the reader next fetches it; this deployment does not send subscriber notifications.
+
 ## Automatic episodes
 
 The existing Hermes morning-coffee job starts at 07:15 Asia/Shanghai, targeting completion before 08:00. It retains the existing feed, TTS, mixed audio, and single Telegram delivery. Website deployment failure must not block delivery of the new MP3 in Telegram.
