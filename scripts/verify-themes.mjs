@@ -35,7 +35,7 @@ try {
   for (const { id } of themeCatalog) {
     await writeFile(configPath, `${JSON.stringify({ ...testPreferences, theme: id }, null, 2)}\n`);
     const outDir = join(buildsPath, id);
-    await execFileAsync(astro, ["build", "--outDir", outDir], { cwd: root });
+    await execFileAsync(astro, ["build", "--outDir", outDir], { cwd: root, env: { ...process.env, STATIC_FIXTURE: "1" } });
 
     const [home, archive, article, rss] = await Promise.all([
       readFile(join(outDir, "index.html"), "utf8"),

@@ -1,7 +1,9 @@
 import { getCollection } from "astro:content";
 import { siteConfig } from "@/site.config";
 
-export async function getPublishedReviews() {
+import { publishedEntries, type ContentDatabase } from "./content-store";
+export async function getPublishedReviews(db?: ContentDatabase) {
+  if (db) return publishedEntries<"reviews">(db, "review");
   const reviews = await getCollection("reviews");
   return reviews.sort((left, right) => right.data.date.valueOf() - left.data.date.valueOf());
 }

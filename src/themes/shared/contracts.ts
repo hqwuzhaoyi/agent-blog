@@ -87,6 +87,7 @@ export interface ArchiveListProps {
 export interface ReviewArticleProps {
   review: ReviewPresentation;
   Content: AstroComponentFactory;
+  contentProps?: { html?: string };
   labels: {
     back: string;
     latest: string;
@@ -114,6 +115,7 @@ export interface EpisodeListProps {
 export interface EpisodeArticleProps {
   episode: EpisodePresentation;
   Content: AstroComponentFactory;
+  contentProps?: { html?: string };
   labels: { title: string; chapters: string; notes: string; subscribe: string; back: string; draft: string; download: string; disclosure: string; start: string };
   archiveUrl: string;
   feedUrl: string;

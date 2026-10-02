@@ -1,5 +1,8 @@
 ---
 import { getCollection, render } from "astro:content";
+import { publishedEntry } from "@/lib/content-store";
+import { renderMarkdown } from "@/lib/markdown";
+import MarkdownContent from "@/components/MarkdownContent.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { presentReview } from "@/lib/presentation";
 import { sitePath } from "@/lib/paths";
@@ -11,13 +14,18 @@ export async function getStaticPaths() {
   return reviews.map((review) => ({ params: { id: review.id }, props: { review } }));
 }
 
-const { review } = Astro.props;
-const { Content } = await render(review);
+const review = Astro.locals.contentDB
+  ? await publishedEntry<"reviews">(Astro.locals.contentDB, "review", Astro.params.id!)
+  : Astro.props.review;
+if (!review) return new Response("Not found", { status: 404 });
+const Content = Astro.locals.contentDB ? MarkdownContent : (await render(review)).Content;
+const contentProps = Astro.locals.contentDB ? { html: renderMarkdown(review.body ?? "") } : {};
 const presentedReview = presentReview(review, siteConfig.locale);
 const ReviewArticle = activeTheme.slots.ReviewArticle;
 const reviewArticleProps: ReviewArticleProps = {
   review: presentedReview,
   Content,
+  contentProps,
   labels: siteConfig.review,
   homeUrl: sitePath(),
   archiveUrl: sitePath("archive/"),

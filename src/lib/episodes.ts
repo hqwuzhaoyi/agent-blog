@@ -1,7 +1,9 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import { episodePath } from "./paths";
 
-export async function getEpisodes(includeDrafts = false) {
+import { publishedEntries, type ContentDatabase } from "./content-store";
+export async function getEpisodes(includeDrafts = false, db?: ContentDatabase) {
+  if (db) return publishedEntries<"episodes">(db, "episode");
   const episodes = await getCollection("episodes", ({ data }) => includeDrafts || !data.draft);
   return episodes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }

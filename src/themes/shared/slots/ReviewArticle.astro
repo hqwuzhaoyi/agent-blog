@@ -3,7 +3,7 @@ import type { ReviewArticleProps } from "../contracts";
 
 interface Props extends ReviewArticleProps {}
 
-const { review, Content, labels, homeUrl, archiveUrl } = Astro.props;
+const { review, Content, contentProps = {}, labels, homeUrl, archiveUrl } = Astro.props;
 ---
 
 <article class="review-article">
@@ -24,7 +24,7 @@ const { review, Content, labels, homeUrl, archiveUrl } = Astro.props;
       <div><dt>{labels.source}</dt><dd>{review.platforms}</dd></div>
     </dl>
   </header>
-  <div class="prose"><Content /></div>
+  <div class="prose"><Content {...contentProps} /></div>
   <footer class="review-article__footer">
     <a href={archiveUrl}>{labels.continue}</a>
   </footer>

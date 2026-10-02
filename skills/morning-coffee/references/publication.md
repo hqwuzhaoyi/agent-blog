@@ -1,20 +1,18 @@
 # Cloudflare 发布接口
 
-本技能配合实现了 `scripts/publish-episode.mjs` 的 Agent Blog checkout 使用，部署宿主和目标由用户配置。确认该脚本和 `wrangler.jsonc` 存在，并检查配置中的站点、账户、Worker 与 R2 bucket 是否属于这次任务。缺少部署实现时先补齐应用集成，不能凭技能说明声称已经上线。
-
-从博客目录执行：
+从用户配置的 Agent Blog checkout 执行：
 
 ```bash
 npm run episode:publish -- --directory <本期产物目录> --day <YYYY-MM-DD> --dry-run
 npm run episode:publish -- --directory <本期产物目录> --day <YYYY-MM-DD>
 ```
 
-该接口需要 `episode.json`、`episode.mp3`、`episode.parts/manifest.json`、`publication.json` 和 `shownotes.md`。它检查音频、计算章节和内容哈希，从私有R2恢复以往已发布文稿，构建页面，上传成品及文稿，更新节目目录并部署Workers。按实际返回状态判断结果，读取本期 `publication-result.json`。dry-run 可能读取远端数据并写本地构建，但不得上传或公开发布。
+输入为 `episode.json`、`episode.mp3`、`episode.parts/manifest.json`、`publication.json` 和公开 `shownotes.md`。脚本完整解码音频，测量长度、章节和内容哈希，再调用带身份验证的 Worker API：音频上传到私有 R2，正文和章节写入 D1，验证 R2 对象后自动发布。无需 Git、PR、全站构建或 Worker 部署。单个 MP3 上传上限 25 MiB；更大的节目先调整编码或按应用文档扩展上传协议。
 
-首次部署需配置Workers、私有R2 bucket、公开站点地址与Wrangler认证，并初始化节目目录。这些是应用部署任务，依照当前用户授权执行；默认不随制作节目顺手修改DNS或创建服务。详细部署和恢复步骤以该checkout的 `docs/CLOUDFLARE_DEPLOYMENT.md` 为准。
+发布主机配置 `BLOG_SUBMIT_TOKEN`，或权限为 0600 的 `.agent-blog/publication-client.json`（`url` 与 `token`）；凭据不写进 Git、消息或节目素材。代理使用提交凭据，工作日志另需人工确认。`--dry-run` 只验证本地产物，不读写远端，不公开发布。
 
-公开验证包括节目页、完整或Range音频请求、RSS中音频URL/MIME/真实字节长度。Range应支持播放器拖动。只上传最终混音MP3，干声、WAV、私有配置和制作记录保留本地。上传路径使用日期与内容哈希，重试同一期不会新增不同身份。
+读取本期 `publication-result.json`，再验证节目页、RSS 和音频 HEAD/Range。页面及 RSS 从 D1 读取已发布内容，RSS 客户端下次拉取可见更新。仅上传最终混音 MP3，干声、WAV、素材、私有配置和制作记录保留本地。
 
-构建失败时不写远端。上传或部署中断可能留下R2对象而网站仍是旧版；针对同一期重试发布即可，不清空节目目录。使用同一发布宿主串行部署，避免不同进程用旧节目目录覆盖新内容。
+日期确定节目身份，哈希确定音频地址；同内容重试幂等，修改已有节目时接口校验当前草稿版本，冲突后重新读取并重试。音频上传失败不会公开节目，内容写入失败可能留下未引用的 R2 音频对象；同一期重试即可，不删除旧节目或目录。
 
-自动发布必须来自当前指令或既有任务的明确授权，不把技能安装等同于自动发布授权。保留其他内容的既有审核规则。Cloudflare认证放私有环境或Wrangler登录状态，Git中只提交代码与已授权公开内容。
+自动发布依据当前任务或既有明确授权。网站失败不阻断现有 Telegram 音频投递。应用部署、迁移和恢复见 checkout 的 `docs/CLOUDFLARE_DEPLOYMENT.md`；制作节目只使用发布 API。

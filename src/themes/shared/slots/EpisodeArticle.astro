@@ -1,7 +1,7 @@
 ---
 import type { EpisodeArticleProps } from "../contracts";
 interface Props extends EpisodeArticleProps {}
-const { episode, Content, labels, archiveUrl, feedUrl } = Astro.props;
+const { episode, Content, contentProps = {}, labels, archiveUrl, feedUrl } = Astro.props;
 ---
 <article class="coffee-article">
   <header class="coffee-article-header">
@@ -24,6 +24,6 @@ const { episode, Content, labels, archiveUrl, feedUrl } = Astro.props;
       <li id={chapter.id}><button type="button" data-start={chapter.start}><span class="coffee-chapter-time">{chapter.timestamp}</span><span class="coffee-chapter-title">{chapter.title}</span><span class="coffee-chapter-indicator" aria-hidden="true">▶</span><span class="coffee-chapter-progress" aria-hidden="true"></span></button></li>
     ))}</ol>
   </section>
-  <div class="coffee-notes"><Content /></div>
+  <div class="coffee-notes"><Content {...contentProps} /></div>
 </article>
 <script is:inline type="application/json" id="listening-episode" set:html={JSON.stringify({ id: episode.id, title: episode.title, url: episode.url, audio: episode.audio, duration: episode.duration, chapters: episode.chapters }).replace(/</g, "\\u003c")} />

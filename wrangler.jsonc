@@ -2,16 +2,13 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "agent-blog",
   "account_id": "9e8eed72f9485f3a8206fc3d6cda605f",
-  "main": "cloudflare/worker.mjs",
+  "main": "cloudflare/entry.ts",
   "compatibility_date": "2026-10-02",
   "workers_dev": true,
   "assets": {
-    "directory": "./.cloudflare-assets",
+    "directory": "./dist/client",
     "binding": "ASSETS",
-    "run_worker_first": [
-      "/",
-      "/agent-blog/audio/*"
-    ]
+    "run_worker_first": true
   },
   "r2_buckets": [
     {
@@ -23,6 +20,17 @@
     {
       "pattern": "blog.wuzhaoyi.xyz",
       "custom_domain": true
+    }
+  ],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "CONTENT",
+      "database_name": "agent-blog-content",
+      "database_id": "d6aac9aa-6536-46c0-9767-835b49c0613e",
+      "migrations_dir": "migrations"
     }
   ]
 }

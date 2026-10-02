@@ -3,6 +3,7 @@ import { execFile } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { promisify } from "node:util";
+import { contentClient } from "./lib/content-client.mjs";
 
 const execFileAsync = promisify(execFile);
 const JOB_NAME = "Agent Blog daily review";
@@ -47,7 +48,7 @@ const config = {
   language: blogPreferences.language,
 };
 
-const schedulePrompt = `Use the openclaw-review skill to run the complete daily review for the Publication Repository at ${repositoryDir}. Never merge the pull request.`;
+const schedulePrompt = `Use the openclaw-review skill to run the complete daily review for the Publication Repository at ${repositoryDir}. Submit a private draft and return its preview URL. Only the operator can approve publication in the review dashboard.`;
 
 if (options["dry-run"]) {
   console.log(JSON.stringify({
@@ -56,7 +57,7 @@ if (options["dry-run"]) {
     config,
     actions: [
       "verify OpenClaw Gateway",
-      "verify GitHub repository access",
+      "verify draft submission API access",
       "install the shared openclaw-review skill",
       `create ${JOB_NAME} at 00:15 ${timeZone}`,
       "collect a non-publishing Review Window preview",
@@ -67,12 +68,8 @@ if (options["dry-run"]) {
 
 await command("openclaw", ["--version"]);
 await command("openclaw", ["gateway", "call", "status", "--params", "{}", "--json"]);
-await command("gh", ["auth", "status"]);
-const dirty = await command("git", ["status", "--porcelain"], { cwd: repositoryDir });
-if (dirty) throw new Error("Commit the selected blog configuration before installing OpenClaw");
-const remote = await command("git", ["remote", "get-url", "origin"], { cwd: repositoryDir });
-if (!/github\.com[:/]/.test(remote)) throw new Error("Publication Repository origin must be on GitHub");
-await command("gh", ["repo", "view", "--json", "nameWithOwner"], { cwd: repositoryDir });
+const api = await contentClient();
+await api("reviews/setup-check");
 
 const localDir = resolve(repositoryDir, ".agent-blog");
 await mkdir(localDir, { recursive: true });

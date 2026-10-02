@@ -8,7 +8,7 @@ import {
   currentReviewDay,
   previousReviewDay,
 } from "./lib/openclaw-gateway.mjs";
-import { createGitPublisher } from "./lib/git-publisher.mjs";
+import { submitReviewMarkdown } from "./submit-review.mjs";
 import { runPublicationWorkflow } from "./lib/publication-workflow.mjs";
 
 function parseArguments(argv) {
@@ -18,7 +18,8 @@ function parseArguments(argv) {
     const value = rest[index];
     if (!value.startsWith("--")) continue;
     const key = value.slice(2);
-    if (rest[index + 1] && !rest[index + 1].startsWith("--")) options[key] = rest[++index];
+    if (rest[index + 1] && !rest[index + 1].startsWith("--"))
+      options[key] = rest[++index];
     else options[key] = true;
   }
   return { command, options };
@@ -56,10 +57,16 @@ function validateConfig(config) {
 }
 
 async function collect({ options, paths, config }) {
-  const state = await readJson(paths.state, { version: 1, sessions: {}, reviews: {} });
-  const reviewDay = options.day || (options.manual
-    ? currentReviewDay(Date.now(), config.timeZone)
-    : previousReviewDay(Date.now(), config.timeZone));
+  const state = await readJson(paths.state, {
+    version: 1,
+    sessions: {},
+    reviews: {},
+  });
+  const reviewDay =
+    options.day ||
+    (options.manual
+      ? currentReviewDay(Date.now(), config.timeZone)
+      : previousReviewDay(Date.now(), config.timeZone));
   let window;
 
   if (options.fixture) {
@@ -82,31 +89,36 @@ async function collect({ options, paths, config }) {
   }
 
   await writePrivateJson(paths.window, window);
-  console.log(JSON.stringify({
-    status: "collected",
-    mode: options.manual ? "manual" : "scheduled",
-    reviewDay,
-    visibleMessages: window.messages.length,
-    output: paths.window,
-  }));
+  console.log(
+    JSON.stringify({
+      status: "collected",
+      mode: options.manual ? "manual" : "scheduled",
+      reviewDay,
+      visibleMessages: window.messages.length,
+      output: paths.window,
+    }),
+  );
   return window;
 }
 
-async function submit({ root, options, paths, config }) {
+async function submit({ options, paths, config }) {
   const window = await readJson(paths.window);
   const draft = await readJson(paths.draft);
-  const submission = createReviewSubmission({ config, reviewDay: window.reviewDay, draft });
+  const submission = createReviewSubmission({
+    config,
+    reviewDay: window.reviewDay,
+    draft,
+  });
 
   if (options["dry-run"]) {
-    if (submission.status === "ready") process.stdout.write(submission.markdown);
+    if (submission.status === "ready")
+      process.stdout.write(submission.markdown);
     else console.log(JSON.stringify(submission));
     return submission;
   }
 
-  const publisher = createGitPublisher({
-    repositoryDir: root,
-    baseBranch: config.baseBranch || "main",
-  });
+  const publisher = async (proposal) =>
+    submitReviewMarkdown(proposal.id, proposal.markdown);
   const result = await runPublicationWorkflow({
     statePath: paths.state,
     window,
@@ -122,7 +134,11 @@ async function noUpdate({ paths }) {
   const result = await runPublicationWorkflow({
     statePath: paths.state,
     window,
-    submission: { status: "no-update", reason: "no-important-work", omittedHighlights: 0 },
+    submission: {
+      status: "no-update",
+      reason: "no-important-work",
+      omittedHighlights: 0,
+    },
     publisher: async () => {
       throw new Error("Publisher must not run for no-update");
     },
@@ -133,10 +149,23 @@ async function noUpdate({ paths }) {
 async function fixture({ root, options, paths, config }) {
   const fixturePath = options.fixture || "test/fixtures/gateway-day.json";
   const draftPath = options.draft || "test/fixtures/review-draft.json";
-  await collect({ options: { ...options, fixture: fixturePath, day: options.day || "2026-07-16" }, paths, config });
+  await collect({
+    options: {
+      ...options,
+      fixture: fixturePath,
+      day: options.day || "2026-07-16",
+    },
+    paths,
+    config,
+  });
   const draft = await readJson(resolve(draftPath));
   await writePrivateJson(paths.draft, draft);
-  return submit({ root, options: { ...options, "dry-run": true }, paths, config });
+  return submit({
+    root,
+    options: { ...options, "dry-run": true },
+    paths,
+    config,
+  });
 }
 
 async function manual({ options, paths, config }) {
@@ -148,8 +177,8 @@ function help() {
 
 Commands:
   collect   Read the Review Window from the OpenClaw Gateway
-  manual    Read the current local Review Day without submitting a pull request
-  submit    Validate the local draft, create/update a branch and pull request
+  manual    Read the current local Review Day without submitting a draft
+  submit    Validate the local draft and submit a private D1 draft for approval
   no-update Advance cursors without publishing
   fixture   Exercise collection and rendering with contract fixtures
 

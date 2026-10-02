@@ -5,7 +5,7 @@ import { presentReview } from "@/lib/presentation";
 import { activeTheme, siteConfig } from "@/site.config";
 import type { ArchiveListProps } from "@/themes/shared/contracts";
 
-const reviews = (await getPublishedReviews()).map((review) => presentReview(review, siteConfig.locale));
+const reviews = (await getPublishedReviews(Astro.locals.contentDB)).map((review) => presentReview(review, siteConfig.locale));
 const ArchiveList = activeTheme.slots.ArchiveList;
 const archiveListProps: ArchiveListProps = {
   reviews,

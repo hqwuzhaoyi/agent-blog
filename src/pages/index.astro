@@ -6,7 +6,7 @@ import { activeTheme, siteConfig } from "@/site.config";
 import { sitePath } from "@/lib/paths";
 import type { BlogIntroProps, ReviewListProps } from "@/themes/shared/contracts";
 
-const reviews = (await getPublishedReviews()).map((review) => presentReview(review, siteConfig.locale));
+const reviews = (await getPublishedReviews(Astro.locals.contentDB)).map((review) => presentReview(review, siteConfig.locale));
 const [latest, ...previous] = reviews;
 const BlogIntro = activeTheme.slots.BlogIntro;
 const ReviewList = activeTheme.slots.ReviewList;

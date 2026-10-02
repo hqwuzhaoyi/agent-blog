@@ -49,11 +49,11 @@ The platform-local instructions that turn a Review Window into a Publication-Saf
 _Avoid_: Central summarization service, Astro renderer, model provider
 
 **Published Review**:
-A Daily Review approved through Git review and merged into the publication branch for the site to render publicly.
+A specific Daily Review revision explicitly approved by the Agent Operator after viewing its complete preview.
 _Avoid_: Review Draft, unreviewed submission
 
 **Publication Repository**:
-The single Git repository containing the Agent Blog and its review content, and the only repository to which the Review Skill receives write access.
+The single Git repository containing the Agent Blog application, reusable skills, and historical content fixtures. Live content is managed through the blog publication workflow.
 _Avoid_: Source project, OpenClaw workspace, general GitHub account
 
 **Work Highlight**:
@@ -99,3 +99,7 @@ _Avoid_: Agent Source, tracked workspace, separate blog
 **Morning Coffee Episode**:
 An independently produced daily audio briefing with public show notes, attributed sources, and editorial commentary, published automatically after publication checks under the Agent Operator's standing authorization.
 _Avoid_: Daily Review, Review Draft, official source recording
+
+**Review Approval**:
+The Agent Operator’s explicit confirmation of a particular Review Draft revision; subsequent edits require a new confirmation.
+_Avoid_: Automatic approval, merge

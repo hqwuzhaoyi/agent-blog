@@ -19,13 +19,13 @@ const submission = {
 };
 
 describe("Publication Workflow seam", () => {
-  test("retries use the same Review Identity and advance cursors only after a successful push", async () => {
+  test("retries use the same Review Identity and advance cursors only after a successful draft submission", async () => {
     const root = await mkdtemp(join(tmpdir(), "agent-blog-"));
     const statePath = join(root, "state.json");
     const publications = [];
     const publisher = async (proposal) => {
       publications.push(proposal);
-      return { prUrl: "https://github.com/example/agent-blog/pull/1" };
+      return { previewUrl: "https://blog.example/agent-blog/admin/reviews/openclaw-main-2026-07-16" };
     };
 
     const first = await runPublicationWorkflow({ statePath, window, submission, publisher });
@@ -34,13 +34,13 @@ describe("Publication Workflow seam", () => {
 
     expect(first.reviewIdentity).toBe("openclaw-main:2026-07-16");
     expect(second.reviewIdentity).toBe(first.reviewIdentity);
-    expect(publications[0].branch).toBe(publications[1].branch);
-    expect(publications[0].contentPath).toBe(publications[1].contentPath);
+    expect(publications[0].id).toBe("openclaw-main-2026-07-16");
+    expect(publications[0].id).toBe(publications[1].id);
     expect(state.sessions["agent:main:main"]).toEqual(window.candidateCursors["agent:main:main"]);
-    expect(state.reviews[first.reviewIdentity].prUrl).toBe("https://github.com/example/agent-blog/pull/1");
+    expect(state.reviews[first.reviewIdentity].previewUrl).toBe("https://blog.example/agent-blog/admin/reviews/openclaw-main-2026-07-16");
   });
 
-  test("a failed push leaves session cursors unchanged", async () => {
+  test("a failed submission leaves session cursors unchanged", async () => {
     const root = await mkdtemp(join(tmpdir(), "agent-blog-"));
     const statePath = join(root, "state.json");
 
@@ -50,10 +50,10 @@ describe("Publication Workflow seam", () => {
         window,
         submission,
         publisher: async () => {
-          throw new Error("push failed");
+          throw new Error("submission failed");
         },
       }),
-    ).rejects.toThrow("push failed");
+    ).rejects.toThrow("submission failed");
 
     await expect(readFile(statePath, "utf8")).rejects.toMatchObject({ code: "ENOENT" });
   });

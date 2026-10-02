@@ -21,5 +21,5 @@ jobs:
       - run: npm run build
       - run: node scripts/prepare-cloudflare-assets.mjs
       - run: npx wrangler deploy --dry-run
-# Live deployment runs through scripts/deploy-cloudflare.mjs on the publisher
-# host so every deployment restores the episode catalog from R2.
+# Live application deployment uses scripts/deploy-cloudflare.mjs.
+# Content publication uses the authenticated Worker API independently of CI.

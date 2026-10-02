@@ -6,3 +6,6 @@ dist/
 public/preview-audio/
 .wrangler/
 .cloudflare-assets/
+
+.dev.vars
+worker-configuration.d.ts
