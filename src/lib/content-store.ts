@@ -1,14 +1,15 @@
-import type { CollectionEntry } from "astro:content";
-export interface ContentDatabase {
-  prepare(sql: string): {
-    bind(...values: unknown[]): any;
-    all<T>(): Promise<{ results: T[] }>;
-  };
+import type { ContentDatabase, PublishedEntry } from "../../cloudflare/content-models";
+export type { ContentDatabase } from "../../cloudflare/content-models";
+interface ContentRow {
+  id: string;
+  data: string;
+  body: string;
 }
+
 export async function publishedEntries<C extends "reviews" | "episodes">(
   db: ContentDatabase,
   kind: string,
-): Promise<CollectionEntry<C>[]> {
+): Promise<PublishedEntry<C>[]> {
   const { results } = await db
     .prepare(
       `SELECT r.id,r.data,r.body FROM content_heads h
@@ -16,8 +17,8 @@ export async function publishedEntries<C extends "reviews" | "episodes">(
     WHERE h.kind=? ORDER BY json_extract(r.data,'$.date') DESC`,
     )
     .bind(kind)
-    .all();
-  return results.map((row: any) => ({
+    .all<ContentRow>();
+  return results.map((row) => ({
     id: row.id,
     body: row.body,
     collection: kind === "review" ? "reviews" : "episodes",
@@ -25,7 +26,7 @@ export async function publishedEntries<C extends "reviews" | "episodes">(
       ...JSON.parse(row.data),
       date: new Date(JSON.parse(row.data).date),
     },
-  })) as CollectionEntry<C>[];
+  })) as PublishedEntry<C>[];
 }
 export async function publishedEntry<C extends "reviews" | "episodes">(
   db: ContentDatabase,
@@ -39,7 +40,7 @@ export async function publishedEntry<C extends "reviews" | "episodes">(
     WHERE h.kind=? AND h.id=?`,
     )
     .bind(kind, id)
-    .first();
+    .first<ContentRow>();
   return row
     ? ({
         id: row.id,
@@ -49,6 +50,6 @@ export async function publishedEntry<C extends "reviews" | "episodes">(
           ...JSON.parse(row.data),
           date: new Date(JSON.parse(row.data).date),
         },
-      } as CollectionEntry<C>)
+      } as PublishedEntry<C>)
     : undefined;
 }

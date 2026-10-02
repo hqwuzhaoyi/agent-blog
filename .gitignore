@@ -9,3 +9,8 @@ public/preview-audio/
 
 .dev.vars
 worker-configuration.d.ts
+dist-react/
+.cloudflare/
+
+.dev.vars.*
+!.dev.vars.react-preview.example

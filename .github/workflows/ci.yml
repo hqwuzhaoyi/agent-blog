@@ -23,9 +23,9 @@ jobs:
         run: npm ci
       - name: Test review workflow
         run: npm test
-      - name: Check Astro and TypeScript
+      - name: Check TypeScript
         run: npm run check
       - name: Exercise fixture pipeline
         run: npm run review:fixture
-      - name: Build Astro site
+      - name: Build React preview
         run: npm run build

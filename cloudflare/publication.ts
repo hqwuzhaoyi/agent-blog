@@ -1,4 +1,4 @@
-import { z } from "astro/zod";
+import { z } from "zod";
 import { renderMarkdown } from "../src/lib/markdown";
 const prefix = "/agent-blog";
 const day = z
@@ -67,7 +67,7 @@ export const digest = async (value: string | ArrayBuffer) =>
   ]
     .map((v) => v.toString(16).padStart(2, "0"))
     .join("");
-async function equal(a: string, b: string) {
+export async function equal(a: string, b: string) {
   return (await digest(a)) === (await digest(b));
 }
 const random = () =>
@@ -82,7 +82,7 @@ const escape = (value: unknown) =>
         c
       ]!,
   );
-async function signature(text: string, key: string) {
+export async function signature(text: string, key: string) {
   const k = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(key),
@@ -98,7 +98,7 @@ async function signature(text: string, key: string) {
     .map((v) => v.toString(16).padStart(2, "0"))
     .join("");
 }
-async function reviewer(request: Request, env: any) {
+export async function reviewer(request: Request, env: any) {
   if (!env.REVIEW_TOKEN) return false;
   const cookie = request.headers
     .get("Cookie")

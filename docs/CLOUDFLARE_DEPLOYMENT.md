@@ -1,6 +1,6 @@
 # Cloudflare deployment and content publication
 
-The Astro application runs on Worker `agent-blog` at `https://blog.wuzhaoyi.xyz/agent-blog/`. D1 `agent-blog-content` is authoritative for live content. Private R2 `agent-blog-audio` stores final MP3s. Content publication is independent of application deployment.
+The React/TanStack Start application runs on Worker `agent-blog` at `https://blog.wuzhaoyi.xyz/agent-blog/`. D1 `agent-blog-content` is authoritative for live content. Private R2 `agent-blog-audio` stores final MP3s. Content publication is independent of application deployment.
 
 ## Application deployment
 
@@ -12,7 +12,7 @@ npm run deploy:check
 npm run deploy
 ```
 
-The wrapper builds Astro's Cloudflare server bundle, strips private preview audio from `dist/client`, and deploys through the generated Wrangler configuration. It does not restore, upload or replace content. GitHub Actions validates builds only. Code deployment and content publication can happen independently without overwriting a catalog.
+The wrapper builds the React/TanStack Start Worker using the production Wrangler configuration, strips private preview audio and generated local secret files from `dist-react`, verifies the generated production bindings, and deploys through that generated configuration. Development/build commands default to isolated preview bindings; only the deployment wrapper selects production. It does not restore, upload or replace content. GitHub Actions validates builds only. Code deployment and content publication can happen independently without overwriting a catalog.
 
 ## Database provisioning and migration
 
@@ -50,7 +50,7 @@ npm run review:submit -- --file /absolute/path/to/draft.md --id hermes-YYYY-MM-D
 
 The JSON result contains `status: draft`, revision and a complete private preview URL. Preview capabilities permit viewing only. The operator logs in at `/agent-blog/admin/`, opens the draft, reads the complete preview, and clicks confirmation. The public article, lists and RSS then read the approved revision from D1. Edits remain drafts while the previous approved revision stays online. Stale confirmation returns 409 and requires reviewing the latest draft.
 
-D1 holds immutable `content_revisions`, `content_heads` with separate draft/public pointers, and `publication_audit` with approval actor/time. Draft IDs use stable source-and-day identities. Body HTML is sanitized on rendering. Public requests query only published pointers; private preview responses are no-store/noindex and never enter feeds.
+D1 holds immutable `content_revisions`, `content_heads` with separate draft/public pointers, and `publication_audit` with approval actor/time. Draft IDs use stable source-and-day identities. Body HTML is sanitized on rendering. The React workbench uses reviewer JSON APIs under `/agent-blog/admin/api/` for session/list/detail/revision/save/approval/audit/episode operations within the reviewer-cookie path. Unsaved editor state blocks approval and SPA navigation requires a discard decision. Public requests query only published pointers; private preview responses are no-store/noindex and never enter feeds.
 
 ## Automatic episodes
 
@@ -86,13 +86,16 @@ Run `npm run check:rss` after publication to verify identities/dates and audio e
 
 ## Local development and recovery
 
+Use the isolated local configuration, dedicated test credentials and generated playable fixture:
+
 ```bash
-npx wrangler d1 migrations apply agent-blog-content --local
-# To seed local D1 after the migration export exists:
-npx wrangler d1 execute agent-blog-content --local --file .agent-blog/content-migration.sql
+npm run react:db:seed
 npm run dev
+# Open http://localhost:3100/agent-blog/
+npm run test:runtime
+npm run test:browser
 ```
 
-Set local test keys in ignored `.dev.vars`. To test a built Worker, run `npx wrangler dev --port 8787 --local-upstream localhost:8787`; set local `PUBLIC_ORIGIN=http://localhost:8787` so preview links use the local host. The explicit upstream keeps origin checks aligned with browser requests. Static rendering checks use `STATIC_FIXTURE=1`; they do not publish or populate D1. Use `npm run deploy` for production so preview audio is excluded.
+The seeder refuses production bindings and remote origins. It creates `.dev.vars.react-preview` from the committed fixture example when absent. See [React preview](REACT_PREVIEW.md) for the default build/check commands. Unit tests use real SQLite and mocked HTTP audio resources; browser/runtime tests use the running isolated Worker and do not write live content.
 
-Audio upload can leave an unreferenced object if the content write fails; retry the same episode. Database content publication never replaces the Worker deployment. Roll back application code through Worker version history; restore D1 content separately using D1 backups/export or retained immutable revisions. An old static Worker rollback shows its historical snapshot, so prefer a previous compatible D1-backed application version. Preserve database and audio when retrying, and back up D1 before future schema migrations.
+Audio upload can leave an unreferenced object if the content write fails; retry the same episode. Database content publication never replaces the Worker deployment. Roll back application code through Worker version history; restore D1 content separately using D1 backups/export or retained immutable revisions. The pre-React D1-backed Worker version `39aaeb49-3178-4c13-a6c3-9532863d3332` remains a compatible application rollback target; rollback does not remove D1/R2 content. Preserve database and audio when retrying, and back up D1 before future schema migrations.

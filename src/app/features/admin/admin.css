@@ -1,0 +1,239 @@
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--background, #faf9f6);
+  color: var(--foreground, #222c27);
+}
+.admin-sidebar {
+  width: 230px;
+  padding: 24px;
+  flex-shrink: 0;
+  border-right: 1px solid #dde3dd;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.admin-brand {
+  font-weight: 700;
+}
+.admin-sidebar nav {
+  display: grid;
+  gap: 8px;
+}
+.admin-sidebar nav a {
+  padding: 10px;
+  border-radius: 8px;
+}
+.admin-sidebar nav a[aria-current="page"] {
+  background: #245b45;
+  color: #fff;
+}
+.admin-content {
+  flex: 1;
+  min-width: 0;
+}
+.admin-header {
+  position: sticky;
+  top: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px;
+  background: var(--background, #faf9f6);
+  z-index: 20;
+  border-bottom: 1px solid #dde3dd;
+}
+.admin-header a {
+  margin-left: auto;
+}
+.has-shadow {
+  box-shadow: 0 2px 8px #0001;
+}
+.admin-main {
+  padding: 24px;
+  max-width: 1400px;
+  margin: auto;
+}
+.admin-login {
+  max-width: 500px;
+}
+.admin-main h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+.admin-main h2 {
+  font-size: 20px;
+  margin: 20px 0 12px;
+}
+.admin-main button,
+.admin-shell button {
+  padding: 9px 14px;
+  border: 1px solid #a6b5ac;
+  border-radius: 8px;
+  background: #245b45;
+  color: #fff;
+  cursor: pointer;
+}
+.admin-main button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.admin-main input,
+.admin-main textarea {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #a6b5ac;
+  border-radius: 8px;
+  background: var(--surface, #fff);
+  color: inherit;
+}
+.admin-main label {
+  display: block;
+  margin: 12px 0;
+}
+.admin-filters,
+.admin-pagination {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.admin-main td,
+.admin-main th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #dde3dd;
+}
+.admin-main table {
+  width: 100%;
+}
+.admin-main [data-slot="table-container"] {
+  overflow-x: auto;
+}
+.review-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(260px, 3fr);
+  gap: 24px;
+}
+.review-preview,
+.review-info {
+  min-width: 0;
+}
+.approval-card {
+  border: 1px solid #dde3dd;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: var(--surface, #fff);
+}
+.revision,
+pre {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.review-actions {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  position: sticky;
+  bottom: 0;
+  background: var(--background, #faf9f6);
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 15;
+}
+.admin-tabs {
+  display: none;
+}
+.admin-editor {
+  margin-top: 30px;
+}
+.admin-shell :focus-visible {
+  outline: 3px solid #b55b35;
+  outline-offset: 3px;
+}
+@media (min-width: 768px) {
+  .admin-header > button {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .admin-sidebar {
+    display: none;
+    position: fixed;
+    inset: 64px 0 0 0;
+    width: auto;
+    background: var(--background, #faf9f6);
+    z-index: 30;
+  }
+  .admin-sidebar.is-open {
+    display: flex;
+  }
+  .admin-main {
+    padding: 16px;
+  }
+  .review-grid {
+    display: block;
+  }
+  .admin-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .review-preview,
+  .review-info {
+    display: none;
+  }
+  .mobile-active {
+    display: block;
+  }
+  .review-actions {
+    flex-wrap: wrap;
+  }
+  .review-actions button {
+    flex: 1;
+  }
+  .review-preview .reading-article {
+    padding: 0;
+  }
+  .admin-main h1 {
+    font-size: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+.admin-main p,
+.admin-main a,
+.admin-main li {
+  overflow-wrap: anywhere;
+}
+.admin-main {
+  overflow-wrap: anywhere;
+}
+.admin-main pre {
+  max-width: 100%;
+  overflow: auto;
+}
+.unsaved-dialog {
+  position: fixed;
+  inset: 25% 16px auto;
+  max-width: 480px;
+  margin: auto;
+  padding: 24px;
+  background: var(--surface, #fff);
+  border: 2px solid var(--primary, #245b45);
+  border-radius: 16px;
+  z-index: 100;
+  box-shadow: 0 0 0 100vmax #0008;
+}
+.unsaved-dialog button {
+  margin: 8px;
+}
+.unsaved-dialog::backdrop {
+  background: #0008;
+}

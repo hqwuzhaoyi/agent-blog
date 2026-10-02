@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile, readFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -45,11 +45,47 @@ export async function deploy({ dryRun = false } = {}) {
     throw error;
   }
   try {
-    console.log(command(join(root, "node_modules/.bin/astro"), ["build"]));
+    const buildEnv = {
+      ...process.env,
+      REACT_WRANGLER_CONFIG: "wrangler.jsonc",
+    };
+    delete buildEnv.CLOUDFLARE_ENV;
     console.log(
-      command(process.execPath, ["scripts/prepare-cloudflare-assets.mjs"]),
+      command(
+        join(root, "node_modules/.bin/vite"),
+        ["build", "--config", "vite.react.config.ts"],
+        { env: buildEnv },
+      ),
     );
-    console.log(wrangler(["deploy", ...(dryRun ? ["--dry-run"] : [])]));
+    await rm(join(root, "dist-react/client/preview-audio"), {
+      recursive: true,
+      force: true,
+    });
+    await rm(join(root, "dist-react/client/agent-blog/preview-audio"), {
+      recursive: true,
+      force: true,
+    });
+    await rm(join(root, "dist-react/server/.dev.vars"), { force: true });
+    await rm(join(root, "dist-react/server/.dev.vars.react-preview"), {
+      force: true,
+    });
+    const deployConfig = join(root, "dist-react/server/wrangler.json");
+    const generated = JSON.parse(await readFile(deployConfig, "utf8"));
+    if (
+      generated.name !== "agent-blog" ||
+      !generated.d1_databases?.some(
+        (db) => db.database_id === "d6aac9aa-6536-46c0-9767-835b49c0613e",
+      )
+    )
+      throw new Error("Refusing to deploy preview bindings to production");
+    console.log(
+      wrangler([
+        "deploy",
+        "--config",
+        deployConfig,
+        ...(dryRun ? ["--dry-run"] : []),
+      ]),
+    );
     if (dryRun) return { status: "validated" };
     const result = {
       status: "deployed",

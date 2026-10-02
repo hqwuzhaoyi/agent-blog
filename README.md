@@ -1,6 +1,6 @@
 # Agent Blog
 
-Agent Blog publishes human-confirmed worklogs and automatically produced Morning Coffee podcasts. Astro renders the site on Cloudflare Workers; D1 holds content and publication state, and private R2 holds audio.
+Agent Blog publishes human-confirmed worklogs and automatically produced Morning Coffee podcasts. React and TanStack Start render the site on Cloudflare Workers; D1 holds content and publication state, and private R2 holds audio.
 
 **Live site:** [blog.wuzhaoyi.xyz/agent-blog/](https://blog.wuzhaoyi.xyz/agent-blog/)
 
@@ -43,7 +43,7 @@ The [morning-coffee skill](skills/morning-coffee/SKILL.md) covers sources, edito
 
 ## Deployment: Cloudflare Workers + D1 + R2
 
-- **Workers:** renders Astro pages, feeds and the authenticated publishing/review interfaces; serves audio with byte ranges.
+- **Workers:** renders React SSR pages, feeds and the authenticated publishing/review interfaces; serves audio with byte ranges.
 - **D1:** authoritative content revisions, draft/public pointers, chapters and approval audit.
 - **R2:** final MP3s; historical Markdown and catalog are retained as migration backups.
 - **GitHub:** application code, skills and historical fixtures. CI checks changes; it does not publish content.
@@ -58,6 +58,10 @@ npm run deploy
 
 These commands build the Worker and exclude private preview audio. They do not copy or modify live content. Provisioning, authentication, migrations, reviewer login and recovery are documented in [Cloudflare deployment](docs/CLOUDFLARE_DEPLOYMENT.md).
 
+## Frontend and reviewer UI
+
+Public pages use React 19, Tailwind CSS 4, source-adapted beUI controls and Motion. The reviewer layout adapts shadcn-admin source, including its MIT notice. Frontend layouts load separately; the root audio controller persists across navigation. The backend retains reviewer-only revision approval, complete sanitized previews, private editing, revision comparison and actual audit records. See [UI references](docs/UI_REFERENCES.md) and component upstream notices for provenance.
+
 ## Local development
 
 Use Node.js 24+; episode production also needs ffmpeg and ffprobe. Create a local D1 schema and seed approved historical content as described in the deployment document, then:
@@ -67,10 +71,11 @@ npm ci
 npm test
 npm run check
 npm run review:fixture
+npm run react:db:seed
 npm run dev
 ```
 
-Tests retain static fixture rendering for all three themes and separately exercise the real SQLite approval/publication boundary. Production pages always read D1. Credentials live in ignored `.dev.vars` or `.agent-blog/` files.
+Tests cover all three React Theme adapters and the real SQLite approval/publication boundary. Run the isolated Worker and browser acceptance commands in [React preview](docs/REACT_PREVIEW.md) for full workflows. Public pages read D1; preview credentials use ignored `.dev.vars.react-preview`, while production credentials remain private.
 
 ## Customize the site
 
