@@ -36,7 +36,7 @@
 .public-site .hero-chapters>p span{font-family:monospace;color:var(--accent)}
 .public-site .hero-chapters ol{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
 .public-site .hero-chapters li{border:none!important}
-.public-site .hero-chapters button{min-height:34px;font-size:12px;padding:5px 0;gap:9px}
+.public-site .hero-chapters button{min-height:34px;font-size:12px;padding:5px 10px;gap:9px}
 .public-site .hero-chapters button>span:first-child{font-size:11px}
 .public-site .featured-cover-link{align-self:center;display:block;max-width:460px}
 .public-site .episode-cover{aspect-ratio:1.04;overflow:hidden;position:relative;display:flex;flex-direction:column;justify-content:space-between;border-radius:22px;padding:28px;background:#254d3d;color:#f3eddc;box-shadow:0 16px 40px -28px #153d2a55;isolation:isolate}
@@ -119,7 +119,7 @@
 .public-site .show-notes .article-body{font-size:17px;line-height:1.95}
 .public-site .detail-chapters{min-width:0}
 .public-site .detail-chapters h2{font-size:14px;font-weight:600;margin:0 0 15px}
-.public-site .detail-chapters .chapter-button{font-size:12px;gap:12px;min-height:45px;padding:10px 0}
+.public-site .detail-chapters .chapter-button{font-size:12px;gap:12px;min-height:45px;padding:10px 10px}
 .public-site .download-link{display:inline-flex;align-items:center;gap:8px;padding:12px 19px;border:1px solid var(--border);border-radius:999px;font-size:12px;margin-top:28px}
 .public-site .reading-article{max-width:760px;margin:50px auto 0;padding:0 0 30px}
 .public-site .reading-article header{padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:35px}
@@ -288,7 +288,9 @@
 .public-site :is(.header-search,[data-sheet-close]):active:not(:focus-visible){transform:scale(.97)}
 .public-site :is(.section-link,.read-link,.detail-back,.subscription-options a) svg{transition:transform 160ms var(--ease-out)}
 .public-site :is(.card-play,.entry-play)[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--primary-foreground)}
-.public-site .chapter-button{position:relative;border-radius:6px}
+.public-site .chapter-button{position:relative;border-radius:6px;padding-inline:10px}
+.public-site .chapter-button>span:first-child{flex-shrink:0;white-space:nowrap}
+.public-site .chapter-button>span:last-child{min-width:0;overflow-wrap:anywhere}
 .public-site .chapter-button[aria-current=true]{color:var(--primary);background:color-mix(in srgb,var(--primary) 8%,transparent);box-shadow:inset 2px 0 var(--primary)}
 .public-site .chapter-button[aria-current=true]>span:first-child{color:var(--primary)}
 .public-site .chapter-button:active{background:color-mix(in srgb,var(--primary) 12%,transparent)}
