@@ -7,7 +7,7 @@ export class AdminError extends Error {
   }
 }
 export async function api(path: string, init?: RequestInit): Promise<any> {
-  const response = await fetch("/agent-blog/admin/api" + path, {
+  const response = await fetch("/admin/api" + path, {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
   });

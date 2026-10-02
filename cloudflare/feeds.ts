@@ -1,3 +1,4 @@
+import { normalizedRequest, normalizeAudioUrl, legacyOrigin, productionOrigin } from "./site-urls";
 import preferences from "../src/blog.config.json";
 import { publishedEntries } from "../src/lib/content-store";
 import type { ContentDatabase, PublishedEntry } from "./content-models";
@@ -49,7 +50,8 @@ function item(
   origin: string,
   config: FeedConfig,
 ) {
-  const link = `${origin}/agent-blog/${entry.collection}/${encodeURIComponent(entry.id)}/`;
+  const link = `${origin}/${entry.collection}/${encodeURIComponent(entry.id)}/`;
+  const guid = origin === productionOrigin ? `${legacyOrigin}/agent-blog/${entry.collection}/${encodeURIComponent(entry.id)}/` : link;
   const episode =
     entry.collection === "episodes"
       ? (entry as PublishedEntry<"episodes">)
@@ -60,7 +62,7 @@ function item(
   const categories = episode
     ? ["早咖啡"]
     : (entry as PublishedEntry<"reviews">).data.platforms;
-  return `<item><title>${xml(entry.data.title)}</title><link>${xml(link)}</link><guid isPermaLink="true">${xml(link)}</guid><description>${xml(description)}</description><pubDate>${entry.data.date.toUTCString()}</pubDate>${episode ? `<itunes:duration>${Math.round(episode.data.duration)}</itunes:duration>` : ""}${categories.map((category) => `<category>${xml(category)}</category>`).join("")}${episode ? `<enclosure url="${xml(episode.data.audio.url)}" length="${episode.data.audio.length}" type="${episode.data.audio.type}"/>` : ""}</item>`;
+  return `<item><title>${xml(entry.data.title)}</title><link>${xml(link)}</link><guid isPermaLink="true">${xml(guid)}</guid><description>${xml(description)}</description><pubDate>${entry.data.date.toUTCString()}</pubDate>${episode ? `<itunes:duration>${Math.round(episode.data.duration)}</itunes:duration>` : ""}${categories.map((category) => `<category>${xml(category)}</category>`).join("")}${episode ? `<enclosure url="${xml(normalizeAudioUrl(episode.data.audio.url, origin))}" length="${episode.data.audio.length}" type="${episode.data.audio.type}"/>` : ""}</item>`;
 }
 
 /** Feeds query the published pointer per request, independently of page rendering. */
@@ -69,9 +71,10 @@ export async function handleFeeds(
   env: { CONTENT?: ContentDatabase; PUBLIC_ORIGIN?: string },
   config: FeedConfig = defaultConfig,
 ): Promise<Response | undefined> {
+  request = normalizedRequest(request);
   const url = new URL(request.url);
-  const podcast = url.pathname === "/agent-blog/episodes/rss.xml";
-  if (!podcast && url.pathname !== "/agent-blog/rss.xml") return undefined;
+  const podcast = url.pathname === "/episodes/rss.xml";
+  if (!podcast && url.pathname !== "/rss.xml") return undefined;
   if (!["GET", "HEAD"].includes(request.method))
     return new Response("Method not allowed", {
       status: 405,
@@ -89,7 +92,7 @@ export async function handleFeeds(
         ];
   entries.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
   const origin = new URL(env.PUBLIC_ORIGIN || request.url).origin;
-  const body = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"><channel><title>${xml(podcast ? config.episodes.title : config.title)}</title><description>${xml(podcast ? config.episodes.description : config.description)}</description><link>${xml(origin)}/agent-blog/</link><language>${xml(config.language)}</language>${podcast ? "<itunes:explicit>false</itunes:explicit>" : ""}${entries.map((entry) => item(entry, origin, config)).join("")}</channel></rss>`;
+  const body = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"><channel><title>${xml(podcast ? config.episodes.title : config.title)}</title><description>${xml(podcast ? config.episodes.description : config.description)}</description><link>${xml(origin)}/</link><language>${xml(config.language)}</language>${podcast ? "<itunes:explicit>false</itunes:explicit>" : ""}${entries.map((entry) => item(entry, origin, config)).join("")}</channel></rss>`;
   return new Response(request.method === "HEAD" ? null : body, {
     headers: {
       "Content-Type": "application/xml;charset=utf-8",

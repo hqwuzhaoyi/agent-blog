@@ -12,14 +12,14 @@ export async function contentClient() {
   const url =
     process.env.BLOG_PUBLICATION_URL ??
     config.url ??
-    "https://blog.wuzhaoyi.xyz";
+    "https://gitlog.si";
   const token = process.env.BLOG_SUBMIT_TOKEN ?? config.token;
   if (!token)
     throw new Error(
       "Configure BLOG_SUBMIT_TOKEN or private .agent-blog/publication-client.json",
     );
   return async (path, options = {}) => {
-    const response = await fetch(new URL("/agent-blog/api/" + path, url), {
+    const response = await fetch(new URL("/api/" + path, url), {
       ...options,
       headers: { Authorization: `Bearer ${token}`, ...options.headers },
     });

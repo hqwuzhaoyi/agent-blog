@@ -185,13 +185,13 @@ export function Settings() {
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
           <Button asChild variant="outline">
-            <a href="/agent-blog/rss.xml">
+            <a href="/rss.xml">
               全部内容 RSS
               <ArrowUpRight />
             </a>
           </Button>
           <Button asChild variant="outline">
-            <a href="/agent-blog/early-coffee/rss.xml">
+            <a href="/episodes/rss.xml">
               播客 RSS
               <ArrowUpRight />
             </a>

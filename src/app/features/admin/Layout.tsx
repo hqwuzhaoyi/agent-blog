@@ -56,7 +56,7 @@ export function AdminLayout() {
       <div className="admin-scope admin-auth">
         <div className="admin-auth-content">
           <Link
-            to="/agent-blog"
+            to="/"
             className="mb-8 flex items-center justify-center gap-2 font-semibold text-xl"
           >
             <NotebookPen className="size-6" />
@@ -85,7 +85,7 @@ export function AdminLayout() {
                     });
                     setKey("");
                     setSession(true);
-                    await navigate({ to: "/agent-blog/admin" });
+                    await navigate({ to: "/admin" });
                   } catch (e) {
                     setError((e as Error).message);
                   } finally {
@@ -120,7 +120,7 @@ export function AdminLayout() {
             </CardContent>
             <CardFooter className="justify-center border-t pt-4">
               <Link
-                to="/agent-blog"
+                to="/"
                 className="text-sm text-muted-foreground hover:underline"
               >
                 返回公开站点
@@ -138,7 +138,7 @@ export function AdminLayout() {
           <Header fixed className="border-b bg-background">
             <span className="text-sm font-medium">审核工作台</span>
             <Button asChild variant="ghost" size="sm" className="ms-auto">
-              <Link to="/agent-blog">
+              <Link to="/">
                 公开站点
                 <ArrowUpRight className="size-4" />
               </Link>

@@ -71,7 +71,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/agent-blog/admin/settings">
+              <Link to="/admin/settings">
                 <Settings />
                 设置
               </Link>

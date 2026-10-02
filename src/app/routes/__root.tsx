@@ -37,7 +37,7 @@ export const Route = createRootRoute({
   notFoundComponent: () => (
     <main>
       <h1>{siteConfig.language === "zh-CN" ? "内容不存在" : "Not found"}</h1>
-      <a href="/agent-blog/">{siteConfig.nav.latest}</a>
+      <a href="/">{siteConfig.nav.latest}</a>
     </main>
   ),
 });

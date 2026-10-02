@@ -23,10 +23,10 @@ import { NavUser } from "./nav-user";
 const navigation = {
   title: "工作台",
   items: [
-    { title: "待确认", url: "/agent-blog/admin", icon: ClipboardCheck },
-    { title: "已发布", url: "/agent-blog/admin/published", icon: CheckCheck },
-    { title: "播客", url: "/agent-blog/admin/episodes", icon: AudioLines },
-    { title: "设置", url: "/agent-blog/admin/settings", icon: Settings },
+    { title: "待确认", url: "/admin", icon: ClipboardCheck },
+    { title: "已发布", url: "/admin/published", icon: CheckCheck },
+    { title: "播客", url: "/admin/episodes", icon: AudioLines },
+    { title: "设置", url: "/admin/settings", icon: Settings },
   ],
 };
 export function AppSidebar({
@@ -42,7 +42,7 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to="/agent-blog/admin">
+              <Link to="/admin">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <NotebookPen className="size-4" />
                 </div>

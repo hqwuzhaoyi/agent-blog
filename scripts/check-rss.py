@@ -5,7 +5,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--base', default='https://blog.wuzhaoyi.xyz/agent-blog/')
+parser.add_argument('--base', default='https://gitlog.si/')
 args = parser.parse_args()
 base = args.base.rstrip('/') + '/'
 checked_audio = set()

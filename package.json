@@ -29,10 +29,11 @@
     "react:db:seed": "node scripts/seed-react-preview.mjs",
     "build:production": "REACT_WRANGLER_CONFIG=wrangler.jsonc vite build --config vite.react.config.ts",
     "test:runtime": "node scripts/verify-react-runtime.mjs",
-    "test:browser": "node test/public-player-browser.mjs",
+    "test:browser": "bash test/public-player-browser.sh",
     "check:ui": "node scripts/verify-live-ui.mjs",
-    "test:browser:sliders": "node test/public-slider-browser.mjs",
-    "test:browser:admin": "node test/admin-component-browser.mjs"
+    "test:browser:sliders": "bash test/public-slider-browser.sh",
+    "test:browser:admin": "bash test/admin-component-browser.sh",
+    "test:browser:cleanup": "bash test/complete-browser-taskspace.sh"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "1.2.6",

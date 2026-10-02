@@ -4,7 +4,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { getPublishedReview } from "../server/public-data";
 import { Article } from "../components/Article";
 import { siteConfig } from "../site";
-export const Route = createFileRoute("/agent-blog/reviews/$id")({
+export const Route = createFileRoute("/_public/reviews/$id")({
   loader: async ({ params }) => {
     const review = await getPublishedReview({ data: params.id });
     if (!review) throw notFound();
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/agent-blog/reviews/$id")({
           links: [
             {
               rel: "canonical",
-              href: `https://blog.wuzhaoyi.xyz/agent-blog/reviews/${loaderData.id}/`,
+              href: `https://gitlog.si/reviews/${loaderData.id}/`,
             },
           ],
         }
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/agent-blog/reviews/$id")({
 function ReviewPage() {
   const review = Route.useLoaderData();
   return (
-    <div className="public-detail"><Link to="/agent-blog/reviews" className="detail-back"><ArrowLeft size={14} aria-hidden="true" />{siteConfig.nav.latest}</Link><Article
+    <div className="public-detail"><Link to="/reviews" className="detail-back"><ArrowLeft size={14} aria-hidden="true" />{siteConfig.nav.latest}</Link><Article
       title={review.data.title}
       summary={review.data.summary}
       date={review.data.date.toISOString()}

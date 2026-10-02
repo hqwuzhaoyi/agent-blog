@@ -143,7 +143,7 @@ export function ReviewList({ published = false }: { published?: boolean }) {
                   <TableRow key={r.id}>
                     <TableCell className="max-w-[340px] whitespace-normal">
                       <Link
-                        to="/agent-blog/admin/reviews/$id"
+                        to="/admin/reviews/$id"
                         params={{ id: r.id }}
                         className="font-medium hover:underline"
                       >
@@ -179,7 +179,7 @@ export function ReviewList({ published = false }: { published?: boolean }) {
                     <TableCell>
                       <Button asChild variant="ghost" size="sm">
                         <Link
-                          to="/agent-blog/admin/reviews/$id"
+                          to="/admin/reviews/$id"
                           params={{ id: r.id }}
                         >
                           完整预览

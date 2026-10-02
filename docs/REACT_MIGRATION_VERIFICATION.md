@@ -4,7 +4,7 @@ Completed 2026-10-02 by the sol services, foundation, public UI and reviewer UI 
 
 ## Result
 
-React/TanStack Start replaces Astro. Public controls adapt beUI source; the reviewer workbench adapts shadcn-admin source. The live domain remains https://blog.wuzhaoyi.xyz/agent-blog/ and reviewer entry remains https://blog.wuzhaoyi.xyz/agent-blog/admin/.
+React/TanStack Start replaces Astro. Public controls adapt beUI source; the reviewer workbench adapts shadcn-admin source. The live domain remains https://gitlog.si/ and reviewer entry remains https://gitlog.si/admin/.
 
 Current Worker version: `0a2e7093-fbe2-46db-bf48-f4ad6f7f66de`. Compatible pre-React rollback target: `39aaeb49-3178-4c13-a6c3-9532863d3332`. Both deployment and rollback metadata were inspected without recreating D1/R2.
 

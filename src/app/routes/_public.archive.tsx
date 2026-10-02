@@ -14,7 +14,7 @@ type Search = {
   q: string;
   month: string;
 };
-export const Route = createFileRoute("/agent-blog/archive")({
+export const Route = createFileRoute("/_public/archive")({
   validateSearch: (search: Record<string, unknown>): Search => ({
     type:
       search.type === "episodes" || search.type === "reviews"

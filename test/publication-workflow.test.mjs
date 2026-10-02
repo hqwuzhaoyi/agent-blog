@@ -25,7 +25,7 @@ describe("Publication Workflow seam", () => {
     const publications = [];
     const publisher = async (proposal) => {
       publications.push(proposal);
-      return { previewUrl: "https://blog.example/agent-blog/admin/reviews/openclaw-main-2026-07-16" };
+      return { previewUrl: "https://blog.example/admin/reviews/openclaw-main-2026-07-16" };
     };
 
     const first = await runPublicationWorkflow({ statePath, window, submission, publisher });
@@ -37,7 +37,7 @@ describe("Publication Workflow seam", () => {
     expect(publications[0].id).toBe("openclaw-main-2026-07-16");
     expect(publications[0].id).toBe(publications[1].id);
     expect(state.sessions["agent:main:main"]).toEqual(window.candidateCursors["agent:main:main"]);
-    expect(state.reviews[first.reviewIdentity].previewUrl).toBe("https://blog.example/agent-blog/admin/reviews/openclaw-main-2026-07-16");
+    expect(state.reviews[first.reviewIdentity].previewUrl).toBe("https://blog.example/admin/reviews/openclaw-main-2026-07-16");
   });
 
   test("a failed submission leaves session cursors unchanged", async () => {

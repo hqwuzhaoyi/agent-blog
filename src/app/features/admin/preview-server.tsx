@@ -37,7 +37,7 @@ export async function handleReadOnlyPreview(
       <Article {...data} html={renderMarkdown(row.body)} preview />,
     );
   return new Response(
-    `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="robots" content="noindex,nofollow"><title>工作日志只读预览</title><style>body{font:18px/1.8 system-ui;background:#faf9f6;color:#222c27;margin:0}main{max-width:720px;margin:32px auto;padding:20px}a{color:#245b45}pre{overflow:auto}img{max-width:100%}article{overflow-wrap:anywhere}</style></head><body><main>${article}<p>此链接只能查看当前保存版本，不能确认发布。</p><a href="/agent-blog/admin/reviews/${id}">登录审核工作台</a></main></body></html>`,
+    `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="robots" content="noindex,nofollow"><title>工作日志只读预览</title><style>body{font:18px/1.8 system-ui;background:#faf9f6;color:#222c27;margin:0}main{max-width:720px;margin:32px auto;padding:20px}a{color:#245b45}pre{overflow:auto}img{max-width:100%}article{overflow-wrap:anywhere}</style></head><body><main>${article}<p>此链接只能查看当前保存版本，不能确认发布。</p><a href="/admin/reviews/${id}">登录审核工作台</a></main></body></html>`,
     { headers },
   );
 }

@@ -247,7 +247,7 @@ export function PlayerControls() {
         </Button>
       </div>
       <div className="player-seek-control block text-sm">
-        {siteConfig.player.seek}
+        <div className="player-control-heading"><span>{siteConfig.player.seek}</span><span className="player-time-readout">{timestamp(state.time)} <span>/ {timestamp(state.duration)}</span></span></div>
         <RangeSlider
           className="player-seek-slider min-h-11"
           min={0}
@@ -260,15 +260,10 @@ export function PlayerControls() {
           showTicks={false}
         />
       </div>
-      <div className="player-progress-caption flex justify-between text-sm text-muted-foreground">
-        <span>{timestamp(state.time)}</span>
-        <span>{timestamp(state.duration)}</span>
-      </div>
-      <div className="player-volume-row"><Button variant="ghost" onClick={() => setVolume(state.volume ? 0 : 1)}>{state.volume ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
-        {state.volume ? siteConfig.player.mute : siteConfig.player.unmute}
-      </Button>
-      <div className="player-volume-control flex items-center gap-3 text-sm">
-        {siteConfig.language === "zh-CN" ? "音量" : "Volume"}
+      <div className="player-volume-row">
+      <Button variant="ghost" size="icon" className="player-mute" onClick={() => setVolume(state.volume ? 0 : 1)} aria-label={state.volume ? siteConfig.player.mute : siteConfig.player.unmute} title={state.volume ? siteConfig.player.mute : siteConfig.player.unmute}>{state.volume ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}</Button>
+      <div className="player-volume-control">
+        <div className="player-control-heading"><span>{siteConfig.language === "zh-CN" ? "音量" : "Volume"}</span><span className="player-volume-value">{Math.round(state.volume * 100)}%</span></div>
         <RangeSlider
           min={0}
           max={1}
@@ -393,7 +388,7 @@ export function PersistentPlayer() {
         <h3 className="mt-6 font-semibold">{siteConfig.episodes.chapters}</h3>
         <Chapters episode={state.episode} />
         <Link
-          to="/agent-blog/episodes/$id"
+          to="/episodes/$id"
           params={{ id: state.episode.id }}
           onClick={() => setOpen(false)}
           className="block py-4 text-primary"

@@ -61,7 +61,7 @@ function environment() {
 }
 const origin = "https://blog.example";
 const api = (path: string, data: unknown) =>
-  new Request(`${origin}/agent-blog/api/${path}`, {
+  new Request(`${origin}/api/${path}`, {
     method: "PUT",
     headers: {
       Authorization: "Bearer submit-fixture",
@@ -70,7 +70,7 @@ const api = (path: string, data: unknown) =>
     body: JSON.stringify(data),
   });
 const feed = async (env: any, path = "rss.xml") =>
-  (await handleFeeds(new Request(`${origin}/agent-blog/${path}`), env))!.text();
+  (await handleFeeds(new Request(`${origin}/${path}`), env))!.text();
 
 test("RSS preserves identities and measurements while D1 publications update without deployment", async () => {
   const env = environment();
@@ -90,7 +90,7 @@ test("RSS preserves identities and measurements while D1 publications update wit
   expect(saved.status).toBe("draft");
   expect(await feed(env)).not.toContain("Approved &amp; safe");
   const login = await handlePublication(
-    new Request(`${origin}/agent-blog/admin/login`, {
+    new Request(`${origin}/admin/login`, {
       method: "POST",
       headers: { Origin: origin },
       body: new URLSearchParams({ key: env.REVIEW_TOKEN }),
@@ -100,7 +100,7 @@ test("RSS preserves identities and measurements while D1 publications update wit
   const cookie = login.headers.get("Set-Cookie")!.split(";")[0];
   const approve = await handlePublication(
     new Request(
-      `${origin}/agent-blog/admin/reviews/hermes-2026-10-01/publish`,
+      `${origin}/admin/reviews/hermes-2026-10-01/publish`,
       {
         method: "POST",
         headers: { Origin: origin, Cookie: cookie },
@@ -112,7 +112,7 @@ test("RSS preserves identities and measurements while D1 publications update wit
   expect(approve.status).toBe(200);
   const publicFeed = await feed(env);
   expect(publicFeed).toContain(
-    '<guid isPermaLink="true">https://blog.example/agent-blog/reviews/hermes-2026-10-01/</guid>',
+    '<guid isPermaLink="true">https://blog.example/reviews/hermes-2026-10-01/</guid>',
   );
   expect(publicFeed).toContain("Thu, 01 Oct 2026");
   const updated = await handlePublication(
@@ -142,7 +142,7 @@ test("RSS preserves identities and measurements while D1 publications update wit
       { title: "Next", start: 60 },
     ],
     audio: {
-      url: `${origin}/agent-blog/audio/2026-10-02/${hash}.mp3`,
+      url: `${origin}/audio/2026-10-02/${hash}.mp3`,
       length: 4,
       type: "audio/mpeg",
     },
@@ -156,7 +156,7 @@ test("RSS preserves identities and measurements while D1 publications update wit
     ).status,
   ).toBe(422);
   const upload = await handlePublication(
-    new Request(`${origin}/agent-blog/api/audio/2026-10-02/${hash}`, {
+    new Request(`${origin}/api/audio/2026-10-02/${hash}`, {
       method: "PUT",
       headers: {
         Authorization: "Bearer submit-fixture",
@@ -182,7 +182,7 @@ test("RSS preserves identities and measurements while D1 publications update wit
   ).toBe(200);
   const podcast = await feed(env, "episodes/rss.xml");
   expect(podcast).toContain(
-    '<guid isPermaLink="true">https://blog.example/agent-blog/episodes/2026-10-02/</guid>',
+    '<guid isPermaLink="true">https://blog.example/episodes/2026-10-02/</guid>',
   );
   expect(podcast).toContain("Fri, 02 Oct 2026 00:00:00 GMT");
   expect(podcast).toContain("<itunes:duration>120</itunes:duration>");
@@ -198,22 +198,22 @@ test("RSS preserves identities and measurements while D1 publications update wit
 test("feed routes accept GET/HEAD and retain public origin behind preview hosts", async () => {
   const env = environment();
   const response = await handleFeeds(
-    new Request("https://preview.example/agent-blog/rss.xml"),
+    new Request("https://preview.example/rss.xml"),
     env as any,
   );
   expect(response!.headers.get("Content-Type")).toContain("xml");
   expect(await response!.text()).toContain(
-    "<link>https://blog.example/agent-blog/</link>",
+    "<link>https://blog.example/</link>",
   );
   expect(
     (await handleFeeds(
-      new Request(`${origin}/agent-blog/rss.xml`, { method: "HEAD" }),
+      new Request(`${origin}/rss.xml`, { method: "HEAD" }),
       env as any,
     ))!.status,
   ).toBe(200);
   expect(
     (await handleFeeds(
-      new Request(`${origin}/agent-blog/rss.xml`, { method: "POST" }),
+      new Request(`${origin}/rss.xml`, { method: "POST" }),
       env as any,
     ))!.status,
   ).toBe(405);

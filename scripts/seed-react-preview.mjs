@@ -103,7 +103,7 @@ record(
     disclosure: "AI 配音 · 隔离测试样本",
     draft: false,
     audio: {
-      url: `${origin}/agent-blog/audio/2026-10-02/${hash}.mp3`,
+      url: `${origin}/audio/2026-10-02/${hash}.mp3`,
       length: audio.length,
       type: "audio/mpeg",
     },

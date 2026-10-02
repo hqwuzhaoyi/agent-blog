@@ -1,6 +1,7 @@
+import { normalizedRequest, normalizeAudioUrl } from "./site-urls";
 import { z } from "zod";
 import { renderMarkdown } from "../src/lib/markdown";
-const prefix = "/agent-blog";
+const prefix = "";
 const day = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/)
@@ -216,6 +217,7 @@ export async function handlePublication(
   env: any,
 ): Promise<Response> {
   try {
+    request = normalizedRequest(request);
     const url = new URL(request.url),
       path = url.pathname;
     if (env.PUBLIC_ORIGIN) {
@@ -235,7 +237,7 @@ export async function handlePublication(
       )
         return json({ error: "Unauthorized" }, 401);
       const audio =
-        /^\/agent-blog\/api\/audio\/(\d{4}-\d{2}-\d{2})\/([a-f0-9]{64})$/.exec(
+        /^\/api\/audio\/(\d{4}-\d{2}-\d{2})\/([a-f0-9]{64})$/.exec(
           path,
         );
       if (audio && request.method === "PUT") {
@@ -258,7 +260,7 @@ export async function handlePublication(
         return json({ status: "stored", key });
       }
       const match =
-        /^\/agent-blog\/api\/(reviews|episodes)\/([a-zA-Z0-9][a-zA-Z0-9_-]{0,119})$/.exec(
+        /^\/api\/(reviews|episodes)\/([a-zA-Z0-9][a-zA-Z0-9_-]{0,119})$/.exec(
           path,
         );
       if (!match) return json({ error: "Not found" }, 404);
@@ -284,9 +286,9 @@ export async function handlePublication(
         const e = data as z.infer<typeof episodeSchema>;
         if (id !== e.date)
           return json({ error: "Episode identity must match date" }, 422);
-        const audioUrl = new URL(e.audio.url);
+        const audioUrl = new URL(normalizeAudioUrl(e.audio.url, url.origin));
         const a =
-          /^\/agent-blog\/audio\/(\d{4}-\d{2}-\d{2})\/([a-f0-9]{64})\.mp3$/.exec(
+          /^\/audio\/(\d{4}-\d{2}-\d{2})\/([a-f0-9]{64})\.mp3$/.exec(
             audioUrl.pathname,
           );
         if (audioUrl.origin !== url.origin || !a || a[1] !== id)
@@ -375,7 +377,7 @@ export async function handlePublication(
       );
     }
     const preview =
-      /^\/agent-blog\/admin\/reviews\/([a-zA-Z0-9][a-zA-Z0-9_-]{0,119})(\/publish)?$/.exec(
+      /^\/admin\/reviews\/([a-zA-Z0-9][a-zA-Z0-9_-]{0,119})(\/publish)?$/.exec(
         path,
       );
     if (preview) {

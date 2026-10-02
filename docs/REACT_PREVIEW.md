@@ -9,7 +9,7 @@ npm install
 npm run react:db:migrate
 npm run react:db:seed
 npm run react:dev
-# Open http://localhost:3100/agent-blog/
+# Open http://localhost:3100/
 npm run react:build
 npm run react:check
 ```

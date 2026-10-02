@@ -23,5 +23,5 @@ if (!values["dry-run"]) {
   await api(`audio/${values.day}/${hash}`, { method: "PUT", headers: { "Content-Type": "audio/mpeg", "Content-Length": String(audio.length) }, body: audio });
   result = await submitContent("episodes", values.day, episode.data, shownotes.trim());
 }
-await writeFile(join(directory, "publication-result.json"), JSON.stringify({ ...result, url: `https://blog.wuzhaoyi.xyz/agent-blog/episodes/${values.day}/`, audio: episode.data.audio.url }, null, 2));
+await writeFile(join(directory, "publication-result.json"), JSON.stringify({ ...result, url: `https://gitlog.si/episodes/${values.day}/`, audio: episode.data.audio.url }, null, 2));
 console.log(JSON.stringify(result));

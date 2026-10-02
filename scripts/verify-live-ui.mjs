@@ -1,10 +1,10 @@
 /** Read-only deployment acceptance: SSR plus the actual browser resource URLs. */
 import assert from 'node:assert/strict';
 import { parseArgs } from 'node:util';
-const { values } = parseArgs({ options: { origin: { type: 'string', default: 'https://blog.wuzhaoyi.xyz' } } });
+const { values } = parseArgs({ options: { origin: { type: 'string', default: 'https://gitlog.si' } } });
 const origin = new URL(values.origin).origin;
 const checked = new Set();
-for (const path of ['/agent-blog/', '/agent-blog/admin/']) {
+for (const path of ['/', '/admin/']) {
   const page = await fetch(origin + path);
   assert.equal(page.status, 200, path);
   assert.match(page.headers.get('Content-Type') ?? '', /text\/html/);
@@ -20,6 +20,6 @@ for (const path of ['/agent-blog/', '/agent-blog/admin/']) {
     checked.add(url);
   }
 }
-const session = await fetch(origin + '/agent-blog/admin/api/session');
+const session = await fetch(origin + '/admin/api/session');
 assert.equal(session.status, 401, 'Unauthenticated reviewer session must remain protected');
 console.log(JSON.stringify({status:'passed',origin,browserResources:checked.size,reviewerGuard:true,productionWrites:false}));

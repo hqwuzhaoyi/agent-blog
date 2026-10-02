@@ -1,3 +1,4 @@
+import { normalizedRequest, normalizeEpisodeData } from "./site-urls";
 import { z } from "zod";
 import { renderMarkdown } from "../src/lib/markdown";
 import {
@@ -8,7 +9,7 @@ import {
   saveRevision,
   publishRevision,
 } from "./publication";
-const base = "/agent-blog/admin/api";
+const base = "/admin/api";
 const json = (data: unknown, status = 200) =>
   Response.json(data, {
     status,
@@ -23,7 +24,7 @@ const payload = z.object({
   body: z.string().trim().min(1).max(150000),
   expectedRevision: z.string().min(1),
 });
-const clean = (row: any) =>
+const clean = (row: any, origin = "https://gitlog.si") =>
   row
     ? {
         id: row.id,
@@ -32,10 +33,10 @@ const clean = (row: any) =>
         publishedRevision: row.published_revision,
         publishedAt: row.published_at,
         createdAt: row.created_at,
-        data: JSON.parse(row.data),
+        data: normalizeEpisodeData(JSON.parse(row.data), origin),
         body: row.body,
         html: row.body ? renderMarkdown(row.body) : undefined,
-        url: `/agent-blog/reviews/${row.id}/`,
+        url: `/reviews/${row.id}/`,
       }
     : null;
 export async function handleAdminApi(
@@ -43,6 +44,7 @@ export async function handleAdminApi(
   env: any,
 ): Promise<Response> {
   try {
+    request = normalizedRequest(request);
     const url = new URL(request.url),
       path = url.pathname.slice(base.length);
     if (
@@ -64,7 +66,7 @@ export async function handleAdminApi(
       const response = json({ authenticated: true });
       response.headers.set(
         "Set-Cookie",
-        `blog_review=${expires}.${await signature(expires, env.REVIEW_TOKEN)}; HttpOnly; Secure; SameSite=Strict; Path=/agent-blog/admin/; Max-Age=86400`,
+        `blog_review=${expires}.${await signature(expires, env.REVIEW_TOKEN)}; HttpOnly; Secure; SameSite=Strict; Path=/admin/; Max-Age=86400`,
       );
       return response;
     }
@@ -76,7 +78,7 @@ export async function handleAdminApi(
       const response = json({ authenticated: false });
       response.headers.set(
         "Set-Cookie",
-        "blog_review=; HttpOnly; Secure; SameSite=Strict; Path=/agent-blog/admin/; Max-Age=0",
+        "blog_review=; HttpOnly; Secure; SameSite=Strict; Path=/admin/; Max-Age=0",
       );
       return response;
     }
@@ -131,10 +133,10 @@ export async function handleAdminApi(
         .all();
       return json({
         items: rows.results.map((r: any) => ({
-          ...clean(r),
+          ...clean(r, env.PUBLIC_ORIGIN || url.origin),
           status:
             r.published_revision === r.draft_revision ? "published" : "pending",
-          url: `/agent-blog/${kind === "episode" ? "episodes" : "reviews"}/${r.id}/`,
+          url: `/${kind === "episode" ? "episodes" : "reviews"}/${r.id}/`,
         })),
         page,
         limit,
@@ -174,7 +176,7 @@ export async function handleAdminApi(
         status: "published",
         revision: published.published_revision,
         publishedAt: published.published_at,
-        url: `/agent-blog/reviews/${id}/`,
+        url: `/reviews/${id}/`,
       });
     }
     if (action === "audit" && request.method === "GET") {

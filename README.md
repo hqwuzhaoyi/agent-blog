@@ -2,15 +2,15 @@
 
 Agent Blog publishes human-confirmed worklogs and automatically produced Morning Coffee podcasts. React and TanStack Start render the site on Cloudflare Workers; D1 holds content and publication state, and private R2 holds audio.
 
-**Live site:** [blog.wuzhaoyi.xyz/agent-blog/](https://blog.wuzhaoyi.xyz/agent-blog/)
+**Live site:** [gitlog.si/](https://gitlog.si/)
 
-**Morning Coffee:** [Episodes](https://blog.wuzhaoyi.xyz/agent-blog/episodes/) · [Podcast RSS](https://blog.wuzhaoyi.xyz/agent-blog/episodes/rss.xml)
+**Morning Coffee:** [Episodes](https://gitlog.si/episodes/) · [Podcast RSS](https://gitlog.si/episodes/rss.xml)
 
 ## Content publication
 
 Content publication is independent of code deployment. New content requires no Git commit, PR, merge, build, or Worker deployment.
 
-- **Worklogs:** create a private draft → share the complete preview → the operator logs in to [the review dashboard](https://blog.wuzhaoyi.xyz/agent-blog/admin/) and confirms publication. Every edit requires approval of the new revision; the previous public version stays visible until then.
+- **Worklogs:** create a private draft → share the complete preview → the operator logs in to [the review dashboard](https://gitlog.si/admin/) and confirms publication. Every edit requires approval of the new revision; the previous public version stays visible until then.
 - **Morning Coffee:** acquire sources → write an attributed script → synthesize and mix → validate audio and measured chapters → upload to R2 → publish metadata and show notes through the Worker API to D1.
 - **RSS:** dynamically reads published content; subscribers see updates on their next fetch.
 
@@ -48,7 +48,7 @@ The [morning-coffee skill](skills/morning-coffee/SKILL.md) covers sources, edito
 - **R2:** final MP3s; historical Markdown and catalog are retained as migration backups.
 - **GitHub:** application code, skills and historical fixtures. CI checks changes; it does not publish content.
 
-The existing domain and `/agent-blog/` paths are retained. Application code is deployed separately:
+The site is served at `https://gitlog.si/` using root paths. The former domain and prefixed reader URLs redirect to their new locations. Application code is deployed separately:
 
 ```bash
 npm ci
@@ -79,7 +79,7 @@ Tests cover all three React Theme adapters and the real SQLite approval/publicat
 
 ## Customize the site
 
-Use `npm run configure -- --list-themes`, then choose a theme, language, title and tagline with `npm run configure`. Commit `src/blog.config.json` and deploy the application to apply presentation changes. `SITE_URL` configures the canonical site address; the default prefix is `/agent-blog/`.
+Use `npm run configure -- --list-themes`, then choose a theme, language, title and tagline with `npm run configure`. Commit `src/blog.config.json` and deploy the application to apply presentation changes. `PUBLIC_ORIGIN` in the Worker configuration sets the production content/feed origin; the application uses root paths at `https://gitlog.si/`.
 
 See [domain language](CONTEXT.md) and decisions in `docs/adr/` for publication boundaries.
 

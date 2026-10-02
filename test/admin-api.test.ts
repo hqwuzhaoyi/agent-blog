@@ -69,7 +69,7 @@ test("reviewer HTTP workflow preserves public revision until explicit current-ve
     requestOrigin = origin,
   ) =>
     handleAdminApi(
-      new Request(origin + "/agent-blog/admin/api" + path, {
+      new Request(origin + "/admin/api" + path, {
         method,
         headers: {
           Origin: requestOrigin,
@@ -101,7 +101,7 @@ test("reviewer HTTP workflow preserves public revision until explicit current-ve
   const login = await call("/login", "POST", { key: "review-secret" });
   expect(login.status).toBe(200);
   expect(login.headers.get("Set-Cookie")).toContain(
-    "HttpOnly; Secure; SameSite=Strict; Path=/agent-blog/admin/",
+    "HttpOnly; Secure; SameSite=Strict; Path=/admin/",
   );
   const cookie = login.headers.get("Set-Cookie")!.split(";")[0];
   expect((await call("/session", "GET", undefined, cookie)).status).toBe(200);
@@ -233,7 +233,7 @@ test("preview capability renders complete sanitized React Article and carries no
   );
   const url =
     origin +
-    "/agent-blog/admin/reviews/preview-test?revision=" +
+    "/admin/reviews/preview-test?revision=" +
     saved.revision +
     "&token=" +
     saved.previewToken;
@@ -257,7 +257,7 @@ test("preview capability renders complete sanitized React Article and carries no
     (
       await handleAdminApi(
         new Request(
-          origin + "/agent-blog/admin/api/reviews/preview-test/publish",
+          origin + "/admin/api/reviews/preview-test/publish",
           {
             method: "POST",
             headers: { Origin: origin },

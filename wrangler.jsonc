@@ -9,12 +9,7 @@
     "directory": "./dist-react/client",
     "binding": "ASSETS",
     "run_worker_first": [
-      "/",
-      "/agent-blog/audio/*",
-      "/agent-blog/api/*",
-      "/agent-blog/admin/api/*",
-      "/agent-blog/rss.xml",
-      "/agent-blog/episodes/rss.xml"
+      "/*"
     ]
   },
   "r2_buckets": [
@@ -24,6 +19,10 @@
     }
   ],
   "routes": [
+    {
+      "pattern": "gitlog.si",
+      "custom_domain": true
+    },
     {
       "pattern": "blog.wuzhaoyi.xyz",
       "custom_domain": true
@@ -39,5 +38,8 @@
       "database_id": "d6aac9aa-6536-46c0-9767-835b49c0613e",
       "migrations_dir": "migrations"
     }
-  ]
+  ],
+  "vars": {
+    "PUBLIC_ORIGIN": "https://gitlog.si"
+  }
 }

@@ -23,3 +23,6 @@ The following complete public MIT source files were inspected through the live b
 | lib/use-slider.ts | range-slider item · lib/hooks/use-slider.ts | Complete official pointer capture, value snapping and keyboard/ARIA helper; no custom gesture implementation |
 
 The range-slider item also includes ease, touch and utils helpers. Those were already present and reused, not overwritten. React, Motion and utility dependencies were already installed.
+
+
+`bouncy-accordion.tsx` was added from https://beui.dev/r/bouncy-accordion.json on 2026-10-03 after `shadcn view @beui/bouncy-accordion`. The full component is retained; only ease/utils imports were redirected locally. The episode route composes one default-open chapter item through items/defaultValue/classNames, retaining official Motion behavior and existing chapter seek callbacks. All dependencies were already present.

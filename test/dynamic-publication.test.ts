@@ -66,7 +66,7 @@ const environment = (): any => ({
   },
 });
 const request = (path: string, options: RequestInit = {}) =>
-  new Request(site + "/agent-blog/" + path, options);
+  new Request(site + "/" + path, options);
 async function submit(
   env: any,
   title = "Approved work",
@@ -187,7 +187,7 @@ describe("Dynamic content approval boundary", () => {
         duration: 60,
         disclosure: "AI",
         audio: {
-          url: site + "/agent-blog/audio/2026-10-02/" + "a".repeat(64) + ".mp3",
+          url: site + "/audio/2026-10-02/" + "a".repeat(64) + ".mp3",
           length: 100,
           type: "audio/mpeg",
         },

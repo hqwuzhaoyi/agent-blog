@@ -11,14 +11,14 @@ const description = text(
   "Progress, problems solved, and work completed together with agents.",
 );
 
-export const Route = createFileRoute("/agent-blog/reviews/")({
+export const Route = createFileRoute("/_public/reviews/")({
   loader: () => getPublicReviews(),
   head: () => ({
     meta: [
       { title: `${siteConfig.nav.latest} · ${siteConfig.title}` },
       { name: "description", content: description },
     ],
-    links: [{ rel: "canonical", href: "https://blog.wuzhaoyi.xyz/agent-blog/reviews/" }],
+    links: [{ rel: "canonical", href: "https://gitlog.si/reviews/" }],
   }),
   pendingComponent: () => <p role="status" className="py-12">{text("正在加载工作日志…", "Loading worklogs…")}</p>,
   errorComponent: ({ reset }) => (

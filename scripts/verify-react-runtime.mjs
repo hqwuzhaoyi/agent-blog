@@ -30,11 +30,11 @@ const json = (method, body, headers = {}) => ({
 });
 const ingest = (path, body) =>
   request(
-    "/agent-blog/api/" + path,
+    "/api/" + path,
     json("PUT", body, { Authorization: `Bearer ${submit}` }),
   );
 const rss = async (path) =>
-  (await expectStatus(await request("/agent-blog/" + path), 200)).text();
+  (await expectStatus(await request("/" + path), 200)).text();
 
 const privacyMarker =
   "PRIVATE_RUNTIME_SENTINEL_" + randomBytes(6).toString("hex");
@@ -55,10 +55,10 @@ await expectStatus(
   200,
 );
 for (const path of [
-  "/agent-blog/",
-  "/agent-blog/reviews/2026-07-16/",
-  "/agent-blog/archive/",
-  "/agent-blog/archive/?q=" + privacyMarker,
+  "/",
+  "/reviews/2026-07-16/",
+  "/archive/",
+  "/archive/?q=" + privacyMarker,
 ]) {
   const response = await expectStatus(await request(path), 200);
   const html = await response.text();
@@ -76,7 +76,7 @@ checks.push("public SSR, canonical metadata and draft isolation");
 const podcast = await rss("episodes/rss.xml");
 const combined = await rss("rss.xml");
 await expectStatus(
-  await request("/agent-blog/episodes/rss.xml", {
+  await request("/episodes/rss.xml", {
     headers: { "User-Agent": "Python-urllib/3.13" },
   }),
   200,
@@ -154,7 +154,7 @@ const saved = await (
   )
 ).json();
 assert.equal(saved.status, "draft");
-assert(saved.previewUrl.includes("/agent-blog/admin/reviews/" + id));
+assert(saved.previewUrl.includes("/admin/reviews/" + id));
 assert.equal(
   new URL(saved.previewUrl).origin,
   origin,
@@ -169,7 +169,7 @@ assert(!previewHtml.includes("<script>window.runtimeUnsafe=true</script>"));
 assert(!(await rss("rss.xml")).includes(title));
 await expectStatus(
   await request(
-    `/agent-blog/admin/api/reviews/${id}/publish`,
+    `/admin/api/reviews/${id}/publish`,
     json(
       "POST",
       { revision: saved.revision },
@@ -180,7 +180,7 @@ await expectStatus(
 );
 const login = await expectStatus(
   await request(
-    "/agent-blog/admin/api/login",
+    "/admin/api/login",
     json("POST", { key: reviewer }, { Origin: origin }),
   ),
   200,
@@ -188,13 +188,13 @@ const login = await expectStatus(
 const setCookie = login.headers.get("Set-Cookie");
 assert.match(
   setCookie,
-  /HttpOnly; Secure; SameSite=Strict; Path=\/agent-blog\/admin\//,
+  /HttpOnly; Secure; SameSite=Strict; Path=\/admin\//,
 );
 const cookie = setCookie?.split(";")[0];
 assert(cookie);
 await expectStatus(
   await request(
-    `/agent-blog/admin/api/reviews/${id}/publish`,
+    `/admin/api/reviews/${id}/publish`,
     json(
       "POST",
       { revision: saved.revision },
@@ -204,21 +204,21 @@ await expectStatus(
   403,
 );
 await expectStatus(
-  await request("/agent-blog/admin/api/session", {
+  await request("/admin/api/session", {
     headers: { Cookie: "blog_review=expired.invalid" },
   }),
   401,
 );
 await expectStatus(
   await request(
-    `/agent-blog/admin/api/reviews/${id}/publish?token=${new URL(saved.previewUrl).searchParams.get("token")}`,
+    `/admin/api/reviews/${id}/publish?token=${new URL(saved.previewUrl).searchParams.get("token")}`,
     json("POST", { revision: saved.revision }, { Origin: origin }),
   ),
   401,
 );
 const admin = (path, method, body) =>
   request(
-    "/agent-blog/admin/api/" + path,
+    "/admin/api/" + path,
     json(method, body, { Origin: origin, Cookie: cookie }),
   );
 const approval = await (
@@ -265,7 +265,7 @@ const unchangedPage = await (await request(approval.url)).text();
 assert(unchangedPage.includes(title) && !unchangedPage.includes(privateMarker));
 const audit = await (
   await expectStatus(
-    await request(`/agent-blog/admin/api/reviews/${id}/audit`, {
+    await request(`/admin/api/reviews/${id}/audit`, {
       headers: { Cookie: cookie },
     }),
     200,
@@ -286,7 +286,7 @@ const bytes = new Uint8Array(
   await (await expectStatus(await request(audioPath), 200)).arrayBuffer(),
 );
 const hash = createHash("sha256").update(bytes).digest("hex");
-const episodePath = `/agent-blog/audio/${episodeDate}/${hash}.mp3`;
+const episodePath = `/audio/${episodeDate}/${hash}.mp3`;
 const episodeData = {
   title: "Runtime episode " + suffix,
   summary: "Local protocol verification",
@@ -305,7 +305,7 @@ const episodeData = {
 };
 const current = await (
   await expectStatus(
-    await request(`/agent-blog/api/episodes/${episodeDate}`, {
+    await request(`/api/episodes/${episodeDate}`, {
       headers: { Authorization: `Bearer ${submit}` },
     }),
     200,
@@ -327,7 +327,7 @@ await expectStatus(
   422,
 );
 await expectStatus(
-  await request(`/agent-blog/api/audio/${episodeDate}/${hash}`, {
+  await request(`/api/audio/${episodeDate}/${hash}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${submit}`,
@@ -349,7 +349,7 @@ assert.equal(repeated.revision, published.revision);
 const updatedPodcast = await rss("episodes/rss.xml");
 assert(
   updatedPodcast.includes(
-    `<guid isPermaLink="true">${origin}/agent-blog/episodes/${episodeDate}/</guid>`,
+    `<guid isPermaLink="true">${origin}/episodes/${episodeDate}/</guid>`,
   ),
 );
 assert(
@@ -360,7 +360,7 @@ assert(
 assert(updatedPodcast.includes("<itunes:duration>30</itunes:duration>"));
 assert.equal(
   updatedPodcast.split(
-    `<guid isPermaLink="true">${origin}/agent-blog/episodes/${episodeDate}/</guid>`,
+    `<guid isPermaLink="true">${origin}/episodes/${episodeDate}/</guid>`,
   ).length - 1,
   1,
 );

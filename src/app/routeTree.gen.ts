@@ -9,343 +9,316 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AgentBlogRouteImport } from './routes/agent-blog'
-import { Route as AgentBlogIndexRouteImport } from './routes/agent-blog.index'
-import { Route as AgentBlogArchiveRouteImport } from './routes/agent-blog.archive'
-import { Route as AgentBlogAdminRouteImport } from './routes/agent-blog_.admin'
-import { Route as AgentBlogEpisodesIndexRouteImport } from './routes/agent-blog.episodes.index'
-import { Route as AgentBlogEpisodesIdRouteImport } from './routes/agent-blog.episodes.$id'
-import { Route as AgentBlogReviewsIndexRouteImport } from './routes/agent-blog.reviews.index'
-import { Route as AgentBlogReviewsIdRouteImport } from './routes/agent-blog.reviews.$id'
-import { Route as AgentBlogAdminIndexRouteImport } from './routes/agent-blog_.admin.index'
-import { Route as AgentBlogAdminEpisodesRouteImport } from './routes/agent-blog_.admin.episodes'
-import { Route as AgentBlogAdminPublishedRouteImport } from './routes/agent-blog_.admin.published'
-import { Route as AgentBlogAdminSettingsRouteImport } from './routes/agent-blog_.admin.settings'
-import { Route as AgentBlogAdminReviewsIdRouteImport } from './routes/agent-blog_.admin.reviews.$id'
+import { Route as PublicRouteImport } from './routes/_public'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as PublicIndexRouteImport } from './routes/_public.index'
+import { Route as PublicArchiveRouteImport } from './routes/_public.archive'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminEpisodesRouteImport } from './routes/admin.episodes'
+import { Route as AdminPublishedRouteImport } from './routes/admin.published'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as PublicEpisodesIndexRouteImport } from './routes/_public.episodes.index'
+import { Route as PublicEpisodesIdRouteImport } from './routes/_public.episodes.$id'
+import { Route as PublicReviewsIndexRouteImport } from './routes/_public.reviews.index'
+import { Route as PublicReviewsIdRouteImport } from './routes/_public.reviews.$id'
+import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AgentBlogRoute = AgentBlogRouteImport.update({
-  id: '/agent-blog',
-  path: '/agent-blog',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AgentBlogIndexRoute = AgentBlogIndexRouteImport.update({
+const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AgentBlogRoute,
+  getParentRoute: () => PublicRoute,
 } as any)
-const AgentBlogArchiveRoute = AgentBlogArchiveRouteImport.update({
+const PublicArchiveRoute = PublicArchiveRouteImport.update({
   id: '/archive',
   path: '/archive',
-  getParentRoute: () => AgentBlogRoute,
+  getParentRoute: () => PublicRoute,
 } as any)
-const AgentBlogAdminRoute = AgentBlogAdminRouteImport.update({
-  id: '/agent-blog_/admin',
-  path: '/agent-blog/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AgentBlogEpisodesIndexRoute = AgentBlogEpisodesIndexRouteImport.update({
-  id: '/episodes/',
-  path: '/episodes/',
-  getParentRoute: () => AgentBlogRoute,
-} as any)
-const AgentBlogEpisodesIdRoute = AgentBlogEpisodesIdRouteImport.update({
-  id: '/episodes/$id',
-  path: '/episodes/$id',
-  getParentRoute: () => AgentBlogRoute,
-} as any)
-const AgentBlogReviewsIndexRoute = AgentBlogReviewsIndexRouteImport.update({
-  id: '/reviews/',
-  path: '/reviews/',
-  getParentRoute: () => AgentBlogRoute,
-} as any)
-const AgentBlogReviewsIdRoute = AgentBlogReviewsIdRouteImport.update({
-  id: '/reviews/$id',
-  path: '/reviews/$id',
-  getParentRoute: () => AgentBlogRoute,
-} as any)
-const AgentBlogAdminIndexRoute = AgentBlogAdminIndexRouteImport.update({
+const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AgentBlogAdminRoute,
+  getParentRoute: () => AdminRoute,
 } as any)
-const AgentBlogAdminEpisodesRoute = AgentBlogAdminEpisodesRouteImport.update({
+const AdminEpisodesRoute = AdminEpisodesRouteImport.update({
   id: '/episodes',
   path: '/episodes',
-  getParentRoute: () => AgentBlogAdminRoute,
+  getParentRoute: () => AdminRoute,
 } as any)
-const AgentBlogAdminPublishedRoute = AgentBlogAdminPublishedRouteImport.update({
+const AdminPublishedRoute = AdminPublishedRouteImport.update({
   id: '/published',
   path: '/published',
-  getParentRoute: () => AgentBlogAdminRoute,
+  getParentRoute: () => AdminRoute,
 } as any)
-const AgentBlogAdminSettingsRoute = AgentBlogAdminSettingsRouteImport.update({
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => AgentBlogAdminRoute,
+  getParentRoute: () => AdminRoute,
 } as any)
-const AgentBlogAdminReviewsIdRoute = AgentBlogAdminReviewsIdRouteImport.update({
+const PublicEpisodesIndexRoute = PublicEpisodesIndexRouteImport.update({
+  id: '/episodes/',
+  path: '/episodes/',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicEpisodesIdRoute = PublicEpisodesIdRouteImport.update({
+  id: '/episodes/$id',
+  path: '/episodes/$id',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicReviewsIndexRoute = PublicReviewsIndexRouteImport.update({
+  id: '/reviews/',
+  path: '/reviews/',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicReviewsIdRoute = PublicReviewsIdRouteImport.update({
   id: '/reviews/$id',
   path: '/reviews/$id',
-  getParentRoute: () => AgentBlogAdminRoute,
+  getParentRoute: () => PublicRoute,
+} as any)
+const AdminReviewsIdRoute = AdminReviewsIdRouteImport.update({
+  id: '/reviews/$id',
+  path: '/reviews/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/agent-blog': typeof AgentBlogRouteWithChildren
-  '/agent-blog/archive': typeof AgentBlogArchiveRoute
-  '/agent-blog/admin': typeof AgentBlogAdminRouteWithChildren
-  '/agent-blog/': typeof AgentBlogIndexRoute
-  '/agent-blog/episodes/$id': typeof AgentBlogEpisodesIdRoute
-  '/agent-blog/reviews/$id': typeof AgentBlogReviewsIdRoute
-  '/agent-blog/admin/episodes': typeof AgentBlogAdminEpisodesRoute
-  '/agent-blog/admin/published': typeof AgentBlogAdminPublishedRoute
-  '/agent-blog/admin/settings': typeof AgentBlogAdminSettingsRoute
-  '/agent-blog/episodes/': typeof AgentBlogEpisodesIndexRoute
-  '/agent-blog/reviews/': typeof AgentBlogReviewsIndexRoute
-  '/agent-blog/admin/': typeof AgentBlogAdminIndexRoute
-  '/agent-blog/admin/reviews/$id': typeof AgentBlogAdminReviewsIdRoute
+  '/': typeof PublicIndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/archive': typeof PublicArchiveRoute
+  '/admin/episodes': typeof AdminEpisodesRoute
+  '/admin/published': typeof AdminPublishedRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/': typeof AdminIndexRoute
+  '/episodes/$id': typeof PublicEpisodesIdRoute
+  '/reviews/$id': typeof PublicReviewsIdRoute
+  '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/episodes/': typeof PublicEpisodesIndexRoute
+  '/reviews/': typeof PublicReviewsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/agent-blog/archive': typeof AgentBlogArchiveRoute
-  '/agent-blog': typeof AgentBlogIndexRoute
-  '/agent-blog/episodes/$id': typeof AgentBlogEpisodesIdRoute
-  '/agent-blog/reviews/$id': typeof AgentBlogReviewsIdRoute
-  '/agent-blog/admin/episodes': typeof AgentBlogAdminEpisodesRoute
-  '/agent-blog/admin/published': typeof AgentBlogAdminPublishedRoute
-  '/agent-blog/admin/settings': typeof AgentBlogAdminSettingsRoute
-  '/agent-blog/episodes': typeof AgentBlogEpisodesIndexRoute
-  '/agent-blog/reviews': typeof AgentBlogReviewsIndexRoute
-  '/agent-blog/admin': typeof AgentBlogAdminIndexRoute
-  '/agent-blog/admin/reviews/$id': typeof AgentBlogAdminReviewsIdRoute
+  '/archive': typeof PublicArchiveRoute
+  '/admin/episodes': typeof AdminEpisodesRoute
+  '/admin/published': typeof AdminPublishedRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/': typeof PublicIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/episodes/$id': typeof PublicEpisodesIdRoute
+  '/reviews/$id': typeof PublicReviewsIdRoute
+  '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/episodes': typeof PublicEpisodesIndexRoute
+  '/reviews': typeof PublicReviewsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/agent-blog': typeof AgentBlogRouteWithChildren
-  '/agent-blog/archive': typeof AgentBlogArchiveRoute
-  '/agent-blog_/admin': typeof AgentBlogAdminRouteWithChildren
-  '/agent-blog/': typeof AgentBlogIndexRoute
-  '/agent-blog/episodes/$id': typeof AgentBlogEpisodesIdRoute
-  '/agent-blog/reviews/$id': typeof AgentBlogReviewsIdRoute
-  '/agent-blog_/admin/episodes': typeof AgentBlogAdminEpisodesRoute
-  '/agent-blog_/admin/published': typeof AgentBlogAdminPublishedRoute
-  '/agent-blog_/admin/settings': typeof AgentBlogAdminSettingsRoute
-  '/agent-blog/episodes/': typeof AgentBlogEpisodesIndexRoute
-  '/agent-blog/reviews/': typeof AgentBlogReviewsIndexRoute
-  '/agent-blog_/admin/': typeof AgentBlogAdminIndexRoute
-  '/agent-blog_/admin/reviews/$id': typeof AgentBlogAdminReviewsIdRoute
+  '/_public': typeof PublicRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/_public/archive': typeof PublicArchiveRoute
+  '/admin/episodes': typeof AdminEpisodesRoute
+  '/admin/published': typeof AdminPublishedRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/_public/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/_public/episodes/$id': typeof PublicEpisodesIdRoute
+  '/_public/reviews/$id': typeof PublicReviewsIdRoute
+  '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/_public/episodes/': typeof PublicEpisodesIndexRoute
+  '/_public/reviews/': typeof PublicReviewsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/agent-blog'
-    | '/agent-blog/archive'
-    | '/agent-blog/admin'
-    | '/agent-blog/'
-    | '/agent-blog/episodes/$id'
-    | '/agent-blog/reviews/$id'
-    | '/agent-blog/admin/episodes'
-    | '/agent-blog/admin/published'
-    | '/agent-blog/admin/settings'
-    | '/agent-blog/episodes/'
-    | '/agent-blog/reviews/'
-    | '/agent-blog/admin/'
-    | '/agent-blog/admin/reviews/$id'
+    | '/admin'
+    | '/archive'
+    | '/admin/episodes'
+    | '/admin/published'
+    | '/admin/settings'
+    | '/admin/'
+    | '/episodes/$id'
+    | '/reviews/$id'
+    | '/admin/reviews/$id'
+    | '/episodes/'
+    | '/reviews/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/archive'
+    | '/admin/episodes'
+    | '/admin/published'
+    | '/admin/settings'
     | '/'
-    | '/agent-blog/archive'
-    | '/agent-blog'
-    | '/agent-blog/episodes/$id'
-    | '/agent-blog/reviews/$id'
-    | '/agent-blog/admin/episodes'
-    | '/agent-blog/admin/published'
-    | '/agent-blog/admin/settings'
-    | '/agent-blog/episodes'
-    | '/agent-blog/reviews'
-    | '/agent-blog/admin'
-    | '/agent-blog/admin/reviews/$id'
+    | '/admin'
+    | '/episodes/$id'
+    | '/reviews/$id'
+    | '/admin/reviews/$id'
+    | '/episodes'
+    | '/reviews'
   id:
     | '__root__'
-    | '/'
-    | '/agent-blog'
-    | '/agent-blog/archive'
-    | '/agent-blog_/admin'
-    | '/agent-blog/'
-    | '/agent-blog/episodes/$id'
-    | '/agent-blog/reviews/$id'
-    | '/agent-blog_/admin/episodes'
-    | '/agent-blog_/admin/published'
-    | '/agent-blog_/admin/settings'
-    | '/agent-blog/episodes/'
-    | '/agent-blog/reviews/'
-    | '/agent-blog_/admin/'
-    | '/agent-blog_/admin/reviews/$id'
+    | '/_public'
+    | '/admin'
+    | '/_public/archive'
+    | '/admin/episodes'
+    | '/admin/published'
+    | '/admin/settings'
+    | '/_public/'
+    | '/admin/'
+    | '/_public/episodes/$id'
+    | '/_public/reviews/$id'
+    | '/admin/reviews/$id'
+    | '/_public/episodes/'
+    | '/_public/reviews/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AgentBlogRoute: typeof AgentBlogRouteWithChildren
-  AgentBlogAdminRoute: typeof AgentBlogAdminRouteWithChildren
+  PublicRoute: typeof PublicRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PublicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public/': {
+      id: '/_public/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRoute
     }
-    '/agent-blog': {
-      id: '/agent-blog'
-      path: '/agent-blog'
-      fullPath: '/agent-blog'
-      preLoaderRoute: typeof AgentBlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agent-blog/': {
-      id: '/agent-blog/'
-      path: '/'
-      fullPath: '/agent-blog/'
-      preLoaderRoute: typeof AgentBlogIndexRouteImport
-      parentRoute: typeof AgentBlogRoute
-    }
-    '/agent-blog/archive': {
-      id: '/agent-blog/archive'
+    '/_public/archive': {
+      id: '/_public/archive'
       path: '/archive'
-      fullPath: '/agent-blog/archive'
-      preLoaderRoute: typeof AgentBlogArchiveRouteImport
-      parentRoute: typeof AgentBlogRoute
+      fullPath: '/archive'
+      preLoaderRoute: typeof PublicArchiveRouteImport
+      parentRoute: typeof PublicRoute
     }
-    '/agent-blog_/admin': {
-      id: '/agent-blog_/admin'
-      path: '/agent-blog/admin'
-      fullPath: '/agent-blog/admin'
-      preLoaderRoute: typeof AgentBlogAdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agent-blog/episodes/': {
-      id: '/agent-blog/episodes/'
-      path: '/episodes'
-      fullPath: '/agent-blog/episodes/'
-      preLoaderRoute: typeof AgentBlogEpisodesIndexRouteImport
-      parentRoute: typeof AgentBlogRoute
-    }
-    '/agent-blog/episodes/$id': {
-      id: '/agent-blog/episodes/$id'
-      path: '/episodes/$id'
-      fullPath: '/agent-blog/episodes/$id'
-      preLoaderRoute: typeof AgentBlogEpisodesIdRouteImport
-      parentRoute: typeof AgentBlogRoute
-    }
-    '/agent-blog/reviews/': {
-      id: '/agent-blog/reviews/'
-      path: '/reviews'
-      fullPath: '/agent-blog/reviews/'
-      preLoaderRoute: typeof AgentBlogReviewsIndexRouteImport
-      parentRoute: typeof AgentBlogRoute
-    }
-    '/agent-blog/reviews/$id': {
-      id: '/agent-blog/reviews/$id'
-      path: '/reviews/$id'
-      fullPath: '/agent-blog/reviews/$id'
-      preLoaderRoute: typeof AgentBlogReviewsIdRouteImport
-      parentRoute: typeof AgentBlogRoute
-    }
-    '/agent-blog_/admin/': {
-      id: '/agent-blog_/admin/'
+    '/admin/': {
+      id: '/admin/'
       path: '/'
-      fullPath: '/agent-blog/admin/'
-      preLoaderRoute: typeof AgentBlogAdminIndexRouteImport
-      parentRoute: typeof AgentBlogAdminRoute
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/agent-blog_/admin/episodes': {
-      id: '/agent-blog_/admin/episodes'
+    '/admin/episodes': {
+      id: '/admin/episodes'
       path: '/episodes'
-      fullPath: '/agent-blog/admin/episodes'
-      preLoaderRoute: typeof AgentBlogAdminEpisodesRouteImport
-      parentRoute: typeof AgentBlogAdminRoute
+      fullPath: '/admin/episodes'
+      preLoaderRoute: typeof AdminEpisodesRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/agent-blog_/admin/published': {
-      id: '/agent-blog_/admin/published'
+    '/admin/published': {
+      id: '/admin/published'
       path: '/published'
-      fullPath: '/agent-blog/admin/published'
-      preLoaderRoute: typeof AgentBlogAdminPublishedRouteImport
-      parentRoute: typeof AgentBlogAdminRoute
+      fullPath: '/admin/published'
+      preLoaderRoute: typeof AdminPublishedRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/agent-blog_/admin/settings': {
-      id: '/agent-blog_/admin/settings'
+    '/admin/settings': {
+      id: '/admin/settings'
       path: '/settings'
-      fullPath: '/agent-blog/admin/settings'
-      preLoaderRoute: typeof AgentBlogAdminSettingsRouteImport
-      parentRoute: typeof AgentBlogAdminRoute
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/agent-blog_/admin/reviews/$id': {
-      id: '/agent-blog_/admin/reviews/$id'
+    '/_public/episodes/': {
+      id: '/_public/episodes/'
+      path: '/episodes'
+      fullPath: '/episodes/'
+      preLoaderRoute: typeof PublicEpisodesIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/episodes/$id': {
+      id: '/_public/episodes/$id'
+      path: '/episodes/$id'
+      fullPath: '/episodes/$id'
+      preLoaderRoute: typeof PublicEpisodesIdRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/reviews/': {
+      id: '/_public/reviews/'
+      path: '/reviews'
+      fullPath: '/reviews/'
+      preLoaderRoute: typeof PublicReviewsIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/reviews/$id': {
+      id: '/_public/reviews/$id'
       path: '/reviews/$id'
-      fullPath: '/agent-blog/admin/reviews/$id'
-      preLoaderRoute: typeof AgentBlogAdminReviewsIdRouteImport
-      parentRoute: typeof AgentBlogAdminRoute
+      fullPath: '/reviews/$id'
+      preLoaderRoute: typeof PublicReviewsIdRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/admin/reviews/$id': {
+      id: '/admin/reviews/$id'
+      path: '/reviews/$id'
+      fullPath: '/admin/reviews/$id'
+      preLoaderRoute: typeof AdminReviewsIdRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
-interface AgentBlogRouteChildren {
-  AgentBlogArchiveRoute: typeof AgentBlogArchiveRoute
-  AgentBlogIndexRoute: typeof AgentBlogIndexRoute
-  AgentBlogEpisodesIdRoute: typeof AgentBlogEpisodesIdRoute
-  AgentBlogReviewsIdRoute: typeof AgentBlogReviewsIdRoute
-  AgentBlogEpisodesIndexRoute: typeof AgentBlogEpisodesIndexRoute
-  AgentBlogReviewsIndexRoute: typeof AgentBlogReviewsIndexRoute
+interface PublicRouteChildren {
+  PublicArchiveRoute: typeof PublicArchiveRoute
+  PublicIndexRoute: typeof PublicIndexRoute
+  PublicEpisodesIdRoute: typeof PublicEpisodesIdRoute
+  PublicReviewsIdRoute: typeof PublicReviewsIdRoute
+  PublicEpisodesIndexRoute: typeof PublicEpisodesIndexRoute
+  PublicReviewsIndexRoute: typeof PublicReviewsIndexRoute
 }
 
-const AgentBlogRouteChildren: AgentBlogRouteChildren = {
-  AgentBlogArchiveRoute: AgentBlogArchiveRoute,
-  AgentBlogIndexRoute: AgentBlogIndexRoute,
-  AgentBlogEpisodesIdRoute: AgentBlogEpisodesIdRoute,
-  AgentBlogReviewsIdRoute: AgentBlogReviewsIdRoute,
-  AgentBlogEpisodesIndexRoute: AgentBlogEpisodesIndexRoute,
-  AgentBlogReviewsIndexRoute: AgentBlogReviewsIndexRoute,
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicArchiveRoute: PublicArchiveRoute,
+  PublicIndexRoute: PublicIndexRoute,
+  PublicEpisodesIdRoute: PublicEpisodesIdRoute,
+  PublicReviewsIdRoute: PublicReviewsIdRoute,
+  PublicEpisodesIndexRoute: PublicEpisodesIndexRoute,
+  PublicReviewsIndexRoute: PublicReviewsIndexRoute,
 }
 
-const AgentBlogRouteWithChildren = AgentBlogRoute._addFileChildren(
-  AgentBlogRouteChildren,
-)
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
 
-interface AgentBlogAdminRouteChildren {
-  AgentBlogAdminEpisodesRoute: typeof AgentBlogAdminEpisodesRoute
-  AgentBlogAdminPublishedRoute: typeof AgentBlogAdminPublishedRoute
-  AgentBlogAdminSettingsRoute: typeof AgentBlogAdminSettingsRoute
-  AgentBlogAdminIndexRoute: typeof AgentBlogAdminIndexRoute
-  AgentBlogAdminReviewsIdRoute: typeof AgentBlogAdminReviewsIdRoute
+interface AdminRouteChildren {
+  AdminEpisodesRoute: typeof AdminEpisodesRoute
+  AdminPublishedRoute: typeof AdminPublishedRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminReviewsIdRoute: typeof AdminReviewsIdRoute
 }
 
-const AgentBlogAdminRouteChildren: AgentBlogAdminRouteChildren = {
-  AgentBlogAdminEpisodesRoute: AgentBlogAdminEpisodesRoute,
-  AgentBlogAdminPublishedRoute: AgentBlogAdminPublishedRoute,
-  AgentBlogAdminSettingsRoute: AgentBlogAdminSettingsRoute,
-  AgentBlogAdminIndexRoute: AgentBlogAdminIndexRoute,
-  AgentBlogAdminReviewsIdRoute: AgentBlogAdminReviewsIdRoute,
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminEpisodesRoute: AdminEpisodesRoute,
+  AdminPublishedRoute: AdminPublishedRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminReviewsIdRoute: AdminReviewsIdRoute,
 }
 
-const AgentBlogAdminRouteWithChildren = AgentBlogAdminRoute._addFileChildren(
-  AgentBlogAdminRouteChildren,
-)
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AgentBlogRoute: AgentBlogRouteWithChildren,
-  AgentBlogAdminRoute: AgentBlogAdminRouteWithChildren,
+  PublicRoute: PublicRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
