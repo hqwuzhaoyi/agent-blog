@@ -1,5 +1,5 @@
 ---
-import { ClientRouter, fade } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import ListeningPlayer from "@/components/ListeningPlayer.astro";
 import { activeTheme, siteConfig } from "@/site.config";
 import { sitePath } from "@/lib/paths";
@@ -66,7 +66,7 @@ const footerProps: FooterProps = {
     <div class="page-shell">
       <ThemeHeader {...headerProps} />
       <main>
-        <div class="page-content" transition:name="page-content" transition:animate={fade({ duration: "0.2s" })}><slot /></div>
+        <div class="page-content"><slot /></div>
       </main>
       <ThemeFooter {...footerProps} />
     </div>

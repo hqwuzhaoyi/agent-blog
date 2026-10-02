@@ -185,7 +185,11 @@ a:focus-visible { outline: 2px solid var(--signal); outline-offset: 5px; border-
 }
 .nav-indicator[data-visible="true"] { opacity: .07; }
 ::view-transition-group(*) { animation-duration: 250ms; animation-timing-function: var(--ease-in-out); }
-::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+@keyframes route-fade-out { to { opacity: 0; } }
+@keyframes route-fade-in { from { opacity: 0; } }
+/* Keep the viewport crossfade; do not snapshot the full scrolling article. */
+::view-transition-old(root) { animation: route-fade-out 160ms ease both; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: route-fade-in 160ms ease both; mix-blend-mode: normal; }
 html[data-client-navigation] :is(.coffee-intro, .coffee-article-header, .coffee-player, .coffee-entry, .blog-intro__identity, .review-article__heading, .archive-hero, .minimal-card, .archive-row) { animation: none !important; }
 .coffee-player-slot { display: grid; min-height: 156px; place-items: center; }
 .player-start { font: inherit; color: var(--signal); background: transparent; border: 1px solid var(--line); padding: 1rem 2rem; border-radius: 12px; cursor: pointer; }

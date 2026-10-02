@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { chapterIndexAt, displayTime, progressWithin } from "../src/lib/listening";
+import { canExpandPlayer, chapterIndexAt, displayTime, progressWithin } from "../src/lib/listening";
 const chapters = [
   { id: "opening", title: "Opening", start: 3 },
   { id: "main", title: "Main story", start: 34.37 },
@@ -21,5 +21,15 @@ describe("Listening position", () => {
     expect(progressWithin(10, 10, 10)).toBe(0);
     expect(displayTime(NaN)).toBe("00:00");
     expect(displayTime(201.432979)).toBe("03:21");
+  });
+});
+
+
+describe("Player scroll boundary", () => {
+  test("keeps a docked player docked while the slot jitters near the header", () => {
+    for (const top of [111, 113, 112, 110, 114]) expect(canExpandPlayer(top, top + 156, 100, 844, false)).toBe(false);
+    expect(canExpandPlayer(128, 284, 100, 844, false)).toBe(true);
+    expect(canExpandPlayer(114, 270, 100, 844, true)).toBe(true);
+    expect(canExpandPlayer(111, 267, 100, 844, true)).toBe(false);
   });
 });

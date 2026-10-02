@@ -1,5 +1,5 @@
 import { TransitionBeforePreparationEvent } from "astro:transitions/client";
-import { chapterIndexAt, displayTime, progressWithin, type ListeningEpisode } from "../lib/listening";
+import { canExpandPlayer, chapterIndexAt, displayTime, progressWithin, type ListeningEpisode } from "../lib/listening";
 
 export function initListeningPlayer() {
   const player = document.querySelector<HTMLElement>("#listening-player");
@@ -14,6 +14,7 @@ export function initListeningPlayer() {
   const fill = shell.querySelector<HTMLElement>(".player-range-fill")!;
   const title = shell.querySelector<HTMLAnchorElement>(".player-title")!;
   const chapterLabel = shell.querySelector<HTMLElement>(".player-chapter")!;
+  const elapsed = shell.querySelector<HTMLElement>(".player-elapsed")!;
   const errorLabel = shell.querySelector<HTMLElement>(".player-error")!;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const ease = "cubic-bezier(0.23, 1, 0.32, 1)";
@@ -27,11 +28,61 @@ export function initListeningPlayer() {
   let navigating = false;
   let navigationSignal: AbortSignal | undefined;
   let lastChapter = "";
+  let slot: HTMLElement | null = null;
+  let trigger: HTMLButtonElement | null = null;
+  let marker: HTMLElement | null = null;
+  let links: Array<{ element: HTMLAnchorElement; progress: HTMLElement | null; top: number; height: number }> = [];
+  let lastIndex: number | undefined;
+  let lastWidth = 0;
+  let lastX: number | undefined;
+  let lastY: number | undefined;
+  let playerHeight = 0;
+  let geometryDirty = true;
+  let geometry: { top: number; left: number; width: number; height: number; headerBottom: number; viewportBottom: number; viewportWidth: number } | undefined;
+  const measuredSizes = new WeakMap<Element, { width: number; height: number }>();
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const size = entry.borderBoxSize?.[0];
+      const previous = measuredSizes.get(entry.target);
+      if (!size || !previous || Math.abs(size.inlineSize - previous.width) > .1 || Math.abs(size.blockSize - previous.height) > .1) invalidateGeometry();
+    }
+  });
+  function invalidateGeometry() { geometryDirty = true; queuePosition(); }
+  function measureGeometry() {
+    const rect = slot?.getBoundingClientRect();
+    const header = document.querySelector(".site-header");
+    const headerRect = header?.getBoundingClientRect();
+    if (header && headerRect) measuredSizes.set(header, { width: headerRect.width, height: headerRect.height });
+    const articleHeader = document.querySelector(".coffee-article-header");
+    const articleRect = articleHeader?.getBoundingClientRect();
+    if (articleHeader && articleRect) measuredSizes.set(articleHeader, { width: articleRect.width, height: articleRect.height });
+    if (slot && rect) measuredSizes.set(slot, { width: rect.width, height: rect.height });
+    geometry = {
+      top: (rect?.top ?? 0) + scrollY, left: rect?.left ?? 0, width: rect?.width ?? 0, height: rect?.height ?? 0,
+      headerBottom: headerRect?.bottom ?? 0,
+      viewportBottom: (window.visualViewport?.height ?? innerHeight) + (window.visualViewport?.offsetTop ?? 0), viewportWidth: innerWidth,
+    };
+    for (const link of links) { link.height = link.element.offsetHeight; link.top = link.element.parentElement!.offsetTop; }
+    playerHeight = 0;
+    geometryDirty = false;
+  }
+  function cachePageElements() {
+    slot = document.querySelector<HTMLElement>("[data-player-slot]");
+    trigger = document.querySelector<HTMLButtonElement>("[data-play-episode]");
+    marker = document.querySelector<HTMLElement>(".coffee-chapter-marker");
+    links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".coffee-chapters a[data-start]")).map(element => ({ element, progress: element.querySelector<HTMLElement>(".coffee-chapter-progress"), top: 0, height: 0 }));
+    lastIndex = undefined;
+    resizeObserver.disconnect();
+    for (const target of [slot, document.querySelector(".site-header"), document.querySelector(".coffee-article-header")]) if (target) resizeObserver.observe(target);
+    geometryDirty = true;
+    measureGeometry();
+  }
 
   function readPage() {
     const data = document.querySelector("#listening-episode")?.textContent;
     pageEpisode = data ? JSON.parse(data) as ListeningEpisode : undefined;
     if (pageEpisode && (!episode || (!started && (episode.id !== pageEpisode.id || episode.audio.url !== pageEpisode.audio.url)))) loadEpisode(pageEpisode);
+    cachePageElements();
     sync();
     position(false);
   }
@@ -43,6 +94,8 @@ export function initListeningPlayer() {
     dismissed = false;
     pendingSeek = undefined;
     lastChapter = "";
+    lastIndex = undefined;
+    playerHeight = 0;
     title.textContent = next.title;
     title.href = next.url;
     range.max = String(next.duration);
@@ -53,64 +106,72 @@ export function initListeningPlayer() {
   }
   function position(animate = true) {
     if (!episode || dismissed) {
-      shell.hidden = true;
-      document.body.classList.remove("has-docked-player");
-      document.querySelector<HTMLButtonElement>("[data-play-episode]")?.removeAttribute("hidden");
+      if (!shell.hidden) shell.hidden = true;
+      if (document.body.classList.contains("has-docked-player")) document.body.classList.remove("has-docked-player");
+      if (trigger?.hidden) trigger.hidden = false;
       return;
     }
-    const slot = document.querySelector<HTMLElement>("[data-player-slot]");
+    if (geometryDirty || !geometry) measureGeometry();
+    const bounds = geometry!;
     const onEpisode = slot?.dataset.playerSlot === episode.id && pageEpisode?.audio.url === episode.audio.url;
-    const rect = onEpisode ? slot!.getBoundingClientRect() : undefined;
-    const headerBottom = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
-    const viewportBottom = (window.visualViewport?.height ?? innerHeight) + (window.visualViewport?.offsetTop ?? 0);
-    const expanded = !!rect && rect.top >= headerBottom + 12 && rect.bottom <= viewportBottom - 16;
+    const top = bounds.top - scrollY;
+    const expanded = !!onEpisode && canExpandPlayer(top, top + bounds.height, bounds.headerBottom, bounds.viewportBottom, shell.dataset.mode === "expanded" || Boolean(shell.hidden));
     const visible = expanded || started;
-    const trigger = document.querySelector<HTMLButtonElement>("[data-play-episode]");
-    if (trigger) trigger.hidden = onEpisode && visible;
+    if (trigger && trigger.hidden !== (onEpisode && visible)) trigger.hidden = !!(onEpisode && visible);
     if (!visible) {
-      shell.hidden = true;
-      document.body.classList.remove("has-docked-player");
+      if (!shell.hidden) shell.hidden = true;
+      if (document.body.classList.contains("has-docked-player")) document.body.classList.remove("has-docked-player");
       return;
     }
-    const old = shell.hidden ? undefined : surface.getBoundingClientRect();
     const mode = expanded ? "expanded" : "docked";
     const changed = shell.dataset.mode !== mode;
+    const old = changed && !shell.hidden ? surface.getBoundingClientRect() : undefined;
     if (changed) movement?.cancel();
-    shell.hidden = false;
-    shell.dataset.mode = mode;
-    const width = expanded ? rect!.width : Math.min(680, innerWidth - 32);
-    const x = expanded ? rect!.left : (innerWidth - width) / 2;
-    shell.style.width = `${width}px`;
-    const y = expanded ? rect!.top : viewportBottom - shell.offsetHeight - 16;
+    if (shell.hidden) shell.hidden = false;
+    if (changed) shell.dataset.mode = mode;
+    const width = expanded ? bounds.width : Math.min(680, bounds.viewportWidth - 32);
+    const widthChanged = lastWidth !== width;
+    if (widthChanged) { shell.style.width = `${width}px`; lastWidth = width; }
+    // A layout measurement is needed only for a resize or an actual mode change.
+    if (changed || widthChanged || !playerHeight) playerHeight = shell.offsetHeight;
+    const x = expanded ? bounds.left : (bounds.viewportWidth - width) / 2;
+    const y = expanded ? top : bounds.viewportBottom - playerHeight - 16;
     const finalTransform = `translate3d(${x}px, ${y}px, 0)`;
-    shell.style.transform = finalTransform;
-    document.body.classList.toggle("has-docked-player", !expanded);
+    if (lastX !== x || lastY !== y) { shell.style.transform = finalTransform; lastX = x; lastY = y; }
+    if (document.body.classList.contains("has-docked-player") !== !expanded) document.body.classList.toggle("has-docked-player", !expanded);
     if (old && changed && animate && !navigating && !reduced.matches) {
-      const next = surface.getBoundingClientRect();
       movement = surface.animate([
-        { transform: `translate(${old.left - next.left}px, ${old.top - next.top}px) scale(${old.width / next.width}, ${old.height / next.height})` },
+        { transform: `translate(${old.left - x}px, ${old.top - y}px) scale(${old.width / width}, ${old.height / playerHeight})` },
         { transform: "translate(0, 0) scale(1)" },
       ], { duration: 250, easing: "cubic-bezier(0.77, 0, 0.175, 1)" });
     }
   }
   function queuePosition() {
     if (frame) return;
-    frame = requestAnimationFrame(() => { frame = 0; position(); });
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      if (geometryDirty) { measureGeometry(); sync(); }
+      position();
+    });
   }
   function sync() {
     if (!episode) return;
     const duration = Number.isFinite(media.duration) ? media.duration : episode.duration;
     const time = media.currentTime;
-    range.max = String(duration);
+    if (range.max !== String(duration)) range.max = String(duration);
     range.value = String(time);
-    range.setAttribute("aria-valuetext", `${displayTime(time)} / ${displayTime(duration)}`);
+    const clock = displayTime(time);
+    if (elapsed.textContent !== clock) { elapsed.textContent = clock; range.setAttribute("aria-valuetext", `${clock} / ${displayTime(duration)}`); }
     fill.style.transform = `scaleX(${progressWithin(0, duration, time)})`;
-    shell.querySelector(".player-elapsed")!.textContent = displayTime(time);
-    shell.dataset.playing = String(!media.paused);
-    shell.dataset.muted = String(media.muted);
-    mute.setAttribute("aria-label", media.muted ? shell.dataset.unmuteLabel! : shell.dataset.muteLabel!);
-    mute.setAttribute("aria-pressed", String(media.muted));
-    toggle.setAttribute("aria-label", media.paused ? shell.dataset.playLabel! : shell.dataset.pauseLabel!);
+    if (shell.dataset.playing !== String(!media.paused)) {
+      shell.dataset.playing = String(!media.paused);
+      toggle.setAttribute("aria-label", media.paused ? shell.dataset.playLabel! : shell.dataset.pauseLabel!);
+    }
+    if (shell.dataset.muted !== String(media.muted)) {
+      shell.dataset.muted = String(media.muted);
+      mute.setAttribute("aria-label", media.muted ? shell.dataset.unmuteLabel! : shell.dataset.muteLabel!);
+      mute.setAttribute("aria-pressed", String(media.muted));
+    }
     const index = chapterIndexAt(episode.chapters, time);
     const chapter = episode.chapters[index];
     const caption = chapter?.title ?? shell.dataset.introLabel!;
@@ -120,21 +181,26 @@ export function initListeningPlayer() {
       if (!reduced.matches) chapterLabel.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 200, easing: ease });
     }
     if (pageEpisode?.id !== episode.id || pageEpisode.audio.url !== episode.audio.url) return;
-    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".coffee-chapters a[data-start]"));
-    const marker = document.querySelector<HTMLElement>(".coffee-chapter-marker");
-    links.forEach((link, i) => {
-      const current = i === index;
-      link.classList.toggle("is-current", current);
-      if (current) link.setAttribute("aria-current", "true");
-      else link.removeAttribute("aria-current");
-      const progress = link.querySelector<HTMLElement>(".coffee-chapter-progress");
-      if (progress) progress.style.transform = `scaleX(${current ? progressWithin(episode!.chapters[i].start, episode!.chapters[i + 1]?.start ?? duration, time) : 0})`;
-      if (current && marker) {
-        marker.style.height = `${link.offsetHeight}px`;
-        marker.style.transform = `translateY(${link.parentElement!.offsetTop}px)`;
+    if (index !== lastIndex) {
+      for (let i = 0; i < links.length; i++) {
+        const link = links[i];
+        const current = i === index;
+        link.element.classList.toggle("is-current", current);
+        if (current) link.element.setAttribute("aria-current", "true");
+        else link.element.removeAttribute("aria-current");
+        if (!current && link.progress) link.progress.style.transform = "scaleX(0)";
       }
-    });
-    if (marker) marker.dataset.visible = String(index >= 0);
+      lastIndex = index;
+      if (marker) marker.dataset.visible = String(index >= 0);
+    }
+    const active = links[index];
+    if (active?.progress) active.progress.style.transform = `scaleX(${progressWithin(episode.chapters[index].start, episode.chapters[index + 1]?.start ?? duration, time)})`;
+    if (active && marker) {
+      const height = `${active.height}px`;
+      const transform = `translateY(${active.top}px)`;
+      if (marker.style.height !== height) marker.style.height = height;
+      if (marker.style.transform !== transform) marker.style.transform = transform;
+    }
   }
   function seek(seconds: number) {
     if (!episode) return;
@@ -144,6 +210,7 @@ export function initListeningPlayer() {
   }
   async function play() {
     dismissed = false;
+    if (!errorLabel.hidden) playerHeight = 0;
     errorLabel.hidden = true;
     if (media.error) { pendingSeek ??= media.currentTime; media.load(); }
     try { await media.play(); started = true; position(); }
@@ -151,6 +218,8 @@ export function initListeningPlayer() {
       if (error instanceof DOMException && error.name === "AbortError") return;
       errorLabel.textContent = shell.dataset.errorLabel!;
       errorLabel.hidden = false;
+      playerHeight = 0;
+      queuePosition();
     }
     sync();
   }
@@ -164,16 +233,19 @@ export function initListeningPlayer() {
     sync();
   });
   for (const event of ["timeupdate", "play", "pause", "seeked", "ended", "volumechange"]) media.addEventListener(event, sync);
-  media.addEventListener("error", () => { if (episode) { errorLabel.textContent = shell.dataset.errorLabel!; errorLabel.hidden = false; } });
+  media.addEventListener("error", () => { if (episode) { errorLabel.textContent = shell.dataset.errorLabel!; errorLabel.hidden = false; playerHeight = 0; queuePosition(); } });
   document.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target : null;
-    if (target?.closest("[data-play-episode]") && pageEpisode) {
-      loadEpisode(pageEpisode); void play();
-    }
+    const start = target?.closest("[data-play-episode]");
     const chapter = target?.closest<HTMLAnchorElement>(".coffee-chapters a[data-start]");
-    if (chapter && pageEpisode) {
-      loadEpisode(pageEpisode); seek(Number(chapter.dataset.start)); void play();
-    }
+    if (!start && !chapter) return;
+    // A fast history navigation can expose the new DOM before page-load runs.
+    // Refresh from that DOM before responding to an immediate listener action.
+    if (slot !== document.querySelector("[data-player-slot]")) readPage();
+    if (!pageEpisode) return;
+    loadEpisode(pageEpisode);
+    if (chapter) seek(Number(chapter.dataset.start));
+    void play();
   });
   document.addEventListener("astro:before-preparation", (event) => {
     navigating = true;
@@ -187,12 +259,12 @@ export function initListeningPlayer() {
   document.addEventListener("astro:after-swap", () => { readPage(); });
   document.addEventListener("astro:page-load", () => { navigating = false; navigationSignal = undefined; readPage(); });
   addEventListener("scroll", queuePosition, { passive: true });
-  addEventListener("resize", () => { sync(); queuePosition(); });
-  window.visualViewport?.addEventListener("resize", queuePosition);
+  addEventListener("resize", invalidateGeometry);
+  window.visualViewport?.addEventListener("resize", invalidateGeometry);
   reduced.addEventListener("change", () => { movement?.cancel(); position(false); });
   document.addEventListener("animationend", (event) => {
-    if (event.target instanceof Element && event.target.matches(".coffee-player")) queuePosition();
+    if (event.target instanceof Element && event.target.matches(".coffee-player")) invalidateGeometry();
   });
-  void document.fonts.ready.then(() => { sync(); queuePosition(); });
+  void document.fonts.ready.then(invalidateGeometry);
   readPage();
 }

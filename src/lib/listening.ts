@@ -23,3 +23,8 @@ export function displayTime(seconds: number) {
   const whole = Math.max(0, Math.floor(Number.isFinite(seconds) ? seconds : 0));
   return `${String(Math.floor(whole / 60)).padStart(2, "0")}:${String(whole % 60).padStart(2, "0")}`;
 }
+
+export function canExpandPlayer(top: number, bottom: number, headerBottom: number, viewportBottom: number, expanded: boolean) {
+  // A small dead band prevents repeated mode changes at the scroll boundary.
+  return top >= headerBottom + (expanded ? 12 : 28) && bottom <= viewportBottom - (expanded ? 16 : 32);
+}
