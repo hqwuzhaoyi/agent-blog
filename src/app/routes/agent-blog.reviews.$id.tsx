@@ -33,7 +33,7 @@ export const Route = createFileRoute("/agent-blog/reviews/$id")({
 function ReviewPage() {
   const review = Route.useLoaderData();
   return (
-    <div className="public-detail"><Link to="/agent-blog/archive" search={{ type: "reviews", q: "", month: "" }} className="detail-back"><ArrowLeft size={14} aria-hidden="true" />{siteConfig.nav.latest}</Link><Article
+    <div className="public-detail"><Link to="/agent-blog/reviews" className="detail-back"><ArrowLeft size={14} aria-hidden="true" />{siteConfig.nav.latest}</Link><Article
       title={review.data.title}
       summary={review.data.summary}
       date={review.data.date.toISOString()}

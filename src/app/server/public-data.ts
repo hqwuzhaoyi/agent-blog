@@ -2,6 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { env } from "cloudflare:workers";
 import { publishedEntries, publishedEntry } from "../../lib/content-store";
 import { renderMarkdown } from "../../lib/markdown";
+export const getPublicReviews = createServerFn({ method: "GET" }).handler(
+  () => publishedEntries<"reviews">(env.CONTENT, "review"),
+);
 export const getPublicContent = createServerFn({ method: "GET" }).handler(
   async () => {
     const [reviews, episodes] = await Promise.all([

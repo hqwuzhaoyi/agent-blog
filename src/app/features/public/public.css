@@ -280,3 +280,5 @@
 .public-site .hero-listen .episode-inline-player{border:none;background:none;padding:0;margin:0}
 .public-site .episode-card-summary,.public-site .home-reviews .entry-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .public-site .mobile-nav-subscribe{margin-top:12px;align-self:flex-start;font-size:13px}
+
+.public-site .worklog-page{max-width:920px;margin:auto}

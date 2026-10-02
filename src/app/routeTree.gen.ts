@@ -16,6 +16,7 @@ import { Route as AgentBlogArchiveRouteImport } from './routes/agent-blog.archiv
 import { Route as AgentBlogAdminRouteImport } from './routes/agent-blog_.admin'
 import { Route as AgentBlogEpisodesIndexRouteImport } from './routes/agent-blog.episodes.index'
 import { Route as AgentBlogEpisodesIdRouteImport } from './routes/agent-blog.episodes.$id'
+import { Route as AgentBlogReviewsIndexRouteImport } from './routes/agent-blog.reviews.index'
 import { Route as AgentBlogReviewsIdRouteImport } from './routes/agent-blog.reviews.$id'
 import { Route as AgentBlogAdminIndexRouteImport } from './routes/agent-blog_.admin.index'
 import { Route as AgentBlogAdminEpisodesRouteImport } from './routes/agent-blog_.admin.episodes'
@@ -56,6 +57,11 @@ const AgentBlogEpisodesIndexRoute = AgentBlogEpisodesIndexRouteImport.update({
 const AgentBlogEpisodesIdRoute = AgentBlogEpisodesIdRouteImport.update({
   id: '/episodes/$id',
   path: '/episodes/$id',
+  getParentRoute: () => AgentBlogRoute,
+} as any)
+const AgentBlogReviewsIndexRoute = AgentBlogReviewsIndexRouteImport.update({
+  id: '/reviews/',
+  path: '/reviews/',
   getParentRoute: () => AgentBlogRoute,
 } as any)
 const AgentBlogReviewsIdRoute = AgentBlogReviewsIdRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/agent-blog/admin/published': typeof AgentBlogAdminPublishedRoute
   '/agent-blog/admin/settings': typeof AgentBlogAdminSettingsRoute
   '/agent-blog/episodes/': typeof AgentBlogEpisodesIndexRoute
+  '/agent-blog/reviews/': typeof AgentBlogReviewsIndexRoute
   '/agent-blog/admin/': typeof AgentBlogAdminIndexRoute
   '/agent-blog/admin/reviews/$id': typeof AgentBlogAdminReviewsIdRoute
 }
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/agent-blog/admin/published': typeof AgentBlogAdminPublishedRoute
   '/agent-blog/admin/settings': typeof AgentBlogAdminSettingsRoute
   '/agent-blog/episodes': typeof AgentBlogEpisodesIndexRoute
+  '/agent-blog/reviews': typeof AgentBlogReviewsIndexRoute
   '/agent-blog/admin': typeof AgentBlogAdminIndexRoute
   '/agent-blog/admin/reviews/$id': typeof AgentBlogAdminReviewsIdRoute
 }
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/agent-blog_/admin/published': typeof AgentBlogAdminPublishedRoute
   '/agent-blog_/admin/settings': typeof AgentBlogAdminSettingsRoute
   '/agent-blog/episodes/': typeof AgentBlogEpisodesIndexRoute
+  '/agent-blog/reviews/': typeof AgentBlogReviewsIndexRoute
   '/agent-blog_/admin/': typeof AgentBlogAdminIndexRoute
   '/agent-blog_/admin/reviews/$id': typeof AgentBlogAdminReviewsIdRoute
 }
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/agent-blog/admin/published'
     | '/agent-blog/admin/settings'
     | '/agent-blog/episodes/'
+    | '/agent-blog/reviews/'
     | '/agent-blog/admin/'
     | '/agent-blog/admin/reviews/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/agent-blog/admin/published'
     | '/agent-blog/admin/settings'
     | '/agent-blog/episodes'
+    | '/agent-blog/reviews'
     | '/agent-blog/admin'
     | '/agent-blog/admin/reviews/$id'
   id:
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/agent-blog_/admin/published'
     | '/agent-blog_/admin/settings'
     | '/agent-blog/episodes/'
+    | '/agent-blog/reviews/'
     | '/agent-blog_/admin/'
     | '/agent-blog_/admin/reviews/$id'
   fileRoutesById: FileRoutesById
@@ -236,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentBlogEpisodesIdRouteImport
       parentRoute: typeof AgentBlogRoute
     }
+    '/agent-blog/reviews/': {
+      id: '/agent-blog/reviews/'
+      path: '/reviews'
+      fullPath: '/agent-blog/reviews/'
+      preLoaderRoute: typeof AgentBlogReviewsIndexRouteImport
+      parentRoute: typeof AgentBlogRoute
+    }
     '/agent-blog/reviews/$id': {
       id: '/agent-blog/reviews/$id'
       path: '/reviews/$id'
@@ -287,6 +306,7 @@ interface AgentBlogRouteChildren {
   AgentBlogEpisodesIdRoute: typeof AgentBlogEpisodesIdRoute
   AgentBlogReviewsIdRoute: typeof AgentBlogReviewsIdRoute
   AgentBlogEpisodesIndexRoute: typeof AgentBlogEpisodesIndexRoute
+  AgentBlogReviewsIndexRoute: typeof AgentBlogReviewsIndexRoute
 }
 
 const AgentBlogRouteChildren: AgentBlogRouteChildren = {
@@ -295,6 +315,7 @@ const AgentBlogRouteChildren: AgentBlogRouteChildren = {
   AgentBlogEpisodesIdRoute: AgentBlogEpisodesIdRoute,
   AgentBlogReviewsIdRoute: AgentBlogReviewsIdRoute,
   AgentBlogEpisodesIndexRoute: AgentBlogEpisodesIndexRoute,
+  AgentBlogReviewsIndexRoute: AgentBlogReviewsIndexRoute,
 }
 
 const AgentBlogRouteWithChildren = AgentBlogRoute._addFileChildren(
