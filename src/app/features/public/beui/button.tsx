@@ -11,12 +11,12 @@ import {
   forwardRef,
   type PointerEvent,
   type ReactNode,
-  type CSSProperties,
   useCallback,
   useRef,
   useState,
 } from "react";
-import { EASE_OUT } from "./lib/ease";
+import { EASE_OUT, SPRING_PRESS } from "./lib/ease";
+import { useHoverCapable } from "./lib/use-hover-capable";
 import { cn } from "./lib/utils";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "outline";
@@ -72,16 +72,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       style,
       children,
       onPointerDown,
+      onKeyDown,
+      disabled,
       ...rest
     },
     ref,
   ) {
     const reduce = useReducedMotion();
+    const canHover = useHoverCapable();
+    const [keyboard, setKeyboard] = useState(false);
     const [ripples, setRipples] = useState<Ripple[]>([]);
     const nextId = useRef(0);
 
     const handlePointerDown = useCallback(
       (event: PointerEvent<HTMLButtonElement>) => {
+        setKeyboard(false);
         if (ripple && !reduce) {
           const rect = event.currentTarget.getBoundingClientRect();
           const size = Math.max(rect.width, rect.height) * 2;
@@ -106,8 +111,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type="button"
         data-beui-button
-        style={{ "--beui-press-scale": pressScale, ...style } as CSSProperties}
+        style={style}
+        disabled={disabled}
+        whileTap={reduce || keyboard || disabled ? undefined : { scale: pressScale }}
+        whileHover={reduce || keyboard || disabled || !canHover ? undefined : { scale: 1.015 }}
+        transition={SPRING_PRESS}
         onPointerDown={handlePointerDown}
+        onKeyDown={(event) => { setKeyboard(true); onKeyDown?.(event); }}
         className={cn(
           "inline-flex items-center justify-center font-medium select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
           "transition-colors",
@@ -161,16 +171,26 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
       className,
       style,
       children,
+      onPointerDown,
+      onKeyDown,
       ...rest
     },
     ref,
   ) {
+    const reduce = useReducedMotion();
+    const canHover = useHoverCapable();
+    const [keyboard, setKeyboard] = useState(false);
 
     return (
       <motion.a
         ref={ref}
         data-beui-button
-        style={{ "--beui-press-scale": pressScale, ...style } as CSSProperties}
+        style={style}
+        whileTap={reduce || keyboard ? undefined : { scale: pressScale }}
+        whileHover={reduce || keyboard || !canHover ? undefined : { scale: 1.015 }}
+        transition={SPRING_PRESS}
+        onPointerDown={(event) => { setKeyboard(false); onPointerDown?.(event); }}
+        onKeyDown={(event) => { setKeyboard(true); onKeyDown?.(event); }}
         className={cn(
           "inline-flex items-center justify-center font-medium select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
           "transition-colors",

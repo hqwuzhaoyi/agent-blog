@@ -282,8 +282,7 @@
    EASE_OUT matches beUI/lib/ease.ts. No scroll or progress interpolation. */
 .public-site{--ease-out:cubic-bezier(0.16,1,0.3,1)}
 .public-site :is(a,button,input,select):focus-visible{outline:2px solid var(--primary);outline-offset:4px}
-.public-site [data-beui-button],.public-site .header-search,.public-site [data-sheet-close]{transition:transform 140ms var(--ease-out)}
-.public-site [data-beui-button]:active:not(:disabled):not(:focus-visible){transform:scale(var(--beui-press-scale,.97))}
+.public-site .header-search,.public-site [data-sheet-close]{transition:transform 140ms var(--ease-out)}
 .public-site :is(.header-search,[data-sheet-close]):active:not(:focus-visible){transform:scale(.97)}
 .public-site :is(.section-link,.read-link,.detail-back,.subscription-options a) svg{transition:transform 160ms var(--ease-out)}
 .public-site :is(.card-play,.entry-play)[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--primary-foreground)}
@@ -312,5 +311,7 @@
 .public-site .player-control-group input[type=range]{min-height:44px}
 }
 @media(prefers-reduced-motion:reduce){
-.public-site [data-beui-button],.public-site .header-search,.public-site [data-sheet-close],.public-site :is(.section-link,.read-link,.detail-back,.subscription-options a) svg{transition:none;transform:none!important}
+/* Also handles preference changes while a Motion gesture is active. */
+.public-site [data-beui-button]{transform:none!important}
+.public-site .header-search,.public-site [data-sheet-close],.public-site :is(.section-link,.read-link,.detail-back,.subscription-options a) svg{transition:none;transform:none!important}
 }

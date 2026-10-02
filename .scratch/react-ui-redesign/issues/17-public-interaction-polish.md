@@ -25,3 +25,6 @@ Execution: completed
 - 扩展现有浏览器回归：章节状态与不跳页、单音频跨页连续、暂停／续播保留时刻、关键词不增加 history、月份返回、重置焦点、手机抽屉拖动和 Escape 焦点恢复、退出内容保持、减少动效。
 - 1440px 与 390px 截图检查，无横向溢出；实际鼠标按压测得 scale(0.97)，播放状态同步；手机点击区域 44px。
 - 真机触感仍需用户设备体验；自动化覆盖桌面浏览器的手机视口和减少动效。
+
+
+2026-10-03：按用户反馈将 Button / ButtonLink 恢复为 BeUI 的 Motion whileTap / whileHover + SPRING_PRESS，按压 0.97、精细指针悬停 1.015；移除外部 CSS 对按钮 transform 的驱动。Tabs / BottomSheet 持续采用已有 BeUI + Motion 实现。上表记录前一轮方案，按钮实现以本条修正为准。
