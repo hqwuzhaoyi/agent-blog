@@ -6,71 +6,24 @@ const { episode, Content, labels, archiveUrl, feedUrl } = Astro.props;
 <article class="coffee-article">
   <header class="coffee-article-header">
     <a class="coffee-back" href={archiveUrl}>← {labels.back}</a>
-    <div class="coffee-meta"><span>{labels.title}</span><time datetime={episode.dateTime}>{episode.displayDate}</time><span>{episode.displayDuration}</span>{episode.draft && <span>{labels.draft}</span>}</div>
-    <h1>{episode.title}</h1>
+    <div class="coffee-meta"><span>{labels.title}</span><time datetime={episode.dateTime} transition:name={`episode-date-${episode.id}`} transition:animate="initial">{episode.displayDate}</time><span>{episode.displayDuration}</span>{episode.draft && <span>{labels.draft}</span>}</div>
+    <h1 transition:name={`episode-title-${episode.id}`} transition:animate="initial">{episode.title}</h1>
     <p class="coffee-description">{episode.summary}</p>
   </header>
   <section class="coffee-player" aria-label={episode.title}>
-    <audio id="episode-audio" controls preload="metadata" src={episode.audio.url}>
-      <a href={episode.audio.url}>{labels.download}</a>
-    </audio>
+    <div class="coffee-player-slot" data-player-slot={episode.id}>
+      <button type="button" class="player-start" data-play-episode>{labels.start} <span aria-hidden="true">▶</span></button>
+      <noscript><audio controls preload="metadata" src={episode.audio.url}><a href={episode.audio.url}>{labels.download}</a></audio><style>.player-start{display:none}.coffee-player-slot{min-height:0}</style></noscript>
+    </div>
     <div class="coffee-player-links"><a href={feedUrl}>{labels.subscribe} <span aria-hidden="true">↗</span></a></div>
     <p class="coffee-disclosure">{labels.disclosure}</p>
   </section>
   <section class="coffee-chapters" aria-labelledby="chapters-heading">
     <h2 id="chapters-heading">{labels.chapters}</h2>
-    <ol>{episode.chapters.map((chapter) => (
+    <ol><li class="coffee-chapter-marker" aria-hidden="true"></li>{episode.chapters.map((chapter) => (
       <li id={chapter.id}><a href={`#${chapter.id}`} data-start={chapter.start}><span class="coffee-chapter-time">{chapter.timestamp}</span><span class="coffee-chapter-title">{chapter.title}</span><span class="coffee-chapter-indicator" aria-hidden="true">▶</span><span class="coffee-chapter-progress" aria-hidden="true"></span></a></li>
     ))}</ol>
   </section>
   <div class="coffee-notes"><Content /></div>
 </article>
-<script>
-  const audio = document.querySelector<HTMLAudioElement>("#episode-audio");
-  const chapters = Array.from(document.querySelectorAll<HTMLAnchorElement>(".coffee-chapters a[data-start]"));
-  let pendingSeek: number | undefined;
-
-  function updateChapter() {
-    if (!audio) return;
-    const time = audio.currentTime;
-    chapters.forEach((link, index) => {
-      const start = Number(link.dataset.start);
-      const end = Number(chapters[index + 1]?.dataset.start ?? audio.duration);
-      const current = time >= start && time < end;
-      link.classList.toggle("is-current", current);
-      if (current) link.setAttribute("aria-current", "true");
-      else link.removeAttribute("aria-current");
-      const progress = link.querySelector<HTMLElement>(".coffee-chapter-progress");
-      if (progress) {
-        const fraction = current && end > start ? Math.min(1, (time - start) / (end - start)) : 0;
-        progress.style.transform = `scaleX(${fraction})`;
-      }
-    });
-  }
-  function seek(seconds: number) {
-    if (!audio) return;
-    if (audio.readyState > 0) {
-      audio.currentTime = seconds;
-      updateChapter();
-    } else pendingSeek = seconds;
-  }
-  audio?.addEventListener("loadedmetadata", () => {
-    if (pendingSeek !== undefined) {
-      audio.currentTime = pendingSeek;
-      pendingSeek = undefined;
-    }
-    updateChapter();
-  });
-  audio?.addEventListener("timeupdate", updateChapter);
-  audio?.addEventListener("seeked", updateChapter);
-  audio?.addEventListener("ended", updateChapter);
-  chapters.forEach((link) => {
-    link.addEventListener("click", () => {
-      seek(Number(link.dataset.start));
-      audio?.play().catch(() => {});
-    });
-  });
-  const chapter = document.getElementById(window.location.hash.slice(1))?.querySelector<HTMLAnchorElement>("a[data-start]");
-  if (chapter) seek(Number(chapter.dataset.start));
-  updateChapter();
-</script>
+<script is:inline type="application/json" id="listening-episode" set:html={JSON.stringify({ id: episode.id, title: episode.title, url: episode.url, audio: episode.audio, duration: episode.duration, chapters: episode.chapters }).replace(/</g, "\\u003c")} />

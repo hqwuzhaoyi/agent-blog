@@ -1,4 +1,6 @@
 ---
+import { ClientRouter, fade } from "astro:transitions";
+import ListeningPlayer from "@/components/ListeningPlayer.astro";
 import { activeTheme, siteConfig } from "@/site.config";
 import { sitePath } from "@/lib/paths";
 import type { FooterProps, HeaderProps } from "@/themes/shared/contracts";
@@ -22,15 +24,16 @@ const pageTitle = title === siteConfig.title ? title : `${title} — ${siteConfi
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ThemeHeader = activeTheme.slots.Header;
 const ThemeFooter = activeTheme.slots.Footer;
+const currentPath = Astro.url.pathname;
 const headerProps: HeaderProps = {
   title: siteConfig.title,
   eyebrow: siteConfig.eyebrow,
   homeUrl: sitePath(),
   navigationLabel: siteConfig.nav.label,
   navigation: [
-    { label: siteConfig.nav.latest, url: sitePath() },
-    { label: siteConfig.nav.episodes, url: sitePath("episodes/") },
-    { label: siteConfig.nav.archive, url: sitePath("archive/") },
+    { label: siteConfig.nav.latest, url: sitePath(), current: currentPath === sitePath() || currentPath.startsWith(sitePath("reviews/")) },
+    { label: siteConfig.nav.episodes, url: sitePath("episodes/"), current: currentPath.startsWith(sitePath("episodes/")) },
+    { label: siteConfig.nav.archive, url: sitePath("archive/"), current: currentPath.startsWith(sitePath("archive/")) },
     { label: siteConfig.nav.rss, url: sitePath("rss.xml") },
   ],
 };
@@ -43,6 +46,7 @@ const footerProps: FooterProps = {
 <html lang={siteConfig.language} data-theme={siteConfig.theme}>
   <head>
     <meta charset="UTF-8" />
+    <ClientRouter fallback="swap" />
     <meta name="viewport" content="width=device-width" />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="generator" content={Astro.generator} />
@@ -62,9 +66,16 @@ const footerProps: FooterProps = {
     <div class="page-shell">
       <ThemeHeader {...headerProps} />
       <main>
-        <slot />
+        <div class="page-content" transition:name="page-content" transition:animate={fade({ duration: "0.2s" })}><slot /></div>
       </main>
       <ThemeFooter {...footerProps} />
     </div>
+    <ListeningPlayer />
+    <script>
+      import { initListeningPlayer } from "@/scripts/listening-player";
+      import { initSiteMotion } from "@/scripts/site-motion";
+      initListeningPlayer();
+      initSiteMotion();
+    </script>
   </body>
 </html>

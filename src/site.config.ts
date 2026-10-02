@@ -17,6 +17,10 @@ const translations = {
       disclosure: "AI-narrated, independently written. Sources and commentary are identified below.",
       footer: "Morning Coffee · A few minutes of new ideas.",
     },
+    player: {
+      label: "Podcast player", play: "Play", pause: "Pause", rewind: "Back ten seconds", forward: "Forward ten seconds",
+      mute: "Mute", unmute: "Unmute", close: "Close player", seek: "Playback position", intro: "Intro", start: "Listen to this episode", error: "Audio could not play. Please try again.",
+    },
     footer: {
       disclaimer: "Reported outcomes, reviewed by a human before publication.",
     },
@@ -62,6 +66,10 @@ const translations = {
       empty: "第一杯早咖啡正在准备。", draft: "预览草稿", download: "下载音频",
       disclosure: "AI 配音，独立编稿。来源与编辑观点见下文。",
       footer: "早咖啡 · 几分钟，听见新想法。",
+    },
+    player: {
+      label: "播客播放器", play: "播放", pause: "暂停", rewind: "后退十秒", forward: "前进十秒",
+      mute: "静音", unmute: "取消静音", close: "关闭播放器", seek: "播放进度", intro: "片头", start: "收听本期", error: "音频暂时无法播放，请重试。",
     },
     footer: {
       disclaimer: "内容由 Agent 总结，并在发布前经过人工审核。",

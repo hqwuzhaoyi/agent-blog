@@ -12,9 +12,9 @@ const { episodes, labels, feedUrl } = Astro.props;
 <section class="coffee-list" aria-label={labels.archive}>
   {episodes.length === 0 ? <p class="coffee-empty">{labels.empty}</p> : episodes.map((episode, index) => (
     <article style={`--delay: ${Math.min(index, 3) * 40}ms`} class:list={["coffee-entry", { "coffee-entry--latest": index === 0 }]}>
-      <div class="coffee-meta"><time datetime={episode.dateTime}>{episode.displayDate}</time><span>{episode.displayDuration}</span>{episode.draft && <span>{labels.draft}</span>}</div>
+      <div class="coffee-meta"><time datetime={episode.dateTime} transition:name={`episode-date-${episode.id}`} transition:animate="initial">{episode.displayDate}</time><span>{episode.displayDuration}</span>{episode.draft && <span>{labels.draft}</span>}</div>
       {index === 0 && <p class="coffee-eyebrow">{labels.latest}</p>}
-      <h2><a href={episode.url}>{episode.title}</a></h2>
+      <h2 transition:name={`episode-title-${episode.id}`} transition:animate="initial"><a href={episode.url}>{episode.title}</a></h2>
       <p>{episode.summary}</p>
       <a class="coffee-listen" href={episode.url}>{labels.listen} <span aria-hidden="true">→</span></a>
     </article>

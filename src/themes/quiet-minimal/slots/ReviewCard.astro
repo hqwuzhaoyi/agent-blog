@@ -11,9 +11,9 @@ const { review, index = 0, labels } = Astro.props;
 ---
 
 <article class="minimal-card" style={`--delay: ${Math.min(index, 3) * 40}ms`}>
-  <h2><a href={review.url} aria-label={`${labels.read} ${review.title}`}>{review.title}</a></h2>
+  <h2 transition:name={`review-title-${review.id}`} transition:animate="initial"><a href={review.url} aria-label={`${labels.read} ${review.title}`}>{review.title}</a></h2>
   <div class="minimal-card__meta">
-    <time datetime={review.dateTime}>{review.displayDate}</time>
+    <time datetime={review.dateTime} transition:name={`review-date-${review.id}`} transition:animate="initial">{review.displayDate}</time>
   </div>
   <p>{review.summary}</p>
   <a class="minimal-card__open" href={review.url}>{labels.open} →</a>

@@ -16,8 +16,8 @@ const { reviews, labels } = Astro.props;
   {reviews.map((review, index) => (
     <a class="archive-row" href={review.url} style={`--delay: ${index * 45}ms`}>
       <span class="archive-row__number">{String(index + 1).padStart(2, "0")}</span>
-      <time datetime={review.dateTime}>{review.displayDate}</time>
-      <strong>{review.title}</strong>
+      <time datetime={review.dateTime} transition:name={`review-date-${review.id}`} transition:animate="initial">{review.displayDate}</time>
+      <strong transition:name={`review-title-${review.id}`} transition:animate="initial">{review.title}</strong>
       <span>{review.highlights} {labels.signals} ↗</span>
     </a>
   ))}

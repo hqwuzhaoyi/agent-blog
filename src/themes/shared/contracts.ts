@@ -15,6 +15,7 @@ export interface ThemeComponent<Props> {
 export interface NavigationItem {
   label: string;
   url: string;
+  current?: boolean;
 }
 
 export interface ReviewPresentation {
@@ -113,7 +114,7 @@ export interface EpisodeListProps {
 export interface EpisodeArticleProps {
   episode: EpisodePresentation;
   Content: AstroComponentFactory;
-  labels: { title: string; chapters: string; notes: string; subscribe: string; back: string; draft: string; download: string; disclosure: string };
+  labels: { title: string; chapters: string; notes: string; subscribe: string; back: string; draft: string; download: string; disclosure: string; start: string };
   archiveUrl: string;
   feedUrl: string;
 }

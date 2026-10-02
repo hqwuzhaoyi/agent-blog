@@ -12,5 +12,5 @@ const { Content } = await render(episode);
 const EpisodeArticle = activeTheme.slots.EpisodeArticle;
 ---
 <BaseLayout title={episode.data.title} description={episode.data.summary} footerText={siteConfig.episodes.footer} pageClass="episode-page" noindex={episode.data.draft}>
-  <EpisodeArticle episode={presentEpisode(episode, siteConfig.locale)} Content={Content} labels={siteConfig.episodes} archiveUrl={sitePath("episodes/")} feedUrl={sitePath("episodes/rss.xml")} />
+  <EpisodeArticle episode={presentEpisode(episode, siteConfig.locale)} Content={Content} labels={{ ...siteConfig.episodes, start: siteConfig.player.start }} archiveUrl={sitePath("episodes/")} feedUrl={sitePath("episodes/rss.xml")} />
 </BaseLayout>

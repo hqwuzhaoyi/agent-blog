@@ -6,7 +6,7 @@ interface Props extends HeaderProps {}
 const { title, eyebrow, homeUrl, navigationLabel, navigation } = Astro.props;
 ---
 
-<header class="site-header">
+<header class="site-header" transition:name="site-header" transition:animate="none">
   <a class="wordmark" href={homeUrl} aria-label={title}>
     <span class="wordmark__signal" aria-hidden="true"></span>
     <span>
@@ -14,7 +14,8 @@ const { title, eyebrow, homeUrl, navigationLabel, navigation } = Astro.props;
       <small>{eyebrow}</small>
     </span>
   </a>
-  <nav aria-label={navigationLabel}>
-    {navigation.map((item) => <a href={item.url}>{item.label}</a>)}
+  <nav class="site-nav" aria-label={navigationLabel}>
+    <span class="nav-indicator" aria-hidden="true" transition:persist="nav-indicator"></span>
+    {navigation.map((item) => <a href={item.url} aria-current={item.current ? "page" : undefined} data-astro-reload={item.url.endsWith("rss.xml") || undefined}>{item.label}</a>)}
   </nav>
 </header>
