@@ -1,3 +1,4 @@
+import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import {
   createContext,
   useContext,
@@ -228,8 +229,8 @@ export function PlayerControls() {
         >
           −10
         </Button>
-        <Button onClick={toggle}>
-          {state.playing ? siteConfig.player.pause : siteConfig.player.play}
+        <Button onClick={toggle} size="lg" ripple>
+          {state.playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} fill="currentColor" aria-hidden="true" />}{state.playing ? siteConfig.player.pause : siteConfig.player.play}
         </Button>
         <Button
           variant="ghost"
@@ -255,7 +256,7 @@ export function PlayerControls() {
         <span>{timestamp(state.time)}</span>
         <span>{timestamp(state.duration)}</span>
       </div>
-      <Button variant="ghost" onClick={() => setVolume(state.volume ? 0 : 1)}>
+      <Button variant="ghost" onClick={() => setVolume(state.volume ? 0 : 1)}>{state.volume ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
         {state.volume ? siteConfig.player.mute : siteConfig.player.unmute}
       </Button>
       <label className="flex items-center gap-3 text-sm">
@@ -319,7 +320,7 @@ export function EpisodePlayer({ episode }: { episode: Episode }) {
       {active ? (
         <PlayerControls />
       ) : (
-        <Button onClick={() => play(episode)}>
+        <Button onClick={() => play(episode)} size="lg" ripple><Play size={18} fill="currentColor" aria-hidden="true" />
           {siteConfig.language === "zh-CN" ? "播放本期" : "Play episode"} ·{" "}
           {timestamp(episode.data.duration)}
         </Button>
@@ -352,8 +353,8 @@ export function PersistentPlayer() {
               {siteConfig.player.expand}
             </span>
           </button>
-          <Button onClick={toggle}>
-            {state.playing ? siteConfig.player.pause : siteConfig.player.play}
+          <Button onClick={toggle} size="lg" ripple>
+            {state.playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} fill="currentColor" aria-hidden="true" />}{state.playing ? siteConfig.player.pause : siteConfig.player.play}
           </Button>
           <Button
             variant="ghost"
@@ -368,6 +369,7 @@ export function PersistentPlayer() {
         open={open}
         onOpenChange={setOpen}
         title={state.episode.data.title}
+        snapPoints={[0.72, 0.92]}
       >
         <PlayerControls />
         <h3 className="mt-6 font-semibold">{siteConfig.episodes.chapters}</h3>

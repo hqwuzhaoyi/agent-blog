@@ -1,3 +1,4 @@
+import { Play } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { PublishedEntry } from "../../../../cloudflare/content-models";
 import { usePlayerActions, timestamp } from "./player/provider";
@@ -35,7 +36,7 @@ export function EpisodeRow({
         onClick={() => play(episode)}
         aria-label={`${siteConfig.player.play} ${episode.data.title}`}
       >
-        {siteConfig.player.play}
+        <Play size={15} fill="currentColor" aria-hidden="true" />{siteConfig.player.play}
       </Button>
     </li>
   );

@@ -1,9 +1,21 @@
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Badge } from "./ui/badge";
 import { useEffect, useState, useRef } from "react";
 import { useBlocker } from "@tanstack/react-router";
 import { Article } from "../../components/Article";
 import { api, AdminError } from "./api";
 import { Input } from "./ui/input";
-const fieldLabels: Record<string, string> = { title: "标题", summary: "摘要", source: "来源", date: "日期", platforms: "平台", highlights: "重要进展数量", language: "语言" };
+const fieldLabels: Record<string, string> = {
+  title: "标题",
+  summary: "摘要",
+  source: "来源",
+  date: "日期",
+  platforms: "平台",
+  highlights: "重要进展数量",
+  language: "语言",
+};
 
 export function ReviewDetail({ id }: { id: string }) {
   const [review, setReview] = useState<any>(null),
@@ -73,7 +85,9 @@ export function ReviewDetail({ id }: { id: string }) {
   if (!review)
     return (
       <>
-        <p role="alert">{error}</p>
+        <p role="alert" className="text-destructive mb-4">
+          {error}
+        </p>
         <p>读取完整预览…</p>
       </>
     );
@@ -92,22 +106,29 @@ export function ReviewDetail({ id }: { id: string }) {
         >
           <h2 id="unsaved-title">有未保存的修改</h2>
           <p>离开会丢弃当前编辑。</p>
-          <button autoFocus onClick={() => blocker.reset()}>
+          <Button autoFocus onClick={() => blocker.reset()}>
             继续编辑
-          </button>
-          <button onClick={() => blocker.proceed()}>丢弃修改并离开</button>
+          </Button>
+          <Button onClick={() => blocker.proceed()}>丢弃修改并离开</Button>
         </dialog>
       )}
-      <h1>审核工作日志</h1>
-      <p role="alert">{error}</p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight">审核工作日志</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          完整预览与当前保存版本的发布确认
+        </p>
+      </div>
+      <p role="alert" className="text-destructive mb-4">
+        {error}
+      </p>
       {stale && (
-        <button
+        <Button
           onClick={() => {
             if (!dirty || window.confirm("刷新将丢弃本地修改，继续？")) load();
           }}
         >
           刷新并重新审核
-        </button>
+        </Button>
       )}
       {success && (
         <p role="status">
@@ -116,20 +137,22 @@ export function ReviewDetail({ id }: { id: string }) {
         </p>
       )}
       <div className="admin-tabs" role="tablist" aria-label="审核内容">
-        <button
+        <Button
           role="tab"
+          variant={tab === "preview" ? "default" : "outline"}
           aria-selected={tab === "preview"}
           onClick={() => setTab("preview")}
         >
           预览
-        </button>
-        <button
+        </Button>
+        <Button
           role="tab"
+          variant={tab === "info" ? "default" : "outline"}
           aria-selected={tab === "info"}
           onClick={() => setTab("info")}
         >
           信息与修订
-        </button>
+        </Button>
       </div>
       <div className="review-grid">
         <section
@@ -170,7 +193,8 @@ export function ReviewDetail({ id }: { id: string }) {
               ))}
               <label>
                 正文 Markdown
-                <textarea
+                <Textarea
+                  className="font-mono text-sm"
                   rows={20}
                   value={draft.body}
                   onChange={(e) => setDraft({ ...draft, body: e.target.value })}
@@ -182,30 +206,46 @@ export function ReviewDetail({ id }: { id: string }) {
         <aside
           className={"review-info " + (tab === "info" ? "mobile-active" : "")}
         >
-          <div className="approval-card">
-            <h2>确认会公开的内容</h2>
-            <p>{review.data.title}</p>
-            <p>{review.data.date}</p>
-            <a href={review.url}>{review.url}</a>
-            <p className="revision">当前版本 {review.revision}</p>
-            <p>
-              {dirty
-                ? "有未保存修改；保存后重新查看完整预览"
-                : stale
-                  ? "草稿已更新，请重新查看"
-                  : review.publishedRevision === review.revision
-                    ? "此版本已发布"
-                    : "当前保存草稿，等待人工确认"}
-            </p>
-            <button
-              onClick={() => {
-                setEditing(!editing);
-                setTab("preview");
-              }}
-            >
-              {editing ? "结束编辑" : "编辑草稿"}
-            </button>
-          </div>
+          <Card className="gap-3">
+            <CardHeader>
+              <CardTitle>发布确认</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="font-semibold text-foreground">确认会公开的内容</p>
+              <p>{review.data.title}</p>
+              <p>{review.data.date}</p>
+              <a href={review.url}>{review.url}</a>
+              <Badge variant="outline">
+                {dirty
+                  ? "未保存"
+                  : stale
+                    ? "版本已变化"
+                    : review.publishedRevision === review.revision
+                      ? "已发布"
+                      : "待确认"}
+              </Badge>
+              <p className="revision">当前版本 {review.revision}</p>
+              <p>
+                {dirty
+                  ? "有未保存修改；保存后重新查看完整预览"
+                  : stale
+                    ? "草稿已更新，请重新查看"
+                    : review.publishedRevision === review.revision
+                      ? "此版本已发布"
+                      : "当前保存草稿，等待人工确认"}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setEditing(!editing);
+                  setTab("preview");
+                }}
+              >
+                {editing ? "结束编辑" : "编辑草稿"}
+              </Button>
+            </CardContent>
+          </Card>
           <h2>素材来源</h2>
           <p>
             {review.data.source} · {review.data.platforms.join(" + ")}
@@ -255,13 +295,14 @@ export function ReviewDetail({ id }: { id: string }) {
         </aside>
       </div>
       <div className="review-actions">
-        <button
+        <Button
+          variant="outline"
           disabled={!dirty || pending || stale}
           onClick={() => mutate("save")}
         >
           {pending ? "请求中…" : "保存草稿"}
-        </button>
-        <button
+        </Button>
+        <Button
           disabled={
             pending ||
             dirty ||
@@ -273,7 +314,7 @@ export function ReviewDetail({ id }: { id: string }) {
           onClick={() => mutate("publish")}
         >
           {pending ? "请求中…" : "我已检查完整内容，确认并发布"}
-        </button>
+        </Button>
       </div>
     </>
   );

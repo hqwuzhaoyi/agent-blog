@@ -1,46 +1,28 @@
-// Adapted from satnaing/shadcn-admin components/layout/header, main and app-sidebar (MIT).
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { ArrowUpRight, NotebookPen, Loader2, LogIn } from "lucide-react";
 import { api, AdminError } from "./api";
+import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "./ui/card";
+import { SidebarProvider, SidebarInset } from "./ui/sidebar";
+import { AppSidebar } from "./layout/app-sidebar";
+import { Header } from "./layout/header";
+import { Main } from "./layout/main";
 import "./admin.css";
 export function AdminLayout() {
   const navigate = useNavigate();
-  const menu = useRef<HTMLElement>(null),
-    trigger = useRef<HTMLButtonElement>(null);
-
   const [session, setSession] = useState<boolean | null>(null),
     [error, setError] = useState(""),
     [key, setKey] = useState(""),
-    [pending, setPending] = useState(false),
-    [open, setOpen] = useState(false),
-    [offset, setOffset] = useState(0);
-  useEffect(() => {
-    if (!open) return;
-    const links = Array.from(
-      menu.current?.querySelectorAll<HTMLElement>("a,button") || [],
-    );
-    links[0]?.focus();
-    const key = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        trigger.current?.focus();
-      }
-      if (e.key === "Tab") {
-        const first = links[0],
-          last = links[links.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last?.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first?.focus();
-        }
-      }
-    };
-    document.addEventListener("keydown", key);
-    return () => document.removeEventListener("keydown", key);
-  }, [open]);
+    [pending, setPending] = useState(false);
   useEffect(() => {
     api("/session")
       .then(() => setSession(true))
@@ -48,105 +30,131 @@ export function AdminLayout() {
         setSession(false);
         if (!(e instanceof AdminError && e.status === 401)) setError(e.message);
       });
-    const onScroll = () => setOffset(document.documentElement.scrollTop);
-    document.addEventListener("scroll", onScroll, { passive: true });
-    return () => document.removeEventListener("scroll", onScroll);
   }, []);
+  async function logout() {
+    setPending(true);
+    setError("");
+    try {
+      await api("/logout", { method: "POST" });
+      setSession(false);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setPending(false);
+    }
+  }
   if (session === null)
-    return <main className="admin-main">正在检查审核会话…</main>;
+    return (
+      <div className="admin-scope grid min-h-svh place-items-center">
+        <p className="flex items-center gap-2 text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+          正在检查审核会话…
+        </p>
+      </div>
+    );
   if (!session)
     return (
-      <main className="admin-main admin-login">
-        <h1>工作日志审核</h1>
-        <p>登录后查看完整草稿并确认发布。</p>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setPending(true);
-            setError("");
-            try {
-              await api("/login", {
-                method: "POST",
-                body: JSON.stringify({ key }),
-              });
-              setKey("");
-              setSession(true);
-              setOpen(false);
-              await navigate({ to: "/agent-blog/admin" });
-            } catch (e) {
-              setError((e as Error).message);
-            } finally {
-              setPending(false);
-            }
-          }}
-        >
-          <label>
-            审核密钥
-            <Input
-              type="password"
-              autoComplete="current-password"
-              required
-              value={key}
-              onChange={(e) => setKey(e.target.value)}
-            />
-          </label>
-          <button disabled={pending}>{pending ? "登录中…" : "登录"}</button>
-          <p role="alert">{error}</p>
-        </form>
-      </main>
+      <div className="admin-scope admin-auth">
+        <div className="admin-auth-content">
+          <Link
+            to="/agent-blog"
+            className="mb-8 flex items-center justify-center gap-2 font-semibold text-xl"
+          >
+            <NotebookPen className="size-6" />
+            Agent 工作日志
+          </Link>
+          <Card className="w-full max-w-sm gap-4">
+            <CardHeader>
+              <CardTitle className="text-lg tracking-tight">
+                登录审核工作台
+              </CardTitle>
+              <CardDescription>
+                查看完整草稿，确认当前保存版本。
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form
+                className="grid gap-4"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setPending(true);
+                  setError("");
+                  try {
+                    await api("/login", {
+                      method: "POST",
+                      body: JSON.stringify({ key }),
+                    });
+                    setKey("");
+                    setSession(true);
+                    await navigate({ to: "/agent-blog/admin" });
+                  } catch (e) {
+                    setError((e as Error).message);
+                  } finally {
+                    setPending(false);
+                  }
+                }}
+              >
+                <div className="grid gap-2">
+                  <label htmlFor="review-key" className="text-sm font-medium">
+                    审核密钥
+                  </label>
+                  <Input
+                    id="review-key"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={key}
+                    onChange={(e) => setKey(e.target.value)}
+                    placeholder="输入审核密钥"
+                  />
+                </div>
+                {error && (
+                  <p role="alert" className="text-sm text-destructive">
+                    {error}
+                  </p>
+                )}
+                <Button disabled={pending}>
+                  {pending ? <Loader2 className="animate-spin" /> : <LogIn />}
+                  {pending ? "登录中…" : "登录"}
+                </Button>
+              </form>
+            </CardContent>
+            <CardFooter className="justify-center border-t pt-4">
+              <Link
+                to="/agent-blog"
+                className="text-sm text-muted-foreground hover:underline"
+              >
+                返回公开站点
+              </Link>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
     );
   return (
-    <div className="admin-shell">
-      <aside ref={menu} className={"admin-sidebar " + (open ? "is-open" : "")}>
-        <Link to="/agent-blog" className="admin-brand">
-          Agent 工作日志
-        </Link>
-        <nav aria-label="审核导航">
-          {(
-            [
-              ["待确认", "/agent-blog/admin"],
-              ["已发布", "/agent-blog/admin/published"],
-              ["播客", "/agent-blog/admin/episodes"],
-              ["设置", "/agent-blog/admin/settings"],
-            ] as const
-          ).map(([name, to]) => (
-            <Link
-              key={name}
-              to={to}
-              onClick={() => setOpen(false)}
-              activeProps={{ "aria-current": "page" }}
-            >
-              {name}
-            </Link>
-          ))}
-        </nav>
-        <button
-          onClick={async () => {
-            await api("/logout", { method: "POST" });
-            setOpen(false);
-            setSession(false);
-          }}
-        >
-          退出登录
-        </button>
-      </aside>
-      <div className="admin-content">
-        <header className={"admin-header " + (offset > 10 ? "has-shadow" : "")}>
-          <button
-            ref={trigger}
-            aria-label="切换审核导航"
-            aria-expanded={open}
-            onClick={() => setOpen(!open)}
-          >
-            ☰
-          </button>
-          <span>人工确认工作台</span>
-          <Link to="/agent-blog">公开站点</Link>
-        </header>
-        <main className="admin-main">
-          <Outlet />
-        </main>
-      </div>
+    <div className="admin-scope admin-shell">
+      <SidebarProvider>
+        <AppSidebar onLogout={logout} pending={pending} />
+        <SidebarInset className="admin-inset">
+          <Header fixed className="border-b bg-background">
+            <span className="text-sm font-medium">审核工作台</span>
+            <Button asChild variant="ghost" size="sm" className="ms-auto">
+              <Link to="/agent-blog">
+                公开站点
+                <ArrowUpRight className="size-4" />
+              </Link>
+            </Button>
+          </Header>
+          <Main className="admin-main @container/content" fluid>
+            {error && (
+              <p role="alert" className="mb-4 text-destructive">
+                {error}
+              </p>
+            )}
+            <Outlet />
+          </Main>
+        </SidebarInset>
+      </SidebarProvider>
     </div>
   );
 }

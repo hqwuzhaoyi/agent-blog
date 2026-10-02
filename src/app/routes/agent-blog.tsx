@@ -1,3 +1,4 @@
+import { AudioLines, Rss, Search } from "lucide-react";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { PersistentPlayer } from "../features/public/player/provider";
 import { siteConfig } from "../site";
@@ -9,12 +10,12 @@ function PublicLayout() {
     <>
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5">
-          <Link to="/agent-blog" className="text-lg font-semibold">
-            {siteConfig.title}
+          <Link to="/agent-blog" className="inline-flex items-center gap-3 text-lg font-semibold tracking-tight">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground"><AudioLines size={21} aria-hidden="true" /></span>{siteConfig.title}
           </Link>
           <nav
             aria-label={siteConfig.nav.label}
-            className="flex flex-wrap items-center gap-5 text-sm"
+            className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm font-medium"
           >
             <Link to="/agent-blog/episodes">{siteConfig.nav.episodes}</Link>
             <Link
@@ -27,9 +28,9 @@ function PublicLayout() {
               to="/agent-blog/archive"
               search={{ type: "all", q: "", month: "" }}
             >
-              {siteConfig.nav.archive}
+              <span className="inline-flex items-center gap-1.5"><Search size={15} aria-hidden="true" />{siteConfig.nav.archive}</span>
             </Link>
-            <a href="/agent-blog/rss.xml">{siteConfig.nav.rss}</a>
+            <a href="/agent-blog/rss.xml" className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5"><Rss size={14} aria-hidden="true" />{siteConfig.nav.rss}</a>
           </nav>
         </div>
       </header>
