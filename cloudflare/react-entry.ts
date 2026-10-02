@@ -8,6 +8,7 @@ export default {
   async fetch(request: Request, env: any, ctx: any) {
     const url = new URL(request.url),
       path = url.pathname;
+    if (path.startsWith("/assets/") || path === "/favicon.svg" || path === "/robots.txt") return env.ASSETS.fetch(request);
     if (path === "/" || path.startsWith("/agent-blog/audio/"))
       return audio.fetch(request, env);
     if (path.startsWith("/agent-blog/admin/api/"))

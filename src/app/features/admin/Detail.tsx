@@ -3,6 +3,8 @@ import { useBlocker } from "@tanstack/react-router";
 import { Article } from "../../components/Article";
 import { api, AdminError } from "./api";
 import { Input } from "./ui/input";
+const fieldLabels: Record<string, string> = { title: "标题", summary: "摘要", source: "来源", date: "日期", platforms: "平台", highlights: "重要进展数量", language: "语言" };
+
 export function ReviewDetail({ id }: { id: string }) {
   const [review, setReview] = useState<any>(null),
     [draft, setDraft] = useState<any>(null),
@@ -222,7 +224,7 @@ export function ReviewDetail({ id }: { id: string }) {
                 "language",
               ].map((k) => (
                 <div key={k}>
-                  <strong>{k}</strong>
+                  <strong>{fieldLabels[k]}</strong>
                   <p>
                     已发布：{JSON.stringify(review.published.data[k] ?? null)}
                   </p>

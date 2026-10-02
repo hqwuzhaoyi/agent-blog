@@ -29,7 +29,8 @@
     "react:db:seed": "node scripts/seed-react-preview.mjs",
     "build:production": "REACT_WRANGLER_CONFIG=wrangler.jsonc vite build --config vite.react.config.ts",
     "test:runtime": "node scripts/verify-react-runtime.mjs",
-    "test:browser": "node test/public-player-browser.mjs"
+    "test:browser": "node test/public-player-browser.mjs",
+    "check:ui": "node scripts/verify-live-ui.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.1",

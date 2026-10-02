@@ -56,7 +56,7 @@ npm run deploy:check
 npm run deploy
 ```
 
-These commands build the Worker and exclude private preview audio. They do not copy or modify live content. Provisioning, authentication, migrations, reviewer login and recovery are documented in [Cloudflare deployment](docs/CLOUDFLARE_DEPLOYMENT.md).
+These commands build the Worker and exclude private preview audio. After deployment run `npm run check:ui` and `npm run check:rss` to verify browser resources and feed/audio delivery. They do not copy or modify live content. Provisioning, authentication, migrations, reviewer login and recovery are documented in [Cloudflare deployment](docs/CLOUDFLARE_DEPLOYMENT.md).
 
 ## Frontend and reviewer UI
 

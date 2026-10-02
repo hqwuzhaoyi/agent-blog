@@ -6,7 +6,7 @@ Completed 2026-10-02 by the sol services, foundation, public UI and reviewer UI 
 
 React/TanStack Start replaces Astro. Public controls adapt beUI source; the reviewer workbench adapts shadcn-admin source. The live domain remains https://blog.wuzhaoyi.xyz/agent-blog/ and reviewer entry remains https://blog.wuzhaoyi.xyz/agent-blog/admin/.
 
-Current Worker version: `453c3c0d-3e11-4270-a48e-96ef29056a2b`. Compatible pre-React rollback target: `39aaeb49-3178-4c13-a6c3-9532863d3332`. Both deployment and rollback metadata were inspected without recreating D1/R2.
+Current Worker version: `0a2e7093-fbe2-46db-bf48-f4ad6f7f66de`. Compatible pre-React rollback target: `39aaeb49-3178-4c13-a6c3-9532863d3332`. Both deployment and rollback metadata were inspected without recreating D1/R2.
 
 ## Evidence
 
@@ -22,4 +22,8 @@ Current Worker version: `453c3c0d-3e11-4270-a48e-96ef29056a2b`. Compatible pre-R
 
 Worklogs are private drafts until the operator confirms the current saved revision in the workbench. Editing preserves the previously published revision. Podcast publication still uses the existing Hermes API command without PRs, builds or application deployment. Existing operator form POSTs and read-only preview capabilities remain compatible.
 
-The14 local tickets include completed execution records. The source specification remains a historical statement of the approved migration scope.
+The 14 local tickets include completed execution records. The source specification remains a historical statement of the approved migration scope.
+
+Production browser acceptance found an inherited assets-first routing mismatch: the old all-worker-first setting sent JS/CSS to SSR. The final deployment uses narrow Worker-first paths and explicit static resource delegation. `npm run check:ui` checks real SSR resource URLs and MIME types as a regression, and a production browser verified reviewer hydration and real episode playback after the fix.
+
+The host Homebrew Node library chain changed during execution; deployment used the existing mise Node 26.8.2. The existing morning job prompt selects that runtime per command without changing its schedule or delivery. Global package installations were not altered.

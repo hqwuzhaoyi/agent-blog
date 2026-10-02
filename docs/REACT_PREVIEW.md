@@ -21,3 +21,5 @@ Cloudflare's Vite plugin normally loads `.dev.vars` near a Wrangler configuratio
 Public server functions read only the D1 published revision pointer and sanitize Markdown before returning prepared article HTML. `Article` renders the same prepared content for public readers and reviewer previews. Theme adapters retain `quiet-minimal`, `night-shift`, and `signal-console`; missing presentation overrides fall directly back to shared components without inheriting another Theme.
 
 The framework/build architecture follows the [TanStack Start Cloudflare hosting guide](https://tanstack.com/start/latest/docs/framework/react/guide/hosting#cloudflare-workers--official-partner) and its official Cloudflare example. The lockfile records the tested dependency versions.
+
+If the host Homebrew Node reports a missing Ada shared library, use the already-installed mise runtime: `mise exec node@26.8.2 -- npm run dev` (or prefix the command with that runtime’s bin directory). This project requires Node24+; global package installation does not need to be changed for the preview.

@@ -8,7 +8,14 @@
   "assets": {
     "directory": "./dist-react/client",
     "binding": "ASSETS",
-    "run_worker_first": true
+    "run_worker_first": [
+      "/",
+      "/agent-blog/audio/*",
+      "/agent-blog/api/*",
+      "/agent-blog/admin/api/*",
+      "/agent-blog/rss.xml",
+      "/agent-blog/episodes/rss.xml"
+    ]
   },
   "r2_buckets": [
     {
