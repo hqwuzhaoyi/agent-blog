@@ -91,12 +91,11 @@
 .public-site .footer-links{display:flex;align-items:start;gap:25px}
 .public-site .footer-links a{display:flex;gap:7px;align-items:center;font-size:11px}
 .public-site .public-footer .footer-note{grid-column:1/-1;padding-top:25px;margin-top:0;border-top:1px solid var(--border);font-family:monospace;font-size:10px}
-.public-site .public-list-page{padding:55px 0 0}
+.public-site .public-list-page,.public-site .archive-page{padding:55px 0 0}
 .public-site .public-page-heading{margin:0 0 38px;max-width:700px}
 .public-site .public-page-heading h1{font-size:clamp(38px,4vw,54px);letter-spacing:-.05em;font-weight:600;line-height:1.2;margin:0 0 17px}
 .public-site .public-page-heading>p:not(.eyebrow){font-size:15px;color:var(--muted);max-width:560px}
 .public-site .page-total{display:inline-flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);margin-top:8px}
-.public-site .archive-page{max-width:920px;margin:auto;padding-top:55px}
 .public-site .archive-toolbar{border:1px solid var(--border);background:var(--surface);border-radius:18px;padding:22px 25px;margin-bottom:30px}
 .public-site .archive-filter-form{display:grid;grid-template-columns:1fr 200px;gap:20px;margin-top:22px}
 .public-site .archive-filter-form label{font-size:11px;color:var(--muted)}
