@@ -5,7 +5,8 @@ const origin = process.env.REACT_PREVIEW_URL || 'http://localhost:3100';
 const browser = (...args) => {
   if (args[0] === 'find' && args[1] === 'role' && args[3] === 'click') {
     const snapshot = execFileSync('agent-browser', ['--session', 'public-regression', 'snapshot', '-i'], { encoding: 'utf8' });
-    const line = snapshot.split('\n').find(line => line.includes(`${args[2]} "${args[5]}"`));
+    const normalize = value => value.replace(/\s+/g, '');
+    const line = snapshot.split('\n').find(line => normalize(line).includes(normalize(`${args[2]} "${args[5]}"`)));
     assert.ok(line, `Missing ${args[2]}: ${args[5]}`);
     args = ['click', `@${line.match(/ref=(e\d+)/)[1]}`];
   }
@@ -56,4 +57,3 @@ browser('mouse', 'move', String(handle.x), String(handle.y + 190));
 browser('mouse', 'up', 'left');
 eventually(() => evaluate('document.querySelectorAll("[role=dialog]").length') === 0);
 console.log('Public playback, route continuity, chapter, archive history and mobile focus acceptance passed.');
-

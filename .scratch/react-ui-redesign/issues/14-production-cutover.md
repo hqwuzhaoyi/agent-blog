@@ -16,4 +16,4 @@
 
 ## Integration evidence
 
-2026-10-02: Deployed Worker version 111ee803-c590-40a8-9807-faf0a6eb6e23 on the original domain. Public SSR and reviewer login/protection pass. RSS remains 5/2 items with identical GUIDs, dates and enclosures; both audio HEAD/Range checks pass. D1/R2 were retained. Compatible rollback target 39aaeb49-3178-4c13-a6c3-9532863d3332 was verified before cutover. No production test reviews or extra Telegram deliveries were made.
+2026-10-02: Deployed Worker version 453c3c0d-3e11-4270-a48e-96ef29056a2b on the original domain. Public SSR and reviewer login/protection pass. RSS remains 5/2 items with identical GUIDs, dates and enclosures; both audio HEAD/Range checks pass. D1/R2 were retained. Compatible rollback target 39aaeb49-3178-4c13-a6c3-9532863d3332 was verified before cutover. No production test reviews or extra Telegram deliveries were made.

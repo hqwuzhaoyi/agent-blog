@@ -37,7 +37,7 @@ function PublicLayout() {
         <Outlet />
       </main>
       <footer className="mx-auto max-w-6xl border-t border-border px-5 py-8 text-sm text-muted-foreground">
-        <p>{siteConfig.footer.disclaimer}</p>
+        <p>{siteConfig.tagline}</p>
         <div className="mt-3 flex gap-5">
           <a href="/agent-blog/episodes/rss.xml">
             {siteConfig.episodes.subscribe}

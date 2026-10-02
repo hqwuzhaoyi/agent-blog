@@ -21,9 +21,10 @@ export default {
       (path === "/agent-blog/admin/logout" && request.method === "POST")
     )
       return handlePublication(request, env);
-    // Existing read-only preview capabilities remain usable during the UI migration.
+    // Existing operator forms and read-only preview capabilities remain usable.
+    if (/^\/agent-blog\/admin\/reviews\/[a-zA-Z0-9_-]+\/publish$/.test(path) && request.method === "POST") return handlePublication(request, env);
     if (
-      /^\/agent-blog\/admin\/reviews\/[a-zA-Z0-9_-]+$/.test(path) &&
+      /^\/agent-blog\/admin\/reviews\/[a-zA-Z0-9_-]+\/?$/.test(path) &&
       url.searchParams.has("token")
     )
       return handleReadOnlyPreview(request, env);

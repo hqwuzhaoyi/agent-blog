@@ -4,7 +4,9 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** completed
+**Status:** ready-for-agent
+
+**Execution:** completed
 
 - [x] 服务端内容类型与校验不依赖 Astro，旧应用仍可运行。
 - [x] 同一期/同身份重试幂等，草稿与公开指针保持分离。

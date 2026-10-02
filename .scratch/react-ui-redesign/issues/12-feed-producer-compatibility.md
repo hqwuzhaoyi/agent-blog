@@ -4,7 +4,9 @@
 
 **Blocked by:** 02: React 工作日志阅读页与预览部署.
 
-**Status:** completed
+**Status:** ready-for-agent
+
+**Execution:** completed
 
 - [x] 两种 RSS 的 GUID、日期、公开链接、duration 和 enclosure metadata 与基线一致。
 - [x] 现有 Hermes/OpenClaw 提交及音频上传命令/身份不变，重试幂等。
