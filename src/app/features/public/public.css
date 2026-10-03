@@ -329,3 +329,34 @@
 .public-site .chapter-accordion-title{display:flex;align-items:center;gap:10px}
 .public-site .chapter-accordion-title>span{font-family:monospace;font-size:11px;color:var(--muted);font-weight:400}
 .public-site .detail-chapters .chapter-button{min-height:44px}
+
+/* Selected source cards are editorial content, composed with existing beUI controls. */
+.public-site .episode-reading-column{min-width:0}
+.public-site .episode-materials{margin-bottom:44px}
+.public-site .materials-heading{margin-bottom:22px}
+.public-site .materials-heading h2{display:flex;align-items:center;gap:10px;margin:0;font-size:21px;font-weight:600}
+.public-site .materials-heading>p{margin:10px 0 0;color:var(--muted);font-size:12px}
+.public-site .materials-feed{border:1px solid var(--border);border-radius:18px;background:var(--surface);overflow:hidden}
+.public-site .material-item+.material-item{border-top:1px solid var(--border)}
+.public-site .material-card{display:flex;gap:14px;padding:24px}
+.public-site .material-avatar{display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:50%;background:color-mix(in srgb,var(--primary) 9%,var(--background));color:var(--primary);font-size:15px;font-weight:600}
+.public-site .material-content{min-width:0;flex:1}
+.public-site .material-author{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:13px;line-height:1.5}
+.public-site .material-author strong{font-weight:650;min-width:0;overflow-wrap:anywhere}
+.public-site .material-author>span{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.public-site .material-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:5px;font-size:10px;color:var(--muted)}
+.public-site .material-platform{display:inline-flex;align-items:center;gap:4px}
+.public-site .material-selected{color:var(--primary);background:color-mix(in srgb,var(--primary) 7%,transparent);border-radius:4px;padding:1px 5px}
+.public-site .material-content h3{font-size:15px;font-weight:600;line-height:1.6;margin:15px 0 0;overflow-wrap:anywhere}
+.public-site .material-summary{margin:12px 0 0;font-size:14px;line-height:1.85;white-space:pre-line;overflow-wrap:anywhere}
+.public-site .material-actions{display:flex;align-items:center;flex-wrap:wrap;gap:4px 16px;margin-top:13px}
+.public-site .material-actions>a{display:inline-flex;align-items:center;gap:6px;min-height:36px;font-size:11px}
+.public-site .material-actions .material-listen{justify-content:flex-start;max-width:100%;height:auto;min-height:36px;padding:7px 10px;font-size:11px;white-space:normal;text-align:left;line-height:1.6}
+.public-site .material-listen>span{min-width:0;overflow-wrap:anywhere}
+@media(max-width:760px){
+.public-site .material-card{padding:18px 14px;gap:10px}
+.public-site .material-avatar{flex-basis:30px;height:30px;font-size:13px}
+.public-site .material-meta{gap:6px 9px}
+.public-site .material-summary{font-size:13px}
+.public-site .material-actions>a,.public-site .material-actions .material-listen{min-height:44px}
+}

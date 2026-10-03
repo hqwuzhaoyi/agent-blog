@@ -36,7 +36,7 @@ type Controller = {
   setInlineVisible: (visible: boolean) => void;
 };
 const Context = createContext<Controller | null>(null);
-const PlaybackContext = createContext<{ episodeId: string | null; playing: boolean; toggleEpisode: (episode: Episode) => void } | null>(null);
+const PlaybackContext = createContext<{ episodeId: string | null; playing: boolean; toggleEpisode: (episode: Episode) => void; play: Controller["play"] } | null>(null);
 export function usePlayback() {
   const playback = useContext(PlaybackContext);
   if (!playback) throw new Error("Player provider missing");
@@ -107,7 +107,7 @@ export function PublicPlayerProvider({ children }: { children: ReactNode }) {
     else play(episode);
   }, [play]);
   // Cards subscribe to playback changes, never to the progress clock.
-  const playback = useMemo(() => ({ episodeId: state.episode?.id ?? null, playing: state.playing, toggleEpisode }), [state.episode?.id, state.playing, toggleEpisode]);
+  const playback = useMemo(() => ({ episodeId: state.episode?.id ?? null, playing: state.playing, toggleEpisode, play }), [state.episode?.id, state.playing, toggleEpisode, play]);
   const controller = useMemo<Controller>(
     () => ({
       audio,
