@@ -1,7 +1,7 @@
 # Episode materials feed
 
 Status: ready-for-agent
-Execution: in-progress
+Execution: completed
 
 User accepted a selected-materials feed inside episode details, visually resembling a vertical X feed: author/platform/original date, Chinese editorial summary, original link, selected badge and real related chapter. Raw candidate feeds remain local; a standalone materials page is deferred.
 
@@ -14,4 +14,13 @@ Update existing morning-coffee reference instructions without touching unrelated
 - TypeScript; 13 files / 47 tests passed, including selected-only preparation, unknown dates/collection links, unsafe links/private notes, duplicate sources, measured chapter references, old producers and real SQLite API persistence.
 - Publication dry-run passed using a copied October 3 artifact set; original publication receipts were preserved.
 - Ego material checks passed on 390/1440: cards and provenance labels, true dates, original links, keyboard chapter playback without hash/scroll movement, shared audio across routes. Existing public playback/filter/Sheet regression and isolated runtime publication checks also passed.
-- Three published episode revisions were read for a metadata-only backfill. Prepared twelve summaries against their stored feed snapshots; expectedRevision guards prevent overwriting concurrent edits. Deployment/backfill/production checks pending.
+- Three published episode revisions were read for a metadata-only backfill. Prepared twelve summaries against their stored feed snapshots; expectedRevision guards prevent overwriting concurrent edits. Deployment and the backfill completed; production checks passed.
+
+
+## Production result
+
+Deployed application commit `0d3a7c9`, Worker `cefd92f3-450e-40dc-ad61-5b7c0cc23d43`, active established origin `https://blog.wuzhaoyi.xyz/`.
+
+The published 2026-10-01, 2026-10-02 and 2026-10-03 episodes each now contain four selected material cards (12 total). D1 readback confirmed every pre-existing metadata field, audio object reference and body remained equal to the previous published revision. Writes used exact revision guards. Local publication.json material notes and receipts were synchronized so retries reproduce these source selections; the active Hermes skill entry points to the updated repository editorial rules. No raw feed or transcript was published and no delivery message or schedule was changed.
+
+Production ego verification on October 3 found four real authors/dates/links, correct channel link labelling, four chapter actions, a single audio node seeking to 18.662s, no hash navigation and no mobile overflow. All 28 browser resources, reviewer guard, RSS 6/3 entries and three audio enclosures passed. The skill validators and archived-input reproduction check passed.
