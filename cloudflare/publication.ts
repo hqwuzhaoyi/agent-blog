@@ -1,3 +1,4 @@
+import { episodeMaterialsSchema } from "../src/lib/episode-materials.mjs";
 import { normalizedRequest, normalizeAudioUrl } from "./site-urls";
 import { z } from "zod";
 import { renderMarkdown } from "../src/lib/markdown";
@@ -24,6 +25,7 @@ export const reviewSchema = z.object({
 export const episodeSchema = z
   .object({
     ...common,
+    materials: episodeMaterialsSchema.optional(),
     duration: z.number().positive().max(86400),
     disclosure: z.string().min(1).max(3000),
     draft: z.literal(false).default(false),
@@ -49,7 +51,8 @@ export const episodeSchema = z
           c.start < e.duration && (!i || c.start > e.chapters[i - 1].start),
       ),
     "Invalid chapter positions",
-  );
+  )
+  .refine(e => !e.materials || e.materials.every(item => item.chapterStart === undefined || e.chapters.some(chapter => chapter.start === item.chapterStart)), "Material chapter must match an episode chapter");
 const payloadSchema = z.object({
   data: z.unknown(),
   body: z.string().trim().min(1).max(150000),

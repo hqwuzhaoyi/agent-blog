@@ -212,7 +212,13 @@ describe("Dynamic content approval boundary", () => {
       size: 100,
       httpMetadata: { contentType: "audio/mpeg" },
     });
+    const material = { id: "a".repeat(24), kind: "x", author: "Builder", summary: "公开整理摘要", url: "https://x.com/builder/status/1", linkKind: "item", chapterStart: 0 };
+    Object.assign(input.data, { materials: [material] });
     expect((await put()).status).toBe(200);
-    expect(await publishedEntries(env.CONTENT, "episode")).toHaveLength(1);
+    const published = await publishedEntries<"episodes">(env.CONTENT, "episode");
+    expect(published).toHaveLength(1);
+    expect(published[0].data.materials?.[0]).toEqual(material);
+    material.chapterStart = 59;
+    expect((await put()).status).toBe(422);
   });
 });

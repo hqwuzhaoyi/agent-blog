@@ -33,7 +33,8 @@
     "check:ui": "node scripts/verify-live-ui.mjs",
     "test:browser:sliders": "bash test/public-slider-browser.sh",
     "test:browser:admin": "bash test/admin-component-browser.sh",
-    "test:browser:cleanup": "bash test/complete-browser-taskspace.sh"
+    "test:browser:cleanup": "bash test/complete-browser-taskspace.sh",
+    "test:browser:materials": "bash test/episode-materials-browser.sh"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "1.2.6",

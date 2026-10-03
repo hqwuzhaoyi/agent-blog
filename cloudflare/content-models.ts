@@ -1,3 +1,7 @@
+import type { z } from "zod";
+import { episodeMaterialSchema } from "../src/lib/episode-materials.mjs";
+export type EpisodeMaterial = z.infer<typeof episodeMaterialSchema>;
+
 /** Public content shapes shared by server queries and presentation layers. */
 export interface ReviewData {
   title: string;
@@ -18,6 +22,7 @@ export interface EpisodeData {
   draft: boolean;
   audio: { url: string; length: number; type: "audio/mpeg" };
   chapters: { title: string; start: number }[];
+  materials?: EpisodeMaterial[];
 }
 
 export type ContentCollection = "reviews" | "episodes";

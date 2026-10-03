@@ -41,7 +41,7 @@ npm run episode:publish -- --directory /absolute/path/to/render-output --day YYY
 
 The directory contains `episode.json`, `episode.mp3`, `episode.parts/manifest.json`, `shownotes.md`, and `publication.json`. The script completely decodes audio, measures duration and chapters, uploads a content-addressed MP3, then writes and publishes D1 content. Audio must be uploaded before an episode can become public. Retries are idempotent. Maximum API audio upload: 25 MiB.
 
-The [morning-coffee skill](skills/morning-coffee/SKILL.md) covers sources, editorial guidance, configurable IndexTTS rendering, mixing, and chapter validation. See [episode content](docs/EPISODES.md).
+The [morning-coffee skill](skills/morning-coffee/SKILL.md) covers sources, editorial guidance, configurable IndexTTS rendering, mixing, and chapter validation. Each episode can also display a selected-materials feed with source authors, original dates, editorial summaries, original links and measured chapter actions. `publication.json.materials` supplies the summaries; local `feed.json` enriches only the selected URLs. Raw candidate feeds and transcripts stay local. See [episode content](docs/EPISODES.md).
 
 ## Deployment: Cloudflare Workers + D1 + R2
 
@@ -125,6 +125,7 @@ With the preview running at `http://localhost:3100/`, use a second terminal for 
 npm run test:runtime
 npm run test:browser
 npm run test:browser:sliders
+npm run test:browser:materials
 npm run test:browser:admin
 npm run test:browser:cleanup
 ```
