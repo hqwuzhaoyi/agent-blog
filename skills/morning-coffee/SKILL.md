@@ -16,7 +16,7 @@ description: 制作中文 AI 早咖啡播客：获取 AI 构建者素材、编�
 ## 制作
 
 1. **取素材。** 如果正在复述已投递节目，使用那期原始 `feed.json`，不要用新 feed 替换。制作新一期时运行 `node <skill>/scripts/prepare-feed.mjs --output <本期目录>/feed.json`，或复用现有 follow-builders 的 `prepare-digest.js`。读取采集时间、原始发表时间和错误。细节见 [素材来源](references/sources.md)。
-2. **编稿。** 只依据该快照，选一个主话题和两三条短讯；素材不足就缩短或报告无更新。写 `episode.json` 与公开 `shownotes.md`，遵循 [编稿与产物结构](references/editorial.md)。保留确切来源链接，不把缺失上下文补成事实。
+2. **编稿。** 只依据该快照，选一个主话题和两三条短讯；素材不足就缩短或报告无更新。写 `episode.json` 与公开 `shownotes.md`，遵循 [编稿与产物结构](references/editorial.md)。保留确切来源链接，不把缺失上下文补成事实。保留本期 `feed.json` 供发布器自动生成节目页底部「短讯」小节（当日 feed 全部推送，Twitter 时间线式）。**每日必做**：为当日 feed 全部条目（推文+播客/频道，约 40 条）逐条写一句中文摘要，写入 `publication.json.timeline`（`[{url, summary}]`，url 逐字取自 feed.json，不重写不省略）——用户明确要求每条带中文翻译，这是编稿职责不是可选项；缺摘要的条目在页面上只剩英文原文。X 头像由页面按 handle 经 unavatar.io 自动拉取，编稿无需处理。规范见 [编稿与产物结构](references/editorial.md) 的「短讯摘要」。
 3. **合成。** 用已有渲染器，或运行下方随附脚本。它已包含混音，只运行一次完整渲染。IndexTTS 单段请求上限为120字；按句子分段，使用速度1.0。GPU 整期制作可能超过十分钟，为进程留足时间，按日志判断是否完成，避免超时后重复启动。
 4. **校验。** 完整解码成品 MP3，检查全部分段已合成、`episode.parts/manifest.json` 与 `result.json` 均存在。章节从3秒前奏起累计每段 `seconds + pause_ms / 1000`，整期时长以成品 ffprobe 为准。使用 [章节校验脚本](scripts/measure-chapters.py) 生成可展示的真实时间轴。
 5. **存档。** 私有 `notes.md` 保存稿件、制作记录、配乐来源和署名；公开 `shownotes.md` 只保存节目正文、观点归属、精确来源和 AI 声明。该早咖啡流程的公开节目帖不含配乐署名，保留独立的本地署名文件与音频元数据。其他项目应按自己的展示和授权要求配置。
