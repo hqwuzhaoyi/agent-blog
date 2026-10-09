@@ -1,7 +1,8 @@
+import { prepareMaterials, prepareTimeline } from "./episode-materials.mjs";
 import deployment from "../../src/site-origin.json" with { type: "json" };
 import { createHash } from "node:crypto";
 
-export function prepareEpisode({ day, source, publication, parts, duration, audio, shownotes, site = deployment.origin }) {
+export function prepareEpisode({ day, source, publication, parts, duration, audio, shownotes, feed = {}, site = deployment.origin }) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || new Date(`${day}T00:00:00Z`).toISOString().slice(0, 10) !== day) throw new Error("Invalid episode day");
   if (!source.title?.trim() || !source.disclosure?.trim() || !publication.summary?.trim()) throw new Error("Title, disclosure and summary are required");
   if (!Number.isFinite(duration) || duration <= 3 || !audio?.length) throw new Error("Measured audio is required");
@@ -23,11 +24,13 @@ export function prepareEpisode({ day, source, publication, parts, duration, audi
     return { title, start: Math.round(start * 1000) / 1000 };
   });
   if (chapters[0].start !== 3) throw new Error("First chapter must include the opening section");
-  const publicText = `${source.title}\n${publication.summary}\n${source.disclosure}\n${shownotes}\n${JSON.stringify(chapters)}`;
+  const materials = prepareMaterials({ sources: source.sources, notes: publication.materials, feed, chapters, sectionStarts: starts });
+  const timeline = prepareTimeline({ feed, selectedUrls: (source.sources ?? []).map(source => source.url), notes: publication.timeline, materials });
+  const publicText = `${source.title}\n${publication.summary}\n${source.disclosure}\n${shownotes}\n${JSON.stringify(chapters)}\n${JSON.stringify(materials)}\n${JSON.stringify(timeline)}`;
   if (!shownotes?.trim() || /\/Users\/|\/home\/|MEDIA:|\b(?:192\.168|127\.0|10\.\d+|172\.(?:1[6-9]|2\d|3[01]))\.|localhost|\bsk-[\w-]{8,}|配乐署名|制作记录|Kevin MacLeod|Funkorama|CC BY/i.test(publicText)) throw new Error("Show notes contain private production or archive-only information");
   const hash = createHash("sha256").update(audio).digest("hex");
   const audioKey = `episodes/${day}/${hash}.mp3`;
   const data = { title: source.title, summary: publication.summary, date: day, duration, disclosure: source.disclosure, draft: false,
-    audio: { url: new URL(`/audio/${day}/${hash}.mp3`, site).href, length: audio.length, type: "audio/mpeg" }, chapters };
+    audio: { url: new URL(`/audio/${day}/${hash}.mp3`, site).href, length: audio.length, type: "audio/mpeg" }, chapters, ...(materials.length ? { materials } : {}), ...(timeline.length ? { timeline } : {}) };
   return { day, audioKey, data, markdown: `---\n${JSON.stringify(data, null, 2)}\n---\n\n${shownotes.trim()}\n` };
 }
