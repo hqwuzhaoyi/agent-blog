@@ -115,7 +115,7 @@
 .public-site .episode-disclosure{display:flex;gap:7px;align-items:flex-start;font-size:11px;color:var(--muted);margin-top:20px;max-width:620px}
 .public-site .episode-disclosure svg{margin-top:3px}
 .public-site .detail-body-layout{display:grid;grid-template-columns:minmax(0,720px) 265px;gap:65px;align-items:start;border-top:1px solid var(--border);padding-top:38px}
-.public-site .show-notes h2{font-size:21px;font-weight:600;margin:0 0 26px}
+.public-site .show-notes>h2{font-size:21px;font-weight:600;margin:0 0 26px}
 .public-site .show-notes .article-body{font-size:17px;line-height:1.95}
 .public-site .detail-chapters{min-width:0}
 .public-site .detail-chapters h2{font-size:14px;font-weight:600;margin:0 0 15px}
@@ -251,7 +251,7 @@
 .public-site .episode-disclosure{font-size:10px;line-height:1.8}
 .public-site .detail-body-layout{grid-template-columns:1fr;gap:30px;padding-top:25px}
 .public-site .detail-chapters{grid-row:1}
-.public-site .show-notes h2{font-size:20px}
+.public-site .show-notes>h2{font-size:20px}
 .public-site .show-notes .article-body{font-size:16px}
 .public-site .reading-article{margin:32px auto 0}
 .public-site .reading-article h1{font-size:33px;line-height:1.45}
@@ -331,6 +331,7 @@
 .public-site .detail-chapters .chapter-button{min-height:44px}
 
 /* Selected source cards are editorial content, composed with existing beUI controls. */
+.public-site{--ease-out-quint:cubic-bezier(0.23,1,0.32,1)}
 .public-site .episode-reading-column{min-width:0}
 .public-site .episode-materials{margin-bottom:44px}
 .public-site .materials-heading{margin-bottom:22px}
@@ -338,8 +339,8 @@
 .public-site .materials-heading>p{margin:10px 0 0;color:var(--muted);font-size:12px}
 .public-site .materials-feed{border:1px solid var(--border);border-radius:18px;background:var(--surface);overflow:hidden}
 .public-site .material-item+.material-item{border-top:1px solid var(--border)}
-.public-site .material-card{display:flex;gap:14px;padding:24px}
-.public-site .material-avatar{display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:50%;background:color-mix(in srgb,var(--primary) 9%,var(--background));color:var(--primary);font-size:15px;font-weight:600}
+.public-site .material-card{display:flex;gap:14px;padding:24px;transition:background-color 200ms var(--ease-out-quint)}
+.public-site .material-avatar{display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:50%;background:color-mix(in srgb,var(--primary) 9%,var(--background));color:var(--primary);font-size:15px;font-weight:600;object-fit:cover}
 .public-site .material-content{min-width:0;flex:1}
 .public-site .material-author{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:13px;line-height:1.5}
 .public-site .material-author strong{font-weight:650;min-width:0;overflow-wrap:anywhere}
@@ -350,13 +351,45 @@
 .public-site .material-content h3{font-size:15px;font-weight:600;line-height:1.6;margin:15px 0 0;overflow-wrap:anywhere}
 .public-site .material-summary{margin:12px 0 0;font-size:14px;line-height:1.85;white-space:pre-line;overflow-wrap:anywhere}
 .public-site .material-actions{display:flex;align-items:center;flex-wrap:wrap;gap:4px 16px;margin-top:13px}
-.public-site .material-actions>a{display:inline-flex;align-items:center;gap:6px;min-height:36px;font-size:11px}
+.public-site .material-actions>a{display:inline-flex;align-items:center;gap:6px;min-height:36px;font-size:11px;transition:color 150ms var(--ease-out-quint)}
 .public-site .material-actions .material-listen{justify-content:flex-start;max-width:100%;height:auto;min-height:36px;padding:7px 10px;font-size:11px;white-space:normal;text-align:left;line-height:1.6}
 .public-site .material-listen>span{min-width:0;overflow-wrap:anywhere}
+@media(hover:hover) and (pointer:fine){
+.public-site .material-item:hover .material-card{background:color-mix(in srgb,var(--foreground) 3%,transparent)}
+}
+.public-site .material-item:active .material-card{background:color-mix(in srgb,var(--primary) 5%,transparent)}
 @media(max-width:760px){
 .public-site .material-card{padding:18px 14px;gap:10px}
 .public-site .material-avatar{flex-basis:30px;height:30px;font-size:13px}
 .public-site .material-meta{gap:6px 9px}
 .public-site .material-summary{font-size:13px}
 .public-site .material-actions>a,.public-site .material-actions .material-listen{min-height:44px}
+}
+
+/* 短讯: the full captured feed, Twitter-style, after the materials. */
+.public-site .episode-timeline{margin:44px 0}
+.public-site .timeline-feed{border:1px solid var(--border);border-radius:18px;background:var(--surface);overflow:hidden;list-style:none;margin:0;padding:0}
+.public-site .timeline-item{position:relative;border-left:2px solid transparent;transition:background-color 200ms var(--ease-out-quint),border-color 200ms var(--ease-out-quint)}
+.public-site .timeline-item+.timeline-item{border-top:1px solid var(--border)}
+.public-site .timeline-item-selected{border-left-color:var(--primary)}
+.public-site .timeline-card{display:flex;gap:14px;padding:18px 24px 18px 22px}
+.public-site .material-avatar{transition:transform 150ms var(--ease-out-quint)}
+.public-site .timeline-summary{margin:10px 0 0;font-size:14px;line-height:1.85;white-space:pre-line;overflow-wrap:anywhere}
+.public-site .timeline-text{margin:8px 0 0;font-size:13px;line-height:1.8;color:var(--muted);overflow-wrap:anywhere;white-space:pre-line}
+.public-site .timeline-item .material-content h3{margin-top:10px;font-size:14px}
+.public-site .timeline-item .material-actions{margin-top:9px}
+.public-site .timeline-item .material-actions>a{color:var(--muted)}
+@media(hover:hover) and (pointer:fine){
+.public-site .timeline-item:hover{background:color-mix(in srgb,var(--foreground) 3%,transparent)}
+.public-site .timeline-item:hover .material-avatar{transform:scale(1.05)}
+}
+.public-site .timeline-item:active{background:color-mix(in srgb,var(--primary) 5%,transparent)}
+@keyframes timeline-fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:no-preference){
+.public-site .timeline-item{animation:timeline-fade-in 300ms var(--ease-out-quint) backwards}
+.public-site .timeline-item:nth-child(1){animation-delay:0ms}.public-site .timeline-item:nth-child(2){animation-delay:40ms}.public-site .timeline-item:nth-child(3){animation-delay:80ms}.public-site .timeline-item:nth-child(4){animation-delay:120ms}.public-site .timeline-item:nth-child(5){animation-delay:160ms}.public-site .timeline-item:nth-child(6){animation-delay:200ms}.public-site .timeline-item:nth-child(7){animation-delay:240ms}.public-site .timeline-item:nth-child(8){animation-delay:280ms}
+}
+@media(max-width:760px){
+.public-site .timeline-card{padding:14px 14px 14px 12px}
+.public-site .timeline-text,.public-site .timeline-summary{font-size:13px}
 }

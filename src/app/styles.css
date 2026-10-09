@@ -66,9 +66,18 @@
   overflow-wrap: anywhere;
 }
 .article-body h2 {
-  margin-top: 2em;
+  margin: 2.2em 0 0.9em;
   font-size: 26px;
   line-height: 1.5;
+}
+.article-body h2:first-child {
+  margin-top: 0;
+}
+.article-body li {
+  margin-block: 0.45em;
+}
+.article-body p {
+  margin: 0;
 }
 .article-body img {
   max-width: 100%;

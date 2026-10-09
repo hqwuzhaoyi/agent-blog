@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { prepareMaterials } from '../scripts/lib/episode-materials.mjs';
+import { prepareMaterials, prepareTimeline } from '../scripts/lib/episode-materials.mjs';
 import { episodeMaterialsSchema } from '../src/lib/episode-materials.mjs';
 import { prepareEpisode } from '../scripts/lib/episode-publication.mjs';
 const url = 'https://x.com/builder/status/123';
@@ -42,6 +42,36 @@ test('deduplicates selected URLs and rejects duplicate structured API materials'
 });
 test('older producers without selected sources remain compatible', () => {
   expect(prepareMaterials()).toEqual([]);
+});
+test('timeline exports every feed entry in publish order with text only for posts', () => {
+  const feed = input().feed;
+  const result = prepareTimeline({ feed, selectedUrls: [url] });
+  expect(result).toHaveLength(2);
+  expect(result.map(item => item.url)).toEqual([url, 'https://x.com/other/status/2']);
+  expect(result[0]).toMatchObject({ kind: 'x', author: 'A Builder', handle: 'builder', selected: true });
+  expect(result[0].text).toBe('Full unselected source text');
+  expect(result[1].selected).toBe(false);
+  expect(result[1].text).toBe('UNSELECTED');
+  expect(JSON.stringify(result)).not.toMatch(/private-config/);
+});
+test('timeline orders by original publish time and keeps unselected entries honest', () => {
+  const feed = { x: [{ name: 'A', handle: 'a', tweets: [{ url: 'https://x.com/a/status/1', text: 'late', createdAt: '2026-10-01T12:00:00Z' }, { url: 'https://x.com/a/status/2', text: 'early', createdAt: '2026-10-01T06:00:00Z' }] }] };
+  const result = prepareTimeline({ feed });
+  expect(result.map(item => item.text)).toEqual(['early', 'late']);
+  expect(result.every(item => item.selected === false)).toBe(true);
+});
+test('timeline notes attach Chinese summaries without forcing selection', () => {
+  const result = prepareTimeline({ feed: input().feed, notes: [{ url: 'https://x.com/other/status/2', summary: '未入选推文的中文一句整理。' }] });
+  expect(result[1].summary).toBe('未入选推文的中文一句整理。');
+  expect(result[1].selected).toBe(false);
+  expect(() => prepareTimeline({ feed: input().feed, notes: [{ url: 'MEDIA:/Users/private/a.mp3', summary: 'x' }] })).toThrow();
+});
+test('publishing preparation includes timeline without exporting feed config', () => {
+  const episode = prepareEpisode({ day: '2026-10-02', source: { title: '节目', disclosure: 'AI配音', sources: input().sources }, publication: { summary: '节目摘要', chapters: [0, 1, 2, 3].map(section => ({ title: String(section), section })), materials: [{ url, summary: '制作前整理的公开摘要', chapterSection: 2 }] }, parts: [0, 1, 2, 3].map(section => ({ section, seconds: 4, pause_ms: 500 })), duration: 24, audio: Buffer.from('audio'), shownotes: 'Public notes', feed: input().feed });
+  expect(episode.data.timeline).toHaveLength(2);
+  expect(episode.data.timeline[0].selected).toBe(true);
+  expect(episode.data.timeline[1].text).toBe('UNSELECTED');
+  expect(JSON.stringify(episode.data)).not.toContain('private-config');
 });
 test('publishing preparation includes selected materials without exporting the feed', () => {
   const episode=prepareEpisode({day:'2026-10-02',source:{title:'节目',disclosure:'AI配音',sources:input().sources},publication:{summary:'节目摘要',chapters:[0,1,2,3].map(section=>({title:String(section),section})),materials:[{url,summary:'制作前整理的公开摘要',chapterSection:2}]},parts:[0,1,2,3].map(section=>({section,seconds:4,pause_ms:500})),duration:24,audio:Buffer.from('audio'),shownotes:'Public notes',feed:input().feed});

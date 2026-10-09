@@ -114,6 +114,11 @@ record(
       { id: "a".repeat(24), kind: "x", author: "示例构建者", handle: "example", summary: "这是一条公开来源的中文整理，用于验证素材卡片与章节播放。", url: "https://example.com/post", publishedAt: "2026-10-01T12:00:00Z", linkKind: "item", chapterStart: 5 },
       { id: "b".repeat(24), kind: "podcast", author: "示例播客", title: "关于 AI 工作方式的访谈", summary: "访谈素材保留节目出处，便于对照阅读和收听。", url: "https://www.youtube.com/playlist?list=example", linkKind: "playlist", chapterStart: 12 },
     ],
+    timeline: [
+      { id: "c".repeat(24), kind: "x", author: "示例构建者", handle: "example", text: "This unselected post should render as original text in the timeline.", url: "https://example.com/post", publishedAt: "2026-10-01T12:00:00Z", linkKind: "item", selected: true },
+      { id: "d".repeat(24), kind: "x", author: "另一位构建者", handle: "another", text: "A later post that was not used in the episode.", url: "https://example.com/later", publishedAt: "2026-10-01T13:30:00Z", linkKind: "item", selected: false },
+      { id: "e".repeat(24), kind: "podcast", author: "示例播客", title: "关于 AI 工作方式的访谈", url: "https://www.youtube.com/playlist?list=example", linkKind: "playlist", selected: true },
+    ],
     chapters: [
       { title: "开场", start: 0 },
       { title: "主线", start: 5 },

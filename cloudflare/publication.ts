@@ -1,4 +1,4 @@
-import { episodeMaterialsSchema } from "../src/lib/episode-materials.mjs";
+import { episodeMaterialsSchema, episodeTimelineSchema } from "../src/lib/episode-materials.mjs";
 import { normalizedRequest, normalizeAudioUrl } from "./site-urls";
 import { z } from "zod";
 import { renderMarkdown } from "../src/lib/markdown";
@@ -26,6 +26,7 @@ export const episodeSchema = z
   .object({
     ...common,
     materials: episodeMaterialsSchema.optional(),
+    timeline: episodeTimelineSchema.optional(),
     duration: z.number().positive().max(86400),
     disclosure: z.string().min(1).max(3000),
     draft: z.literal(false).default(false),
@@ -52,7 +53,8 @@ export const episodeSchema = z
       ),
     "Invalid chapter positions",
   )
-  .refine(e => !e.materials || e.materials.every(item => item.chapterStart === undefined || e.chapters.some(chapter => chapter.start === item.chapterStart)), "Material chapter must match an episode chapter");
+  .refine(e => !e.materials || e.materials.every(item => item.chapterStart === undefined || e.chapters.some(chapter => chapter.start === item.chapterStart)), "Material chapter must match an episode chapter")
+  .refine(e => !e.timeline || e.materials?.every(item => e.timeline?.some(entry => entry.id === item.id)) !== false, "Timeline entries must cover selected materials");
 const payloadSchema = z.object({
   data: z.unknown(),
   body: z.string().trim().min(1).max(150000),

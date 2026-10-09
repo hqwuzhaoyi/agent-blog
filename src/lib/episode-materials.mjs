@@ -28,3 +28,22 @@ export const episodeMaterialsSchema = z.array(episodeMaterialSchema).max(24).ref
   values => new Set(values.map(item => item.url)).size === values.length && new Set(values.map(item => item.id)).size === values.length,
   'Materials must have distinct sources',
 );
+
+/** One entry of the day's public source feed, rendered as a timeline at the end of an episode page. */
+export const episodeTimelineItemSchema = z.object({
+  id: z.string().regex(/^[a-f0-9]{24}$/),
+  kind: z.enum(['x', 'podcast', 'article']),
+  author: publicText(200),
+  handle: publicText(100).optional(),
+  title: publicText(400).optional(),
+  text: publicText(1000).optional(),
+  summary: publicText(400).optional(),
+  url: materialUrl,
+  publishedAt: materialPublishedAt.optional(),
+  linkKind: z.enum(['item', 'playlist', 'channel']),
+  selected: z.boolean().default(false),
+});
+export const episodeTimelineSchema = z.array(episodeTimelineItemSchema).max(80).refine(
+  values => new Set(values.map(item => item.url)).size === values.length && new Set(values.map(item => item.id)).size === values.length,
+  'Timeline must have distinct sources',
+);

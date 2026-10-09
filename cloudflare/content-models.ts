@@ -1,6 +1,7 @@
 import type { z } from "zod";
-import { episodeMaterialSchema } from "../src/lib/episode-materials.mjs";
+import { episodeMaterialSchema, episodeTimelineItemSchema } from "../src/lib/episode-materials.mjs";
 export type EpisodeMaterial = z.infer<typeof episodeMaterialSchema>;
+export type EpisodeTimelineItem = z.infer<typeof episodeTimelineItemSchema>;
 
 /** Public content shapes shared by server queries and presentation layers. */
 export interface ReviewData {
@@ -23,6 +24,7 @@ export interface EpisodeData {
   audio: { url: string; length: number; type: "audio/mpeg" };
   chapters: { title: string; start: number }[];
   materials?: EpisodeMaterial[];
+  timeline?: EpisodeTimelineItem[];
 }
 
 export type ContentCollection = "reviews" | "episodes";
