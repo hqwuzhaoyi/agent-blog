@@ -55,7 +55,7 @@ assert.ok((await evaluate('document.querySelector(".chapter-button[aria-current=
 assert.ok((await evaluate('document.querySelector(".chapter-button[aria-current=true]").textContent')).includes('00:12'));
 (await evaluate('[...document.querySelectorAll("button")].find(button => button.textContent.includes("00:05")).click(); true'));
 (await eventually(async () => (await evaluate('regressionAudio.currentTime')) >= 5 && (await evaluate('regressionAudio.currentTime')) < 8));
-(await browser('find', 'role', 'link', 'click', '--name', '节目笔记 →'));
+(await browser('find', 'role', 'link', 'click', '--name', 'shownotes →'));
 assert.ok((await evaluate('location.pathname')).includes('/episodes/'));
 assert.equal((await evaluate('regressionAudio === document.querySelector("audio")')), true);
 assert.equal((await evaluate('regressionAudio.paused')), false);

@@ -1,7 +1,28 @@
-# Episode materials feed
+# Episode sources and spoken briefs
 
 Status: ready-for-agent
 Execution: completed
+
+## Current accepted scope (2026-10-11)
+
+- Render one「咖啡豆」list after shownotes, merging selected materials and captured timeline entries by normalized URL. Selected sources retain episode order and measured chapter actions; remaining updates follow. Show Chinese summaries first and expand original posts on demand. Preserve old source/timeline anchors and episodes with either metadata field absent.
+- Move episode layout, shared cover/player, public navigation and footer styling into Tailwind while retaining theme tokens, prose styles and remaining page-specific CSS. Use a compact right-hand contents directory with chapters underneath; mobile contents stay in document flow. Footer is a single desktop row of brand, subscriptions and accessible contact icons.
+- New morning-coffee productions declare `episode.briefs = {section, urls}` for normally 3–5 selected news items. Those summaries must actually occur in the narrated segment and in consecutive measured manifest parts. Link the source cards to one measured「短讯」chapter. Existing episodes without this contract remain publishable.
+- Synchronize the local morning-coffee skill copy and existing Hermes task to load the new contract and run validation before and after synthesis. Keep its schedule and delivery target; do not re-record or re-send historical episodes as part of the UI change.
+
+## Current verification and rollout
+
+- 15 test files / 58 tests, TypeScript, review fixture and production deployment dry-run passed. Source merge tests cover differing legacy IDs, fragment normalization, missing feed entries and legacy-only episodes. Brief tests reject website-only summaries, missing chapter associations and stale or incomplete synthesis.
+- Browser checks covered source expansion, real chapter seeks, one persistent audio node, history/deep links, right-sidebar anchors, and 320/390/1440 layouts. Shared playback and slider regression suites passed during migration.
+- October 8 production page now renders 41 unique cards instead of 45 across two lists. Old anchors still resolve. Footer measures 69px on desktop and 113px on mobile, with bottom clearance reserved only when the player is visible.
+- Latest application deployment: Worker `1d51ddbf-cdde-4174-9502-c4bdffd48ddf`, established origin `https://blog.wuzhaoyi.xyz`. Changes use existing D1 metadata; no historical audio rewrite was performed.
+- The local Hermes task is enabled with the same 07:15 schedule and delivery target. Its skill files match the repository. Validator commands were exercised against synthetic measured parts; a complete scheduled synthesis/delivery run has not yet been exercised with the new contract.
+
+## Known publication edge cases
+
+The earlier timeline addition still rejects feeds with more than 80 entries or a post over 1,000 characters. Its API coverage rule also rejects a nonempty timeline missing a selected material URL. These findings remain open; the UI union does not change that producer/API contract.
+
+## Original scope and October 3 rollout (historical)
 
 User accepted a selected-materials feed inside episode details, visually resembling a vertical X feed: author/platform/original date, Chinese editorial summary, original link, selected badge and real related chapter. Raw candidate feeds remain local; a standalone materials page is deferred.
 

@@ -9,10 +9,8 @@ The existing Hermes schedule automatically publishes after complete audio valida
 `/episodes/rss.xml` includes only published episodes; `/rss.xml` combines published episodes and reviews. Enclosures use exact byte lengths, audio/mpeg MIME and measured duration. Chapter buttons seek and play without anchor navigation or page scrolling.
 
 
-## Selected materials
+## Sources and short news
 
-Episode metadata may include `materials`: selected public sources with a stable URL-based ID, kind (`x`, `podcast`, `article`), author/handle, optional original title/date, editorial summary, source URL/link type, and an optional measured chapter start. The detail page renders a vertical source feed before show notes. Existing episodes without materials keep their original rendering.
+Episode revisions retain optional `materials` (editorial selections and measured chapter associations) and `timeline` (captured public updates). The detail page merges both by normalized URL into a single source list after shownotes. Selections come first in episode order, followed by remaining updates; each URL appears once even if legacy IDs differ. Timeline summaries take precedence over legacy topic labels, original posts are expandable, and measured chapter actions use the shared audio controller. Existing revisions need no migration or republication.
 
-The publisher derives cards only from `episode.json.sources`. Optional `publication.json.materials` supplies Chinese summaries and `chapterSection` references; local `feed.json` enriches exact-URL matches with original metadata. It exports no raw transcripts, unselected entries or feed configuration. Source collection links are labelled as playlists/channels; absent dates and chapter associations remain absent. Cards are part of the same immutable D1 episode revision, so publication validation and retry identity also cover them. No database migration is needed.
-
-The UI displays plain-text summaries through React, opens public HTTP(S) source links, and invokes the existing single audio controller for measured chapter buttons. Materials are structured independently from the page markup so a future date-based materials page can reuse the data.
+New production scripts declare `episode.briefs = {section, urls}`. The chosen short-news summaries must occur in that spoken segment; publication metadata includes a matching 短讯 chapter and source-to-chapter links. The morning-coffee validator runs before synthesis and again against the measured manifest. The publisher applies the same checks whenever briefs metadata is present, while retaining compatibility with historical recordings. The authoritative editorial and delivery workflow lives in `skills/morning-coffee/`.

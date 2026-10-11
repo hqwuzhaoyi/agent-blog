@@ -1,4 +1,5 @@
 import { prepareMaterials, prepareTimeline } from "./episode-materials.mjs";
+import { validateEpisodeBriefs } from "../../skills/morning-coffee/scripts/episode-briefs.mjs";
 import deployment from "../../src/site-origin.json" with { type: "json" };
 import { createHash } from "node:crypto";
 
@@ -24,6 +25,8 @@ export function prepareEpisode({ day, source, publication, parts, duration, audi
     return { title, start: Math.round(start * 1000) / 1000 };
   });
   if (chapters[0].start !== 3) throw new Error("First chapter must include the opening section");
+  // Historical episodes without this production contract can still be republished.
+  if (source.briefs !== undefined) validateEpisodeBriefs({ source, publication, parts });
   const materials = prepareMaterials({ sources: source.sources, notes: publication.materials, feed, chapters, sectionStarts: starts });
   const timeline = prepareTimeline({ feed, selectedUrls: (source.sources ?? []).map(source => source.url), notes: publication.timeline, materials });
   const publicText = `${source.title}\n${publication.summary}\n${source.disclosure}\n${shownotes}\n${JSON.stringify(chapters)}\n${JSON.stringify(materials)}\n${JSON.stringify(timeline)}`;

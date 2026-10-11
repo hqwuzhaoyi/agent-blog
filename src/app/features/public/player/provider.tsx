@@ -1,3 +1,4 @@
+import { cn } from "../beui/lib/utils";
 import { Play, Pause, Volume2, VolumeX, X, AudioLines } from "lucide-react";
 import {
   createContext,
@@ -36,7 +37,12 @@ type Controller = {
   setInlineVisible: (visible: boolean) => void;
 };
 const Context = createContext<Controller | null>(null);
-const PlaybackContext = createContext<{ episodeId: string | null; playing: boolean; toggleEpisode: (episode: Episode) => void; play: Controller["play"] } | null>(null);
+const PlaybackContext = createContext<{
+  episodeId: string | null;
+  playing: boolean;
+  toggleEpisode: (episode: Episode) => void;
+  play: Controller["play"];
+} | null>(null);
 export function usePlayback() {
   const playback = useContext(PlaybackContext);
   if (!playback) throw new Error("Player provider missing");
@@ -92,22 +98,36 @@ export function PublicPlayerProvider({ children }: { children: ReactNode }) {
       }
       setState((current) => ({ ...current, time: start }));
     }
-    void node
-      .play()
-      .catch(() =>
-        setState((current) => ({
-          ...current,
-          playing: false,
-          error: siteConfig.player.error,
-        })),
-      );
+    void node.play().catch(() =>
+      setState((current) => ({
+        ...current,
+        playing: false,
+        error: siteConfig.player.error,
+      })),
+    );
   }, []);
-  const toggleEpisode = useCallback((episode: Episode) => {
-    if (episodeRef.current?.id === episode.id && audio.current && !audio.current.paused) audio.current.pause();
-    else play(episode);
-  }, [play]);
+  const toggleEpisode = useCallback(
+    (episode: Episode) => {
+      if (
+        episodeRef.current?.id === episode.id &&
+        audio.current &&
+        !audio.current.paused
+      )
+        audio.current.pause();
+      else play(episode);
+    },
+    [play],
+  );
   // Cards subscribe to playback changes, never to the progress clock.
-  const playback = useMemo(() => ({ episodeId: state.episode?.id ?? null, playing: state.playing, toggleEpisode, play }), [state.episode?.id, state.playing, toggleEpisode, play]);
+  const playback = useMemo(
+    () => ({
+      episodeId: state.episode?.id ?? null,
+      playing: state.playing,
+      toggleEpisode,
+      play,
+    }),
+    [state.episode?.id, state.playing, toggleEpisode, play],
+  );
   const controller = useMemo<Controller>(
     () => ({
       audio,
@@ -117,14 +137,12 @@ export function PublicPlayerProvider({ children }: { children: ReactNode }) {
         const node = audio.current;
         if (!node) return;
         if (node.paused)
-          void node
-            .play()
-            .catch(() =>
-              setState((current) => ({
-                ...current,
-                error: siteConfig.player.error,
-              })),
-            );
+          void node.play().catch(() =>
+            setState((current) => ({
+              ...current,
+              error: siteConfig.player.error,
+            })),
+          );
         else node.pause();
       },
       seek(time) {
@@ -214,15 +232,17 @@ export function timestamp(time: number) {
     .toString()
     .padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
 }
-export function PlayerControls() {
+export function PlayerControls({ className }: { className?: string }) {
   const { state, toggle, seek, setVolume } = usePlayer();
   const chapter = state.episode?.data.chapters.findLast(
     (item) => item.start <= state.time,
   );
   return (
-    <div className="player-control-group space-y-3">
+    <div
+      className={cn("player-control-group max-w-[600px] space-y-3", className)}
+    >
       {chapter && (
-        <p className="text-sm text-muted-foreground">
+        <p className="mt-0 text-[11px] text-muted-foreground">
           {siteConfig.language === "zh-CN" ? "当前章节：" : "Current chapter: "}
           {chapter.title}
         </p>
@@ -236,7 +256,12 @@ export function PlayerControls() {
           −10
         </Button>
         <Button onClick={toggle} size="lg">
-          {state.playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} fill="currentColor" aria-hidden="true" />}{state.playing ? siteConfig.player.pause : siteConfig.player.play}
+          {state.playing ? (
+            <Pause size={18} aria-hidden="true" />
+          ) : (
+            <Play size={18} fill="currentColor" aria-hidden="true" />
+          )}
+          {state.playing ? siteConfig.player.pause : siteConfig.player.play}
         </Button>
         <Button
           variant="ghost"
@@ -246,59 +271,109 @@ export function PlayerControls() {
           +10
         </Button>
       </div>
-      <div className="player-seek-control block text-sm">
-        <div className="player-control-heading"><span>{siteConfig.player.seek}</span><span className="player-time-readout">{timestamp(state.time)} <span>/ {timestamp(state.duration)}</span></span></div>
+      <div className="player-seek-control block text-[11px] text-muted-foreground">
+        <div className="player-control-heading flex items-center justify-between gap-4 text-[12px] font-semibold text-foreground">
+          <span>{siteConfig.player.seek}</span>
+          <span className="player-time-readout tabular-nums font-mono whitespace-nowrap text-primary [&>span]:text-muted-foreground [&>span]:font-normal">
+            {timestamp(state.time)} <span>/ {timestamp(state.duration)}</span>
+          </span>
+        </div>
         <RangeSlider
-          className="player-seek-slider min-h-11"
+          className="player-seek-slider mt-2 bg-[color-mix(in_srgb,var(--primary)_9%,var(--background))] [&>[aria-hidden]>div]:bg-[color-mix(in_srgb,var(--primary)_28%,transparent)] [&_[role=slider]]:bg-primary min-h-11"
           min={0}
           max={state.duration || 1}
           step={0.1}
           value={Math.min(state.time, state.duration || 1)}
           onValueChange={seek}
           aria-label={siteConfig.player.seek}
-          formatValueText={(time) => `${timestamp(time)} / ${timestamp(state.duration)}`}
+          formatValueText={(time) =>
+            `${timestamp(time)} / ${timestamp(state.duration)}`
+          }
           showTicks={false}
         />
       </div>
-      <div className="player-volume-row">
-      <Button variant="ghost" size="icon" className="player-mute" onClick={() => setVolume(state.volume ? 0 : 1)} aria-label={state.volume ? siteConfig.player.mute : siteConfig.player.unmute} title={state.volume ? siteConfig.player.mute : siteConfig.player.unmute}>{state.volume ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}</Button>
-      <div className="player-volume-control">
-        <div className="player-control-heading"><span>{siteConfig.language === "zh-CN" ? "音量" : "Volume"}</span><span className="player-volume-value">{Math.round(state.volume * 100)}%</span></div>
-        <RangeSlider
-          min={0}
-          max={1}
-          step={0.05}
-          value={state.volume}
-          onValueChange={setVolume}
-          aria-label={siteConfig.language === "zh-CN" ? "音量" : "Volume"}
-          formatValueText={(volume) => `${Math.round(volume * 100)}%`}
-          className="player-volume-slider min-h-11"
-          showTicks={false}
-        />
+      <div className="player-volume-row mt-5 flex items-center gap-3 border-t border-border pt-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="player-mute size-11 min-h-11 p-0 mobile:text-[10px]"
+          onClick={() => setVolume(state.volume ? 0 : 1)}
+          aria-label={
+            state.volume ? siteConfig.player.mute : siteConfig.player.unmute
+          }
+          title={
+            state.volume ? siteConfig.player.mute : siteConfig.player.unmute
+          }
+        >
+          {state.volume ? (
+            <Volume2 size={18} aria-hidden="true" />
+          ) : (
+            <VolumeX size={18} aria-hidden="true" />
+          )}
+        </Button>
+        <div className="player-volume-control grid w-45 min-w-0 max-w-[calc(100%_-_56px)] gap-[5px] text-[11px] text-muted-foreground mobile:text-[10px]">
+          <div className="player-control-heading flex items-center justify-between gap-4 text-[11px] font-medium text-muted-foreground">
+            <span>{siteConfig.language === "zh-CN" ? "音量" : "Volume"}</span>
+            <span className="player-volume-value tabular-nums font-mono whitespace-nowrap">
+              {Math.round(state.volume * 100)}%
+            </span>
+          </div>
+          <RangeSlider
+            min={0}
+            max={1}
+            step={0.05}
+            value={state.volume}
+            onValueChange={setVolume}
+            aria-label={siteConfig.language === "zh-CN" ? "音量" : "Volume"}
+            formatValueText={(volume) => `${Math.round(volume * 100)}%`}
+            className="player-volume-slider w-full min-w-0 border border-border min-h-11"
+            showTicks={false}
+          />
+        </div>
       </div>
-      </div>{state.error && <p role="alert">{state.error}</p>}
+      {state.error && <p role="alert">{state.error}</p>}
     </div>
   );
 }
-export function Chapters({ episode }: { episode: Episode }) {
+export function Chapters({
+  episode,
+  variant = "default",
+}: {
+  episode: Episode;
+  variant?: "default" | "detail" | "sheet";
+}) {
   const { state, play } = usePlayer();
-  const activeIndex = state.episode?.id === episode.id
-    ? episode.data.chapters.findLastIndex(chapter => chapter.start <= state.time)
-    : -1;
+  const activeIndex =
+    state.episode?.id === episode.id
+      ? episode.data.chapters.findLastIndex(
+          (chapter) => chapter.start <= state.time,
+        )
+      : -1;
   return (
     <ol className="divide-y divide-border">
       {episode.data.chapters.map((chapter, index) => (
         <li key={`${index}-${chapter.start}`}>
           <button
             type="button"
-            className="chapter-button flex min-h-12 w-full gap-4 py-3 text-left"
+            className={cn(
+              "chapter-button relative flex min-h-12 w-full gap-4 rounded-md px-2.5 py-3 text-left aria-[current=true]:bg-primary/8 aria-[current=true]:text-primary aria-[current=true]:shadow-[inset_2px_0_var(--primary)] active:bg-primary/12 pointer-hover:hover:bg-card",
+              variant === "detail" && "min-h-11 gap-3 py-2.5 text-[12px]",
+              variant === "sheet" && "text-[13px]",
+            )}
             aria-current={index === activeIndex ? "true" : undefined}
             onClick={() => play(episode, chapter.start)}
           >
-            <span className="font-mono text-muted-foreground">
+            <span
+              className={cn(
+                "shrink-0 whitespace-nowrap font-mono",
+                index === activeIndex
+                  ? "text-primary"
+                  : "text-muted-foreground",
+              )}
+            >
               {timestamp(chapter.start)}
             </span>
-            <span>{chapter.title}</span>
+            <span className="min-w-0 wrap-anywhere">{chapter.title}</span>
           </button>
         </li>
       ))}
@@ -323,13 +398,14 @@ export function EpisodePlayer({ episode }: { episode: Episode }) {
   return (
     <section
       ref={ref}
-      className="episode-inline-player"
+      className="episode-inline-player mt-[25px] mx-0 mb-7.5 border border-border rounded-[18px] p-[23px] bg-card mobile:p-4.5"
       aria-label={siteConfig.player.label}
     >
       {active ? (
         <PlayerControls />
       ) : (
-        <Button onClick={() => play(episode)} size="lg"><Play size={18} fill="currentColor" aria-hidden="true" />
+        <Button onClick={() => play(episode)} size="lg">
+          <Play size={18} fill="currentColor" aria-hidden="true" />
           {siteConfig.language === "zh-CN" ? "播放本期" : "Play episode"} ·{" "}
           {timestamp(episode.data.duration)}
         </Button>
@@ -340,36 +416,57 @@ export function EpisodePlayer({ episode }: { episode: Episode }) {
 export function PersistentPlayer() {
   const { state, toggle, dismiss } = usePlayer();
   const [open, setOpen] = useState(false);
-  useEffect(() => { if (!state.episode) setOpen(false); }, [state.episode]);
+  useEffect(() => {
+    if (!state.episode) setOpen(false);
+  }, [state.episode]);
   if (!state.episode) return null;
   return (
     <>
       <div
         hidden={state.inlineVisible && !open}
-        className="persistent-player"
+        className="persistent-player fixed bottom-4.5 left-1/2 z-40 w-[min(760px,calc(100%_-_32px))] -translate-x-1/2 rounded-[18px] border border-border bg-card px-3.5 py-2.5 shadow-[0_12px_40px_-18px_#13282055] [&[hidden]]:hidden mobile:bottom-[max(10px,env(safe-area-inset-bottom))] mobile:w-[calc(100%_-_24px)] mobile:rounded-[15px] mobile:px-2.5 mobile:py-[9px]"
       >
-        <div className="persistent-player-inner"><span className="persistent-cover" aria-hidden="true"><AudioLines size={20} /></span>
+        <div className="persistent-player-inner flex gap-[15px] items-center mobile:gap-2.5">
+          <span
+            className="persistent-cover grid place-items-center shrink-0 w-10.5 h-10.5 rounded-[10px] bg-primary text-background mobile:w-[35px] mobile:h-[35px] mobile:rounded-[9px]"
+            aria-hidden="true"
+          >
+            <AudioLines size={20} />
+          </span>
           <button
             type="button"
-            className="persistent-player-title"
+            className="persistent-player-title min-h-11 min-w-0 flex-1 border-0 bg-transparent p-0 text-left text-foreground"
             onClick={() => setOpen(true)}
             aria-label={siteConfig.player.expand}
           >
-            <span className="block truncate font-medium">
+            <span className="block truncate text-[12px] font-semibold mobile:text-[11px]">
               {state.episode.data.title}
             </span>
-            <span className="text-sm text-muted-foreground">
+            <span className="mt-0.5 flex items-center gap-[7px] text-[10px] text-muted-foreground tabular-nums mobile:text-[9px]">
               {timestamp(state.time)} / {timestamp(state.duration)} ·{" "}
               {siteConfig.player.expand}
             </span>
           </button>
-          <Button onClick={toggle} className="persistent-toggle" aria-label={state.playing ? siteConfig.player.pause : siteConfig.player.play}>
-            {state.playing ? <Pause size={18} aria-hidden="true" /> : <Play size={18} fill="currentColor" aria-hidden="true" />}<span>{state.playing ? siteConfig.player.pause : siteConfig.player.play}</span>
+          <Button
+            onClick={toggle}
+            className="persistent-toggle touch:min-h-11 touch:min-w-11 h-9.5 min-h-9.5 px-4 py-0 text-[12px] mobile:[&_svg]:w-3.5 mobile:[&_span]:hidden"
+            aria-label={
+              state.playing ? siteConfig.player.pause : siteConfig.player.play
+            }
+          >
+            {state.playing ? (
+              <Pause size={18} aria-hidden="true" />
+            ) : (
+              <Play size={18} fill="currentColor" aria-hidden="true" />
+            )}
+            <span>
+              {state.playing ? siteConfig.player.pause : siteConfig.player.play}
+            </span>
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="persistent-dismiss"
+            className="persistent-dismiss touch:min-h-11 touch:min-w-11 size-8 p-0 mobile:w-[25px] mobile:h-7.5"
             onClick={dismiss}
             aria-label={siteConfig.player.close}
           >
@@ -382,11 +479,13 @@ export function PersistentPlayer() {
         onOpenChange={setOpen}
         title={state.episode.data.title}
         snapPoints={[0.72, 0.92]}
-        className="public-site public-player-sheet"
+        className="public-site public-player-sheet text-[15px]"
       >
-        <PlayerControls />
-        <h3 className="mt-6 font-semibold">{siteConfig.episodes.chapters}</h3>
-        <Chapters episode={state.episode} />
+        <PlayerControls className="pt-3.5" />
+        <h3 className="mt-6 text-[13px] font-semibold">
+          {siteConfig.episodes.chapters}
+        </h3>
+        <Chapters episode={state.episode} variant="sheet" />
         <Link
           to="/episodes/$id"
           params={{ id: state.episode.id }}
