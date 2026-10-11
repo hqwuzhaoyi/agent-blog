@@ -4,7 +4,7 @@ Agent Blog publishes human-confirmed worklogs and automatically produced Morning
 
 **Acceptance site:** [blog.wuzhaoyi.xyz/](https://blog.wuzhaoyi.xyz/)
 
-The application now uses root paths. `gitlog.si` is configured as the future domain; its DNS activation is pending, so acceptance and publication currently stay on the established domain.
+The application uses root paths. `gitlog.si` is configured as the future domain; acceptance and publication remain on the established domain until cutover is requested and its DNS/HTTPS are ready.
 
 **Morning Coffee:** [Episodes](https://blog.wuzhaoyi.xyz/episodes/) · [Podcast RSS](https://blog.wuzhaoyi.xyz/episodes/rss.xml)
 
@@ -41,24 +41,67 @@ npm run episode:publish -- --directory /absolute/path/to/render-output --day YYY
 
 The directory contains `episode.json`, `episode.mp3`, `episode.parts/manifest.json`, `shownotes.md`, and `publication.json`. The script completely decodes audio, measures duration and chapters, uploads a content-addressed MP3, then writes and publishes D1 content. Audio must be uploaded before an episode can become public. Retries are idempotent. Maximum API audio upload: 25 MiB.
 
-The [morning-coffee skill](skills/morning-coffee/SKILL.md) covers sources, editorial guidance, configurable IndexTTS rendering, mixing, and chapter validation. See [episode content](docs/EPISODES.md).
+The [morning-coffee skill](skills/morning-coffee/SKILL.md) covers sources, editorial guidance, configurable IndexTTS rendering, mixing, and chapter validation. Each episode can also display a selected-materials feed with source authors, original dates, editorial summaries, original links and measured chapter actions. `publication.json.materials` supplies the summaries; local `feed.json` enriches only the selected URLs. Raw candidate feeds and transcripts stay local. See [episode content](docs/EPISODES.md).
 
 ## Deployment: Cloudflare Workers + D1 + R2
 
-- **Workers:** renders React SSR pages, feeds and the authenticated publishing/review interfaces; serves audio with byte ranges.
-- **D1:** authoritative content revisions, draft/public pointers, chapters and approval audit.
-- **R2:** final MP3s; historical Markdown and catalog are retained as migration backups.
-- **GitHub:** application code, skills and historical fixtures. CI checks changes; it does not publish content.
+The production application is a React/TanStack Start Worker. Application deployments update code and assets; worklogs and episodes are published separately through the D1-backed API.
 
-The acceptance site is served at `https://blog.wuzhaoyi.xyz/` using root paths. Prefixed reader URLs redirect to the same domain’s root paths; cross-domain cutover waits for `gitlog.si` DNS activation. Application code is deployed separately:
+| Component | Current resource | Responsibility |
+| --- | --- | --- |
+| Cloudflare Workers | `agent-blog` | React SSR, publishing/review APIs, dynamic RSS and audio delivery with byte ranges |
+| Worker Assets | `ASSETS` binding | Built browser JavaScript, CSS and static files |
+| Cloudflare D1 | `agent-blog-content` / `CONTENT` | Content revisions, draft/public pointers, chapter metadata and approval audit |
+| Private Cloudflare R2 | `agent-blog-audio` / `AUDIO` | Final MP3s, served through the Worker |
+| GitHub | This repository | Application code, skills, historical fixtures and CI checks |
+
+### Current domain and routes
+
+The active acceptance origin is **`https://blog.wuzhaoyi.xyz`**, using root paths:
+
+| Entry | Path |
+| --- | --- |
+| Homepage | `/` |
+| Episodes / worklogs / archive | `/episodes/` · `/reviews/` · `/archive` |
+| Reviewer dashboard | `/admin/` |
+| All-content RSS / podcast RSS | `/rss.xml` · `/episodes/rss.xml` |
+| Audio | `/audio/:day/:sha256.mp3` |
+| Producer API / reviewer API | `/api/` · `/admin/api/` |
+
+`gitlog.si` is also configured as a Worker custom domain, but cutover is deferred. The established domain stays active for acceptance. Existing `/agent-blog/...` reader URLs redirect to the corresponding root path on the active domain. Legacy producer requests remain compatible without redirecting their authorization headers or request bodies.
+
+### Deploy application updates
+
+Use Node.js 24+, npm, Python 3 for RSS checks, and a Cloudflare account authorized to deploy the existing Worker and its custom domains. For a first installation, follow [resource provisioning and secrets](docs/CLOUDFLARE_DEPLOYMENT.md#database-provisioning-and-migration) before running this sequence.
 
 ```bash
 npm ci
+npx wrangler login
+npm run check
+npm test
 npm run deploy:check
 npm run deploy
+npm run check:ui
+npm run check:rss
 ```
 
-These commands build the Worker and exclude private preview audio. After deployment run `npm run check:ui` and `npm run check:rss` to verify browser resources and feed/audio delivery. They do not copy or modify live content. Provisioning, authentication, migrations, reviewer login and recovery are documented in [Cloudflare deployment](docs/CLOUDFLARE_DEPLOYMENT.md).
+Use `npm run deploy` for production. The wrapper selects [wrangler.jsonc](wrangler.jsonc), builds into `dist-react`, removes preview audio/local secret files, validates the production binding and active origin, then deploys the generated Worker configuration. `deploy:check` performs the build and validation with Wrangler's dry-run; `dev`, `build` and `preview` use isolated preview bindings by default.
+
+The checked-in configuration and deployment guard target this installation. A separate installation must set its own account, D1 and private R2 bindings and adapt the resource guard in [deploy-cloudflare.mjs](scripts/deploy-cloudflare.mjs). Reuse existing production resources for application updates. Apply D1 migrations only when required by a schema change; seeding and historical content import are not routine deployment steps.
+
+Worker secrets have separate roles: `SUBMIT_TOKEN` is for agents submitting drafts/audio/episodes; `REVIEW_TOKEN` is for the operator approving worklogs. Store them with Wrangler secrets, as described in the deployment guide. GitHub Actions checks changes; production deployment runs through the wrapper on an authenticated host.
+
+### Switch to gitlog.si later
+
+1. Complete the domain's Cloudflare nameserver delegation and confirm the zone is active and HTTPS is ready. Keep the existing domain binding for compatibility.
+2. Set `origin` in [src/site-origin.json](src/site-origin.json) and `vars.PUBLIC_ORIGIN` in [wrangler.jsonc](wrangler.jsonc) to the same origin, `https://gitlog.si` (without a trailing slash). Deployment fails if they differ.
+3. Update any publisher override in `BLOG_PUBLICATION_URL` or private `.agent-blog/publication-client.json`. Canonical links and default publisher URLs follow `src/site-origin.json`.
+4. Configure RSS/audio client compatibility in the new zone if Browser Integrity Check is enabled. The current exception is host-specific, applies only to GET/HEAD feed/audio paths, and skips only BIC; it is separate from Worker deployment.
+5. Run `npm run deploy`, `npm run check:ui` and `npm run check:rss`. Check the homepage, episode playback, `/admin/`, both feeds and old-link redirects on the new origin before completing cutover.
+
+This switch keeps D1/R2 resources and immutable revisions in place. Historical audio URLs are normalized when read, and production RSS GUIDs retain their existing identities so subscriptions do not duplicate episodes.
+
+See [Cloudflare deployment](docs/CLOUDFLARE_DEPLOYMENT.md) for credentials, schema migration, API contracts and recovery. Rolling back a Worker version changes application code; D1/R2 recovery is a separate operation.
 
 ## Frontend and reviewer UI
 
@@ -66,18 +109,28 @@ Public pages use React 19, Tailwind CSS 4, source-adapted beUI controls and Moti
 
 ## Local development
 
-Use Node.js 24+; episode production also needs ffmpeg and ffprobe. Create a local D1 schema and seed approved historical content as described in the deployment document, then:
+Use Node.js 24+; episode production also needs ffmpeg and ffprobe. The seeder creates the isolated schema, test credentials and playable fixtures. In one terminal:
 
 ```bash
 npm ci
 npm test
 npm run check
-npm run review:fixture
 npm run react:db:seed
 npm run dev
 ```
 
-Tests cover all three React Theme adapters and the real SQLite approval/publication boundary. Run the isolated Worker and browser acceptance commands in [React preview](docs/REACT_PREVIEW.md) for full workflows. Public pages read D1; preview credentials use ignored `.dev.vars.react-preview`, while production credentials remain private.
+With the preview running at `http://localhost:3100/`, use a second terminal for acceptance:
+
+```bash
+npm run test:runtime
+npm run test:browser
+npm run test:browser:sliders
+npm run test:browser:materials
+npm run test:browser:admin
+npm run test:browser:cleanup
+```
+
+Browser checks require ego-browser and use a shared task space; run them sequentially, then clean up after successful verification. Runtime tests publish isolated fixtures only to localhost. Tests also cover the Theme adapters and SQLite approval/publication boundary. See [React preview](docs/REACT_PREVIEW.md) for details. Local credentials live in ignored `.dev.vars.react-preview`; production secrets stay in Cloudflare.
 
 ## Customize the site
 

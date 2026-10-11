@@ -101,20 +101,20 @@ The seeder refuses production bindings and remote origins. It creates `.dev.vars
 Audio upload can leave an unreferenced object if the content write fails; retry the same episode. Database content publication never replaces the Worker deployment. Roll back application code through Worker version history; restore D1 content separately using D1 backups/export or retained immutable revisions. The pre-React D1-backed Worker version `39aaeb49-3178-4c13-a6c3-9532863d3332` remains a compatible application rollback target; rollback does not remove D1/R2 content. Preserve database and audio when retrying, and back up D1 before future schema migrations.
 
 
-## Root domain migration (2026-10-03)
+## Domains, root paths and later cutover
 
-The canonical origin is `https://gitlog.si` with `/`, `/episodes/`, `/reviews/`, `/archive`, `/admin/`, `/rss.xml` and `/episodes/rss.xml`. `wrangler.jsonc` binds the new custom domain while retaining `blog.wuzhaoyi.xyz` for compatibility. Reader GET/HEAD requests on the old domain or old `/agent-blog` prefix return 308 to the corresponding root URL, preserving query parameters. Legacy submission API requests are normalized inside the Worker so bearer authorization and request bodies do not depend on cross-origin redirects.
+The active acceptance origin is `https://blog.wuzhaoyi.xyz`. Routes are `/`, `/episodes/`, `/reviews/`, `/archive`, `/admin/`, `/rss.xml` and `/episodes/rss.xml`. `gitlog.si` already has a Worker custom-domain binding; the operator has deferred cutover until its DNS/HTTPS are ready. The established domain does not redirect to the pending domain.
 
-D1/R2 resource identities and immutable content revisions are unchanged. Owned historical audio URLs are normalized when preparing public/admin/feed output; unrelated external URLs are untouched. Production RSS item GUIDs keep their established legacy identities while links and enclosures use the new origin, preventing existing subscriptions from treating the same entries as new episodes. New operator cookies use `Path=/admin/`; operators sign in on the new domain.
+`src/site-origin.json` sets canonical metadata and publisher defaults. Worker `vars.PUBLIC_ORIGIN` in `wrangler.jsonc` controls content/feed presentation. Both currently use `https://blog.wuzhaoyi.xyz`; the deployment wrapper refuses a mismatch. Publisher environment/private-config overrides must also be updated when changing origin.
 
-Browser acceptance uses ego-browser task spaces and CLI heredocs. Runtime/API tests still run against isolated local bindings; never seed or execute fixture publication checks against production.
+To cut over, complete Cloudflare nameserver delegation and verify zone activation/HTTPS, update both origin settings to `https://gitlog.si`, retain both domain bindings, configure the new zone's RSS/audio compatibility rule when needed, and redeploy. Run `npm run check:ui` and `npm run check:rss` against the newly configured origin, then verify playback, reviewer login and legacy redirects.
 
+Reader GET/HEAD requests on the legacy `/agent-blog` prefix normalize to root paths, preserving queries. Requests on the other configured production hostname redirect to the active origin. These 308 responses are no-store. Legacy producer API requests are normalized inside the Worker, preserving authorization and request bodies.
 
-### Acceptance hold on the established domain
+D1/R2 resource identities and immutable content revisions remain in place. Owned historical audio URLs are normalized in public/admin/feed output; unrelated external URLs are untouched. Production RSS GUIDs retain their legacy identities on either host, while links and enclosures use the active origin. Reviewer cookies use `Path=/admin/`; operators sign in on the active domain.
 
-The operator requested acceptance at `https://blog.wuzhaoyi.xyz/` while `gitlog.si` remains Cloudflare Pending (nameserver delegation incomplete). `src/site-origin.json` and the Worker PUBLIC_ORIGIN therefore both use the established origin. Root paths, component changes and legacy prefix normalization remain active; requests on the established domain do not redirect to the unavailable domain. Canonical metadata, producer defaults, audio and RSS all use the acceptance origin. The deployment wrapper refuses mismatched frontend/publisher and Worker origins.
+### RSS/audio zone rule
 
-Both custom-domain bindings remain configured. After DNS/HTTPS for gitlog.si is ready and the operator requests cutover, update the two origin settings together and redeploy. Production GUIDs retain their legacy namespace on either host. Migration redirects are no-store so future origin changes are not retained by HTTP caches.
+The existing `Agent Blog RSS and audio clients` rule (`7895641a368d4869890460c37f1c6eb8`) skips only Browser Integrity Check, only for host `blog.wuzhaoyi.xyz`, and only for GET/HEAD. It covers `/rss.xml`, `/episodes/rss.xml`, `/audio/` and their legacy `/agent-blog` equivalents. Other security components remain enabled. This zone-level rule was updated separately from the Worker deployment; changing domains does not copy it to the new zone.
 
-
-During root-path acceptance, the existing zone rule `Agent Blog RSS and audio clients` (`7895641a368d4869890460c37f1c6eb8`) was updated via the authenticated Cloudflare dashboard in ego. It still skips only Browser Integrity Check, only on host `blog.wuzhaoyi.xyz`, only GET/HEAD. The expression now includes both `/rss.xml`, `/episodes/rss.xml`, `/audio/` and the corresponding legacy `/agent-blog` paths. Other security components remain enabled. Default Python urllib checks pass for both feeds and both audio enclosures.
+Browser acceptance uses ego-browser task spaces and CLI heredocs. Run the three browser suites sequentially and execute `npm run test:browser:cleanup` after successful verification. Fixture publication/runtime checks target isolated localhost bindings; production checks are read-only.

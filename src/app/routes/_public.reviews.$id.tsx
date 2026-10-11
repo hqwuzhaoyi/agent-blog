@@ -33,13 +33,26 @@ export const Route = createFileRoute("/_public/reviews/$id")({
 function ReviewPage() {
   const review = Route.useLoaderData();
   return (
-    <div className="public-detail"><Link to="/reviews" className="detail-back"><ArrowLeft size={14} aria-hidden="true" />{siteConfig.nav.latest}</Link><Article
-      title={review.data.title}
-      summary={review.data.summary}
-      date={review.data.date.toISOString()}
-      source={review.data.source}
-      platforms={review.data.platforms}
-      html={review.html}
-    /></div>
+    <div className="public-detail pt-[45px] mobile:pt-7">
+      <Link
+        to="/reviews"
+        className="detail-back group mb-7 inline-flex items-center gap-2 text-[11px] text-muted-foreground mobile:mb-[23px] mobile:text-[10px]"
+      >
+        <ArrowLeft
+          className="transition-transform duration-[160ms] ease-[var(--ease-out)] pointer-hover:group-hover:-translate-x-[3px] motion-reduce:transform-none motion-reduce:transition-none"
+          size={14}
+          aria-hidden="true"
+        />
+        {siteConfig.nav.latest}
+      </Link>
+      <Article
+        title={review.data.title}
+        summary={review.data.summary}
+        date={review.data.date.toISOString()}
+        source={review.data.source}
+        platforms={review.data.platforms}
+        html={review.html}
+      />
+    </div>
   );
 }

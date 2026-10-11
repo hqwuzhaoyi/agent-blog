@@ -14,9 +14,11 @@ const json = async (file) => JSON.parse(await readFile(join(directory, file), "u
 const [source, publication, parts, audio, shownotes] = await Promise.all([
   json("episode.json"), json("publication.json"), json("episode.parts/manifest.json"), readFile(audioFile), readFile(join(directory, "shownotes.md"), "utf8"),
 ]);
+let feed = {};
+try { feed = await json("feed.json"); } catch (error) { if (error.code !== "ENOENT") throw error; }
 const probe = JSON.parse(command("ffprobe", ["-v", "error", "-show_format", "-of", "json", audioFile]));
 command("ffmpeg", ["-v", "error", "-i", audioFile, "-f", "null", "-"]);
-const episode = prepareEpisode({ day: values.day, source, publication, parts, duration: Number(probe.format.duration), audio, shownotes });
+const episode = prepareEpisode({ day: values.day, source, publication, parts, duration: Number(probe.format.duration), audio, shownotes, feed });
 let result = { status: "validated" };
 if (!values["dry-run"]) {
   const api = await contentClient();

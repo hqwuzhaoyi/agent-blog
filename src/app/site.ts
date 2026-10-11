@@ -27,7 +27,7 @@ const translations = {
       archive: "All episodes",
       listen: "Listen",
       chapters: "Chapters",
-      notes: "Show notes",
+      notes: "shownotes",
       subscribe: "Subscribe to the podcast",
       back: "All episodes",
       empty: "The first episode is brewing.",
@@ -107,7 +107,7 @@ const translations = {
       archive: "往期节目",
       listen: "收听",
       chapters: "本期章节",
-      notes: "节目笔记",
+      notes: "shownotes",
       subscribe: "订阅播客",
       back: "全部节目",
       empty: "第一杯早咖啡正在准备。",
@@ -171,13 +171,21 @@ const translations = {
 const localized = translations[language];
 
 export const siteConfig = {
+  contactLinks: [
+    {
+      kind: "email",
+      label: "hqwuzhaoyi@gmail.com",
+      href: "mailto:hqwuzhaoyi@gmail.com",
+    },
+    { kind: "github", label: "GitHub", href: "https://github.com/hqwuzhaoyi" },
+    { kind: "x", label: "X", href: "https://x.com/hqwuzhaoyi" },
+  ] as const,
   theme: activeTheme.id,
   language,
   locale: language,
   ...localized,
   title:
-    preferences.title ||
-    (language === "zh-CN" ? "早咖啡" : "Morning Coffee"),
+    preferences.title || (language === "zh-CN" ? "早咖啡" : "Morning Coffee"),
   tagline: preferences.tagline || localized.description,
   description: preferences.tagline || localized.description,
   home: localized.home,
