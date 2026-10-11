@@ -34,7 +34,7 @@ const translations = {
       draft: "Preview draft",
       download: "Download audio",
       disclosure:
-        "AI-narrated, independently written. Sources and commentary are identified below.",
+        "This episode uses AI-generated speech.",
       footer: "Morning Coffee · A few minutes of new ideas.",
     },
     player: {
@@ -113,7 +113,7 @@ const translations = {
       empty: "第一杯早咖啡正在准备。",
       draft: "预览草稿",
       download: "下载音频",
-      disclosure: "AI 配音，独立编稿。来源与编辑观点见下文。",
+      disclosure: "本期音频由 AI 合成语音生成。",
       footer: "早咖啡 · 几分钟，听见新想法。",
     },
     player: {

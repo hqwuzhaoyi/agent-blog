@@ -22,14 +22,14 @@ const defaultConfig: FeedConfig = {
     ? {
         title: "早咖啡",
         description: "用几分钟，听听 AI 构建者的新想法，以及它们与你的关系。",
-        disclosure: "AI 配音，独立编稿。来源与编辑观点见下文。",
+        disclosure: "本期音频由 AI 合成语音生成。",
       }
     : {
         title: "Morning Coffee",
         description:
           "A few minutes of AI builder stories, sources, and editorial perspective.",
         disclosure:
-          "AI-narrated, independently written. Sources and commentary are identified below.",
+          "This episode uses AI-generated speech.",
       },
 };
 const xml = (value: unknown) =>
